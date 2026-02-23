@@ -1,5 +1,7 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -10,19 +12,48 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { toast } from "sonner";
-import { loginUser } from "@/services/auth";
-import { useRouter } from "next/navigation";
 
+import { loginUser } from "@/services/auth";
+
+// Form validation using Zod:
 const loginSchema = z.object({
   email: z.string().email("Invalid email address"),
   password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
+
 type LoginFormValues = z.infer<typeof loginSchema>;
+
+
+function FormField({
+  id,
+  label,
+  type = "text",
+  placeholder,
+  error,
+  registration,
+}: {
+  id: string;
+  label: string;
+  type?: string;
+  placeholder: string;
+  error?: string;
+  registration: object;
+}) {
+  return (
+    <div className="space-y-2">
+      <Label htmlFor={id}>{label}</Label>
+      <Input id={id} type={type} placeholder={placeholder} {...registration} />
+      {error && <p className="text-sm text-red-500">{error}</p>}
+    </div>
+  );
+}
+
 
 export default function LoginForm() {
   const router = useRouter();
@@ -35,7 +66,6 @@ export default function LoginForm() {
     resolver: zodResolver(loginSchema),
   });
 
-  
   const onSubmit = async (data: LoginFormValues) => {
     try {
       const result = await loginUser(data);
@@ -43,14 +73,12 @@ export default function LoginForm() {
       toast.success(result.message || "Logged in successfully!");
 
       router.push("/dashboard");
-
     } catch (error: unknown) {
-
       const message = error instanceof Error ? error.message : "Login failed";
-
       toast.error(message);
     }
   };
+
 
   return (
     <Card className="w-full max-w-md">
@@ -60,39 +88,41 @@ export default function LoginForm() {
           Enter your credentials to access your account
         </CardDescription>
       </CardHeader>
+
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="you@example.com"
-              {...register("email")}
-            />
-            {errors.email && (
-              <p className="text-sm text-red-500">{errors.email.message}</p>
-            )}
-          </div>
+          <FormField
+            id="email"
+            label="Email"
+            type="email"
+            placeholder="you@example.com"
+            error={errors.email?.message}
+            registration={register("email")}
+          />
 
-          <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              type="password"
-              placeholder="••••••••"
-              {...register("password")}
-            />
-            {errors.password && (
-              <p className="text-sm text-red-500">{errors.password.message}</p>
-            )}
-          </div>
+          <FormField
+            id="password"
+            label="Password"
+            type="password"
+            placeholder="••••••••"
+            error={errors.password?.message}
+            registration={register("password")}
+          />
 
           <Button type="submit" className="w-full" disabled={isSubmitting}>
             {isSubmitting ? "Logging in..." : "Login"}
           </Button>
         </form>
       </CardContent>
+
+      <CardFooter>
+        <p className="text-center text-sm text-muted-foreground">
+          Do not have an account?{" "}
+          <Link href="/register" className="text-primary underline">
+            Register
+          </Link>
+        </p>
+      </CardFooter>
     </Card>
   );
 }
