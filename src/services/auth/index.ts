@@ -44,3 +44,27 @@ export const registerUser = async (data: {
 
   return result;
 };
+
+export const getMe = async () => {
+  const res = await fetch(`${API_BASE_URL}/auth/me`, {
+    credentials: "include",
+  });
+
+  const result = await res.json();
+
+  if (!res.ok) {
+    throw new Error(result.message || "Not authenticated");
+  }
+
+  return result;
+};
+
+export const logoutUser = async () => {
+  const res = await fetch(`${API_BASE_URL}/auth/logout`, {
+    method: "POST",
+    credentials: "include",
+  });
+
+  const result = await res.json();
+  return result;
+};

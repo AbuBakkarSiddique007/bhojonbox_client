@@ -17,9 +17,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { toast } from "sonner";
+import { useAuth } from "@/hooks/AuthContext";
 
 import { registerUser } from "@/services/auth";
-
 
 // Form validation using Zod:
 const registerSchema = z
@@ -73,7 +73,7 @@ function FormField({
 
 export default function RegisterForm() {
   const router = useRouter();
-
+  const { setUser } = useAuth();
 
   const [selectedRole, setSelectedRole] = useState<"CUSTOMER" | "PROVIDER">(
     "CUSTOMER"
@@ -103,6 +103,7 @@ export default function RegisterForm() {
       const { confirmPassword, ...submitData } = data;
 
       const result = await registerUser(submitData);
+      setUser(result.data.user);
 
       toast.success(result.message || "Registered successfully!");
       router.push("/dashboard");

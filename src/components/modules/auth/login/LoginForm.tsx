@@ -19,6 +19,7 @@ import {
 import { toast } from "sonner";
 
 import { loginUser } from "@/services/auth";
+import { useAuth } from "@/hooks/AuthContext";
 
 // Form validation using Zod:
 const loginSchema = z.object({
@@ -57,6 +58,7 @@ function FormField({
 
 export default function LoginForm() {
   const router = useRouter();
+  const { setUser } = useAuth();
 
   const {
     register,
@@ -69,7 +71,7 @@ export default function LoginForm() {
   const onSubmit = async (data: LoginFormValues) => {
     try {
       const result = await loginUser(data);
-
+      setUser(result.data.user); 
       toast.success(result.message || "Logged in successfully!");
 
       router.push("/dashboard");
