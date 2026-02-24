@@ -1,3 +1,5 @@
+import Navbar from "@/components/shared/Navbar";
+
 export default function CommonLayout({
     children,
 }: {
@@ -5,10 +7,7 @@ export default function CommonLayout({
 }) {
     return (
         <div className="min-h-screen flex flex-col">
-            {/* Navbar section */}
-            <nav className="border-b px-6 py-4">
-                <h1 className="text-xl font-bold">BhojonBox</h1>
-            </nav>
+            <Navbar />
 
             <main className="flex-1">{children}</main>
 
