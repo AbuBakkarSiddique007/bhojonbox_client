@@ -15,7 +15,7 @@ export type Provider = {
     user?: { name?: string; email?: string } | null;
 };
 
-const base = API_BASE_URL || "";
+const base = API_BASE_URL || "http://localhost:5000/api";
 
 interface ServerResponse<T = unknown> {
     success?: boolean;
@@ -51,4 +51,21 @@ export async function getAllProviders(): Promise<Provider[]> {
     const data = await handleRes<{ providers?: Provider[] }>(res);
     const providers = data?.data?.providers;
     return Array.isArray(providers) ? providers : [];
+}
+
+export async function getProviderById(id: string): Promise<Provider | null> {
+    const res = await fetch(`${base}/providers/${id}`);
+    const data = await handleRes<{ provider?: Provider }>(res);
+    return data?.data?.provider ?? null;
+}
+
+export async function getMealsByProvider(id: string, opts?: { page?: number; limit?: number }) {
+    const params = new URLSearchParams();
+    params.set("provider", id);
+    if (opts?.page) params.set("page", String(opts.page));
+    if (opts?.limit) params.set("limit", String(opts.limit));
+    const url = `${base}/meals?${params.toString()}`;
+    const res = await fetch(url);
+    const data = await handleRes<{ meals?: any[] }>(res);
+    return data?.data?.meals ?? [];
 }
