@@ -15,6 +15,16 @@ export type Provider = {
     user?: { name?: string; email?: string } | null;
 };
 
+export type Meal = {
+    id: string;
+    name: string;
+    description?: string;
+    price: number;
+    image?: string | null;
+    providerId: string;
+    // Add other fields as needed
+};
+
 const base = API_BASE_URL || "http://localhost:5000/api";
 
 interface ServerResponse<T = unknown> {
@@ -66,6 +76,6 @@ export async function getMealsByProvider(id: string, opts?: { page?: number; lim
     if (opts?.limit) params.set("limit", String(opts.limit));
     const url = `${base}/meals?${params.toString()}`;
     const res = await fetch(url);
-    const data = await handleRes<{ meals?: any[] }>(res);
+    const data = await handleRes<{ meals?: Meal[] }>(res);
     return data?.data?.meals ?? [];
 }
