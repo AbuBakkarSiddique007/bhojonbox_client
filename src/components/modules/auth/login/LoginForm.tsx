@@ -74,7 +74,9 @@ export default function LoginForm() {
       setUser(result.data.user); 
       toast.success(result.message || "Logged in successfully!");
 
-      router.push("/dashboard");
+      // After a normal login we return users to the site root instead of forcing the dashboard.
+      // Protected-route flows can pass an explicit "next" param later if needed.
+      router.replace("/");
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : "Login failed";
       toast.error(message);

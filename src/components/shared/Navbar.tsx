@@ -8,7 +8,6 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Separator } from "@/components/ui/separator";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -38,6 +37,20 @@ export default function Navbar() {
     router.push("/login");
   };
 
+  const getDashboardRoute = () => {
+    if (!user) return "/dashboard";
+    if (user.role === "ADMIN") return "/admin-dashboard";
+    if (user.role === "PROVIDER") return "/provider-dashboard";
+    return "/customer-dashboard";
+  };
+
+  const getProfileRoute = () => {
+    if (!user) return "/dashboard";
+    if (user.role === "ADMIN") return "/admin-dashboard/profile";
+    if (user.role === "PROVIDER") return "/provider-dashboard/profile";
+    return "/customer-dashboard/profile";
+  };
+
   return (
     <nav className="border-b">
       <div className="flex items-center justify-between px-6 py-3">
@@ -46,7 +59,11 @@ export default function Navbar() {
         </Link>
 
         <div className="flex items-center gap-3">
-          {isLoading ? null : user ? (
+          {isLoading ? (
+            <Button variant="ghost" className="relative h-9 w-9 rounded-full" disabled>
+              <div className="h-9 w-9 rounded-full bg-slate-200 animate-pulse" />
+            </Button>
+          ) : user ? (
             <>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -73,10 +90,10 @@ export default function Navbar() {
 
                   <DropdownMenuSeparator />
 
-                  <DropdownMenuItem onClick={() => router.push("/dashboard")}>
+                  <DropdownMenuItem onClick={() => router.push(getDashboardRoute())}>
                     Dashboard
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => router.push("/dashboard")}>
+                  <DropdownMenuItem onClick={() => router.push(getProfileRoute())}>
                     Profile
                   </DropdownMenuItem>
 

@@ -101,6 +101,7 @@ export default function RegisterForm() {
     try {
 
       const { confirmPassword, ...submitData } = data;
+      void confirmPassword;
 
       const result = await registerUser(submitData);
       setUser(result.data.user);
