@@ -2,6 +2,7 @@ import HeroBanner from "@/components/home/HeroBanner";
 import FeaturedMeals from "@/components/home/FeaturedMeals";
 import ProvidersList from "@/components/home/ProvidersList";
 import HowItWorks from "@/components/home/HowItWorks";
+import WhyBhojonbox from "@/components/home/WhyBhojonbox";
 
 export default function HomePage() {
   return (
@@ -12,9 +13,9 @@ export default function HomePage() {
 
       <HowItWorks />
 
-      <section className="max-w-7xl mx-auto px-6 py-12">
-        <ProvidersList limit={6} />
-      </section>
+      <WhyBhojonbox />
+
+      <ProvidersList limit={6} />
     </main>
   );
 }

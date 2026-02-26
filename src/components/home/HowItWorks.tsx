@@ -3,7 +3,7 @@ export default function HowItWorks() {
     <section className="bg-gradient-to-r from-white to-slate-50 py-12">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-8">
-          <h2 className="text-3xl font-extrabold text-amber-600">How FoodHub Works</h2>
+          <h2 className="text-3xl font-extrabold text-amber-600">How Bhojonbox Works</h2>
           <p className="mt-2 text-amber-500">Order from nearby restaurants and get delicious meals delivered fast.</p>
         </div>
 

@@ -50,7 +50,7 @@ export default function ProvidersList({
   if (providers.length === 0) return <div className="text-sm text-muted-foreground">No providers found.</div>;
 
   return (
-    <section>
+    <section className="max-w-7xl mx-auto px-6 py-12">
       <div className="mb-8">
         <h3 className="text-4xl sm:text-5xl font-extrabold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-indigo-500 to-teal-400">
           {title}
