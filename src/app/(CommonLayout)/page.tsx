@@ -1,8 +1,14 @@
+import HeroBanner from "@/components/home/HeroBanner";
+
 export default function HomePage() {
   return (
-    <div className="flex items-center justify-center py-20">
-      <h1 className="text-4xl font-bold">Welcome to BhojonBox</h1>
-      
-    </div>
+    <main>
+      <HeroBanner />
+
+      <section className="max-w-7xl mx-auto px-6 py-12">
+        <h3 className="text-2xl font-semibold mb-4">Popular Providers</h3>
+        <p className="text-muted-foreground">Browse top-rated providers in your area (placeholder).</p>
+      </section>
+    </main>
   );
 }
