@@ -1,6 +1,3 @@
-"use client";
-
-import { useEffect, useState } from "react";
 import Link from "next/link";
 import { API_BASE_URL } from "@/config";
 
@@ -14,34 +11,16 @@ type Meal = {
   provider?: { storeName?: string } | null;
 };
 
-export default function FeaturedMeals({ limit = 6 }: { limit?: number }) {
-  const [meals, setMeals] = useState<Meal[] | null>(null);
-  const [err, setErr] = useState<string | null>(null);
+export default async function FeaturedMeals({ limit = 6 }: { limit?: number }) {
+  const base = API_BASE_URL || "http://localhost:5000/api";
+  const res = await fetch(`${base}/meals?limit=${limit}`, { next: { revalidate: 10 } });
+  if (!res.ok) {
+    return <div className="text-sm text-muted-foreground">Failed to load featured meals.</div>;
+  }
+  const json = await res.json().catch(() => null);
+  const list: Meal[] = json?.data?.meals ?? [];
+  const meals = list.slice(0, limit);
 
-  useEffect(() => {
-    let mounted = true;
-    const base = API_BASE_URL || "http://localhost:5000/api";
-    fetch(`${base}/meals?limit=${limit}`)
-      .then(async (r) => {
-        if (!r.ok) throw new Error(`Failed to load: ${r.status}`);
-        return r.json();
-      })
-      .then((json) => {
-        if (!mounted) return;
-        const list = json?.data?.meals ?? [];
-        setMeals(list.slice(0, limit));
-      })
-      .catch((e) => {
-        if (!mounted) return;
-        setErr(String(e.message || e));
-      });
-    return () => {
-      mounted = false;
-    };
-  }, [limit]);
-
-  if (err) return <div className="text-red-500">Error: {err}</div>;
-  if (!meals) return <div className="text-sm text-muted-foreground">Loading featured meals…</div>;
   if (meals.length === 0) return <div className="text-sm text-muted-foreground">No featured meals yet.</div>;
 
   return (
@@ -52,6 +31,7 @@ export default function FeaturedMeals({ limit = 6 }: { limit?: number }) {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        
         {meals.map((m) => (
           <Link key={m.id} href={`/meals/${m.id}`} className="block bg-white rounded-lg shadow hover:shadow-lg overflow-hidden border border-gray-100">
             <div className="h-44 bg-gray-100 flex items-center justify-center overflow-hidden">

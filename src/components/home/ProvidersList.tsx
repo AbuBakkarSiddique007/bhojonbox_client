@@ -1,8 +1,5 @@
-"use client";
-
-import { useEffect, useState } from "react";
-import { getAllProviders } from "@/services/provider";
 import Link from "next/link";
+import { API_BASE_URL } from "@/config";
 
 type Provider = {
   id: string;
@@ -16,7 +13,7 @@ type Provider = {
   user?: { name?: string; email?: string } | null;
 };
 
-export default function ProvidersList({
+export default async function ProvidersList({
   limit = 6,
   title = "Popular Providers",
   description = "Browse top-rated providers in your area.",
@@ -25,27 +22,14 @@ export default function ProvidersList({
   title?: string;
   description?: string;
 }) {
-  const [providers, setProviders] = useState<Provider[] | null>(null);
-  const [err, setErr] = useState<string | null>(null);
-
-  useEffect(() => {
-    let mounted = true;
-    getAllProviders()
-      .then((list) => {
-        if (!mounted) return;
-        setProviders(list.slice(0, limit));
-      })
-      .catch((e) => {
-        if (!mounted) return;
-        setErr(String(e.message || e));
-      });
-    return () => {
-      mounted = false;
-    };
-  }, [limit]);
-
-  if (err) return <div className="text-red-500">Error: {err}</div>;
-  if (!providers) return <div className="text-sm text-muted-foreground">Loading providers…</div>;
+  const base = API_BASE_URL || "http://localhost:5000/api";
+  const res = await fetch(`${base}/providers`, { next: { revalidate: 10 } });
+  if (!res.ok) {
+    return <div className="text-sm text-muted-foreground">Failed to load providers.</div>;
+  }
+  const json = await res.json().catch(() => null);
+  const list: Provider[] = json?.data?.providers ?? [];
+  const providers = list.slice(0, limit);
 
   if (providers.length === 0) return <div className="text-sm text-muted-foreground">No providers found.</div>;
 
@@ -66,7 +50,7 @@ export default function ProvidersList({
         >
           <div className="h-44 w-full bg-gradient-to-br from-white to-gray-50 flex items-center justify-center overflow-hidden">
             {p.logo ? (
-                
+              // eslint-disable-next-line @next/next/no-img-element
               <img src={p.logo} alt={p.storeName} className="object-cover h-full w-full" />
             ) : (
               <div className="flex items-center justify-center w-full h-full text-gray-300">
