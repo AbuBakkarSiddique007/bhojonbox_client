@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/hooks/AuthContext";
 import { logoutUser } from "@/services/auth";
 import { toast } from "sonner";
@@ -20,6 +20,7 @@ import {
 export default function Navbar() {
   const { user, isLoading, setUser } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
 
   const getInitials = (name: string) => {
     return name
@@ -52,12 +53,38 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="border-b">
-      <div className="flex items-center justify-between px-6 py-3">
-        <Link href="/" className="text-xl font-bold">
-          BhojonBox
-        </Link>
+    <nav className="sticky top-0 z-50 navbar-watercolor">
+      <div className="flex items-center justify-between px-4 sm:px-6 py-3 max-w-7xl mx-auto bg-transparent backdrop-blur-sm">
 
+        <div className="flex items-center gap-3">
+          <Link href="/" className="flex items-center -ml-2">
+            <span className="brand text-2xl md:text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-amber-600 via-pink-600 to-indigo-600">Bhojonbox</span>
+          </Link>
+        </div>
+
+
+        <div className="hidden md:flex items-center gap-4 text-base">
+          <Link href="/" className="relative">
+            <span className={`${pathname === '/' ? 'inline-flex items-center px-3 py-1 rounded-full bg-amber-600 text-white shadow-sm' : 'inline-flex items-center px-3 py-1 rounded-full text-slate-700 hover:bg-amber-50'}`}>
+              Home
+            </span>
+          </Link>
+          
+
+          <Link href="/meals" className="relative">
+            <span className={`${pathname?.startsWith('/meals') ? 'inline-flex items-center px-3 py-1 rounded-full bg-amber-600 text-white shadow-sm' : 'inline-flex items-center px-3 py-1 rounded-full text-slate-700 hover:bg-amber-50'}`}>
+              Browse Meals
+            </span>
+          </Link>
+
+          <Link href="/providers" className="relative">
+            <span className={`${pathname?.startsWith('/providers') ? 'inline-flex items-center px-3 py-1 rounded-full bg-amber-600 text-white shadow-sm' : 'inline-flex items-center px-3 py-1 rounded-full text-slate-700 hover:bg-amber-50'}`}>
+              Restaurants
+            </span>
+          </Link>
+        </div>
+
+        
         <div className="flex items-center gap-3">
           {isLoading ? (
             <Button variant="ghost" className="relative h-9 w-9 rounded-full" disabled>
@@ -107,15 +134,12 @@ export default function Navbar() {
             </>
           ) : (
             <>
-
-              <Link href="/login">
-                <Button variant="outline" size="sm">
-                  Login
-                </Button>
-              </Link>
-              <Link href="/register">
-                <Button size="sm">Register</Button>
-              </Link>
+                <Link href="/login">
+                  <Button variant="ghost" size="sm" className="text-slate-700">Sign In</Button>
+                </Link>
+                <Link href="/register">
+                  <Button size="sm" className="bg-amber-600 border-amber-600 text-white hover:bg-amber-700">Get Started</Button>
+                </Link>
             </>
           )}
         </div>

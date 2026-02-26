@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Playfair+Display:wght@600;700&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
@@ -122,5 +123,31 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: 'Poppins', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
+
+  /* Headings use Playfair for a more aesthetic look */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
+    letter-spacing: -0.01em;
+  }
+
+  /* Brand helper */
+  .brand {
+    font-family: 'Playfair Display', serif;
+  }
+}
+
+/* Watercolor background for navbar */
+.navbar-watercolor {
+  background-image: radial-gradient(circle at 10% 20%, rgba(255, 223, 186, 0.35), transparent 18%),
+                    radial-gradient(circle at 80% 40%, rgba(186, 225, 255, 0.28), transparent 18%),
+                    radial-gradient(circle at 60% 85%, rgba(225, 186, 255, 0.2), transparent 20%),
+                    linear-gradient(90deg, rgba(255,255,255,0.6), rgba(255,255,255,0.45));
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-blend-mode: overlay, overlay, overlay, normal;
+  border: 1px solid rgba(255,255,255,0.14);
 }
