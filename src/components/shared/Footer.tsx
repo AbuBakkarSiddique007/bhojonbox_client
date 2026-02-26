@@ -25,11 +25,12 @@ export default function Footer() {
           <p className="text-sm text-slate-200/90 mb-3">Subscribe for updates and offers.</p>
 
           <form className="flex gap-2" onSubmit={(e) => e.preventDefault()}>
-            <input
-              aria-label="Email"
-              placeholder="you@email.com"
-              className="flex-1 rounded-md px-3 py-2 text-slate-900 bg-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary"
-            />
+              <input
+                aria-label="Email"
+                placeholder="you@email.com"
+                suppressHydrationWarning
+                className="flex-1 rounded-md px-3 py-2 text-slate-900 bg-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary"
+              />
             <button className="px-4 py-2 bg-primary text-white rounded-md">Subscribe</button>
           </form>
 
