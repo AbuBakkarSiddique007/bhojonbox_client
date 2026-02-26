@@ -1,4 +1,5 @@
 import Navbar from "@/components/shared/Navbar";
+import Footer from "@/components/shared/Footer";
 
 export default function CommonLayout({
     children,
@@ -11,10 +12,7 @@ export default function CommonLayout({
 
             <main className="flex-1">{children}</main>
 
-            {/* Footer section */}
-            <footer className="border-t px-6 py-4 text-center text-sm text-muted-foreground">
-                © {new Date().getFullYear()} BhojonBox. All rights reserved.
-            </footer>
+            <Footer />
         </div>
     );
 }
