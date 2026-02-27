@@ -51,22 +51,33 @@ export default function CustomerOrdersPage() {
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-semibold mb-4">My Orders</h1>
-      <p className="text-sm text-muted-foreground mb-4">List of your recent orders.</p>
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <h1 className="text-2xl font-semibold">My Orders</h1>
+          <p className="text-sm text-muted-foreground">Track all your food orders</p>
+        </div>
+      </div>
 
       <div className="space-y-4">
         {orders.map((o) => (
-          <div key={o.id} className="bg-white border border-gray-100 rounded-lg p-4">
-            <div className="flex items-center justify-between">
+          <div key={o.id} className="bg-white border border-gray-100 rounded-lg p-4 shadow-sm">
+            <div className="flex items-start justify-between">
               <div>
-                <Link href={`/customer-dashboard/orders/${o.id}`} className="text-primary font-medium hover:underline">Order #{o.id}</Link>
-                <div className="text-sm text-slate-600">{o.items?.length ?? 0} items • {o.status}</div>
+                <Link href={`/customer-dashboard/orders/${o.id}`} className="text-lg font-medium text-amber-700 hover:underline">Order #{o.id}</Link>
+                <div className="mt-1 text-sm text-slate-600">{o.items?.map(it => `${it.quantity}× ${it.meal?.name ?? ''}`).join(', ')}</div>
+                <div className="mt-2 text-xs text-slate-500">{o.createdAt ? new Date(o.createdAt).toLocaleString() : ''}</div>
               </div>
-              <div className="text-right">
-                <div className="font-semibold">৳ {o.totalAmount ?? 0}</div>
-                <div className="text-xs text-slate-500">{o.createdAt ? new Date(o.createdAt).toLocaleString() : ''}</div>
+
+              <div className="text-right flex flex-col items-end">
+                <div className="text-2xl font-semibold text-amber-600">৳ {o.totalAmount ?? 0}</div>
+                <div className="mt-2">
+                  <span className={`inline-block text-xs px-2 py-1 rounded-full ${o.status === 'CANCELLED' ? 'bg-red-50 text-red-700' : o.status === 'DELIVERED' ? 'bg-green-50 text-green-700' : 'bg-amber-50 text-amber-700'}`}>
+                    {o.status}
+                  </span>
+                </div>
+
                 {o.status === 'PLACED' && (
-                  <div className="mt-2">
+                  <div className="mt-3">
                     <button
                       className={`ml-3 px-3 py-1 rounded-md text-white ${processingId === o.id ? 'bg-gray-400' : 'bg-red-600 hover:bg-red-700'}`}
                       onClick={() => {

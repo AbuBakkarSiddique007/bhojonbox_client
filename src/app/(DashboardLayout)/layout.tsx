@@ -4,6 +4,9 @@ import React, { useEffect } from "react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/hooks/AuthContext";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { API_BASE_URL } from "@/config";
+import { toast } from "sonner";
 
 export default function DashboardLayout({
   children,
@@ -16,7 +19,7 @@ export default function DashboardLayout({
   provider?: React.ReactNode;
   customer?: React.ReactNode;
 }) {
-  const { user, isLoading } = useAuth();
+  const { user, isLoading, setUser } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
 
@@ -35,6 +38,17 @@ export default function DashboardLayout({
     }
     
   }, [isLoading, user, router, pathname]);
+
+  const handleLogout = async () => {
+    try {
+      await fetch(`${API_BASE_URL}/auth/logout`, { method: 'POST', credentials: 'include' });
+      if (typeof setUser === 'function') setUser(null);
+      toast.success('Logged out');
+      router.push('/login');
+    } catch (err) {
+      toast.error('Failed to logout');
+    }
+  };
 
 
   if (isLoading) {
@@ -81,10 +95,10 @@ export default function DashboardLayout({
                 <span>Categories</span>
               </Link>
 
-              <Link href="/logout" className="text-sm flex items-center gap-3 hover:text-red-600 mt-4">
+              <button type="button" onClick={handleLogout} className="text-sm flex items-center gap-3 hover:text-red-600 mt-4">
                 <span>🚪</span>
                 <span>Logout</span>
-              </Link>
+              </button>
             </nav>
           </aside>
 
@@ -118,10 +132,10 @@ export default function DashboardLayout({
                 <span>Orders</span>
               </Link>
 
-              <Link href="/logout" className="text-sm flex items-center gap-3 hover:text-red-600 mt-4">
+              <button type="button" onClick={handleLogout} className="text-sm flex items-center gap-3 hover:text-red-600 mt-4">
                 <span>🚪</span>
                 <span>Logout</span>
-              </Link>
+              </button>
             </nav>
           </aside>
 
@@ -138,33 +152,54 @@ export default function DashboardLayout({
 
         // Customer Layout:
         <>
-          <aside className="w-64 border-r p-6 hidden md:block bg-white">
-            <div className="mb-6">
-              <h2 className="text-lg font-semibold">Customer Dashboard</h2>
+          <aside className="w-64 border-r p-6 hidden md:flex md:flex-col bg-white sticky top-6 self-start max-h-[calc(100vh-96px)] overflow-auto">
+            <div className="mb-4">
+              <Link href="/" className="text-sm inline-flex items-center gap-2 px-3 py-2 rounded hover:bg-slate-50">
+                <span>🏠</span>
+                <span>Dashboard</span>
+              </Link>
             </div>
 
-            <nav className="flex flex-col space-y-3">
-              <Link href="/customer-dashboard/orders" className="text-sm flex items-center gap-3 hover:text-primary">
+            <div className="mb-6 flex items-center gap-3">
+              <Avatar size="lg">
+                {user?.name ? (
+                  // use initial letter as fallback
+                  <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                ) : (
+                  <AvatarFallback>U</AvatarFallback>
+                )}
+              </Avatar>
+              <div>
+                <div className="font-semibold">{user?.name ?? 'User'}</div>
+                <div className="text-xs text-slate-500">{user?.email ?? ''}</div>
+                <div className="mt-2">
+                  <span className="inline-block text-xs px-2 py-1 rounded-full bg-blue-50 text-blue-700">{user?.role ?? 'CUSTOMER'}</span>
+                </div>
+              </div>
+            </div>
+
+            <nav className="flex-1 flex flex-col gap-2">
+              <Link href="/customer-dashboard/orders" className={`text-sm flex items-center gap-3 px-3 py-2 rounded ${pathname?.startsWith('/customer-dashboard/orders') ? 'bg-amber-50 text-amber-700 font-medium' : 'hover:bg-slate-50'}`}>
                 <span>📦</span>
                 <span>My Orders</span>
               </Link>
 
-              <Link href="/profile" className="text-sm flex items-center gap-3 hover:text-primary">
+              <Link href="/customer-dashboard/profile" className={`text-sm flex items-center gap-3 px-3 py-2 rounded ${pathname?.startsWith('/customer-dashboard/profile') ? 'bg-amber-50 text-amber-700 font-medium' : 'hover:bg-slate-50'}`}>
                 <span>👤</span>
                 <span>Profile</span>
               </Link>
+            </nav>
 
-              <Link href="/logout" className="text-sm flex items-center gap-3 hover:text-red-600 mt-4">
+            <div className="mt-auto">
+              <button type="button" onClick={handleLogout} className="text-sm flex items-center gap-3 text-red-600 px-3 py-2 rounded hover:bg-slate-50">
                 <span>🚪</span>
                 <span>Logout</span>
-              </Link>
-            </nav>
+              </button>
+            </div>
           </aside>
 
           <main className="flex-1 p-6">
             <div className="max-w-7xl mx-auto">
-              <h1 className="text-2xl font-semibold mb-6">Customer Overview</h1>
-
               <div className="mt-6">{customer ?? children}</div>
             </div>
           </main>
