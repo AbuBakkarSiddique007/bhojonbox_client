@@ -87,17 +87,15 @@ export default function Navbar() {
 
         
         <div className="flex items-center gap-3">
+          {/* show cart for guests and customers */}
+          {(!user || user.role === "CUSTOMER") && <CartBadge />}
+
           {isLoading ? (
             <Button variant="ghost" className="relative h-9 w-9 rounded-full" disabled>
               <div className="h-9 w-9 rounded-full bg-slate-200 animate-pulse" />
             </Button>
           ) : user ? (
             <>
-              {user?.role === "CUSTOMER" && (
-                <>
-                  <CartBadge />
-                </>
-              )}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
@@ -140,12 +138,12 @@ export default function Navbar() {
             </>
           ) : (
             <>
-                <Link href="/login">
-                  <Button variant="ghost" size="sm" className="text-slate-700">Sign In</Button>
-                </Link>
-                <Link href="/register">
-                  <Button size="sm" className="bg-amber-600 border-amber-600 text-white hover:bg-amber-700">Get Started</Button>
-                </Link>
+              <Link href="/login">
+                <Button variant="ghost" size="sm" className="text-slate-700">Sign In</Button>
+              </Link>
+              <Link href="/register">
+                <Button size="sm" className="bg-amber-600 border-amber-600 text-white hover:bg-amber-700">Get Started</Button>
+              </Link>
             </>
           )}
         </div>

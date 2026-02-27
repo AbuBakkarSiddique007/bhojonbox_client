@@ -5,6 +5,7 @@ import { API_BASE_URL } from "@/config";
 import { toast } from "sonner";
 import Link from "next/link";
 import { cartBus } from "@/lib/cartBus";
+import { useAuth } from "@/hooks/AuthContext";
 
 type CartItem = { id: string; providerId?: string | null; name?: string; price?: number; image?: string | null; qty: number };
 
@@ -22,18 +23,23 @@ export default function CartPage() {
   const [address, setAddress] = useState("");
   const [paymentByProvider, setPaymentByProvider] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
+  const { user, isLoading } = useAuth();
 
   useEffect(() => {
     setItems(readCart());
     const onCustom = () => setItems(readCart());
 
     cartBus.on("cart-updated", onCustom as EventListener);
-    // keep storage listener for cross-tab updates
+
+    const onWindow = () => setItems(readCart());
+    window.addEventListener("cart-updated", onWindow as EventListener);
+
     const onStorage = () => setItems(readCart());
     window.addEventListener("storage", onStorage as EventListener);
 
     return () => {
       cartBus.off("cart-updated", onCustom as EventListener);
+      window.removeEventListener("cart-updated", onWindow as EventListener);
       window.removeEventListener("storage", onStorage as EventListener);
     };
   }, []);
@@ -64,6 +70,10 @@ export default function CartPage() {
 
   const checkoutProvider = async (providerId: string | null) => {
     if (!address) return toast.error("Please enter delivery address");
+    // require authenticated customer
+    if (isLoading) return toast.error("Checking authentication...");
+    if (!user) return toast.error("Please login as a customer to place orders");
+    if (user.role !== 'CUSTOMER') return toast.error("Only customers can place orders");
     const providerKey = providerId ?? "unknown";
     const providerItems = grouped.get(providerKey) ?? [];
     if (providerItems.length === 0) return;
@@ -128,6 +138,19 @@ export default function CartPage() {
         </p>
       </div>
 
+      {/* Auth checks */}
+      {isLoading ? (
+        <div className="mb-4 text-sm text-slate-500">Checking authentication…</div>
+      ) : !user ? (
+        <div className="mb-4 p-4 bg-yellow-50 border border-yellow-100 rounded">
+          <div className="text-sm text-slate-700">Please <Link href="/login" className="text-primary underline">login</Link> as a customer to place orders.</div>
+        </div>
+      ) : user.role !== 'CUSTOMER' ? (
+        <div className="mb-4 p-4 bg-yellow-50 border border-yellow-100 rounded">
+          <div className="text-sm text-slate-700">Only customers can place orders. Your role: {user.role}</div>
+        </div>
+      ) : null}
+
       <div className="mb-6">
         <label className="block text-sm font-medium text-slate-700 mb-1">Delivery address</label>
         <input value={address} onChange={(e) => setAddress(e.target.value)} className="w-full px-3 py-2 border rounded-md" placeholder="Street, City, ZIP" />
@@ -174,7 +197,11 @@ export default function CartPage() {
                 </div>
 
                 <div>
-                  <button disabled={loading} onClick={() => checkoutProvider(pid === 'unknown' ? null : pid)} className="px-4 py-2 bg-amber-600 text-white rounded-md">
+                  <button
+                    disabled={loading || isLoading || !user || user.role !== 'CUSTOMER'}
+                    onClick={() => checkoutProvider(pid === 'unknown' ? null : pid)}
+                    className="px-4 py-2 bg-amber-600 text-white rounded-md disabled:opacity-50"
+                  >
                     {loading ? 'Processing…' : `Checkout ${list.length} item(s)`}
                   </button>
                 </div>
