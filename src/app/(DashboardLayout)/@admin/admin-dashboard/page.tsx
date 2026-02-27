@@ -1,9 +1,11 @@
 "use client";
 
+"use client";
+
 import { useEffect, useState } from "react";
 import adminService from "../../../../services/admin";
 
-function StatCard({ title, value, subtitle, className = "", footer, }: { title: string; value: any; subtitle?: string; className?: string; footer?: React.ReactNode }) {
+function StatCard({ title, value, subtitle, className = "", footer, }: { title: string; value: React.ReactNode; subtitle?: string; className?: string; footer?: React.ReactNode }) {
   return (
     <div className={`rounded-lg p-4 shadow-sm flex flex-col gap-3 ${className}`}>
       <div className="flex items-center justify-between">
@@ -18,8 +20,26 @@ function StatCard({ title, value, subtitle, className = "", footer, }: { title: 
   );
 }
 
+type OrdersByStatus = Record<string, number>;
+
+interface Stats {
+  users?: {
+    total?: number;
+    customers?: number;
+    providers?: number;
+  };
+  meals?: number;
+  orders?: {
+    total?: number;
+    byStatus?: OrdersByStatus;
+  };
+  revenue?: number | string;
+  reviews?: number;
+  recentOrders?: unknown[];
+}
+
 export default function AdminDashboardPage() {
-  const [stats, setStats] = useState<any>(null);
+  const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -48,7 +68,7 @@ export default function AdminDashboardPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4">
           <StatCard
             title="Users"
-            value={stats.users?.total ?? stats.users}
+            value={stats.users?.total ?? 0}
             subtitle={`${stats.users?.customers ?? 0} customers • ${stats.users?.providers ?? 0} providers`}
             className="bg-gradient-to-r from-indigo-600 to-violet-600"
           />
@@ -73,7 +93,7 @@ export default function AdminDashboardPage() {
             className="bg-gradient-to-r from-yellow-600 to-orange-500"
             footer={
               <div className="flex flex-wrap gap-2">
-                {stats.orders?.byStatus && Object.entries(stats.orders.byStatus).map(([k, v]: any) => (
+                {stats.orders?.byStatus && Object.entries(stats.orders.byStatus).map(([k, v]: [string, number]) => (
                   <span key={k} className="text-xs bg-white/10 text-white px-2 py-1 rounded-full">
                     {k.replaceAll("_", " ")}: {v}
                   </span>
@@ -99,6 +119,7 @@ export default function AdminDashboardPage() {
       ) : (
         <p>No stats available</p>
       )}
+
     </div>
   );
 }

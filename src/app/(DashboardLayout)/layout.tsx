@@ -205,6 +205,10 @@ const Sidebar = ({ user, pathname, handleLogout }: { user: User; pathname: strin
             <span>📂</span>
             <span>Categories</span>
           </Link>
+          <Link href="/admin-dashboard/profile" className={`text-sm flex items-center gap-3 px-3 py-2 rounded ${pathname?.startsWith('/admin-dashboard/profile') ? 'bg-amber-50 text-amber-700 font-medium' : 'hover:bg-slate-50'}`}>
+            <span>👤</span>
+            <span>Profile</span>
+          </Link>
         </>
       ) : user?.role === 'PROVIDER' ? (
         <>

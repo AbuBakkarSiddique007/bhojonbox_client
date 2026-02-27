@@ -7,14 +7,36 @@ import { toast } from "sonner";
 import reviewsService from "@/services/reviews";
 import { useAuth } from "@/hooks/AuthContext";
 
-export default function CustomerOrderDetailPage({ params }: { params: any }) {
+type ReviewMeal = {
+  mealId?: string | number;
+  mealName?: string;
+  id?: string | number;
+  name?: string;
+};
+
+type OrderItem = {
+  mealId?: string | number;
+  meal?: { id?: string | number; name?: string };
+  name?: string;
+  quantity?: number;
+  qty?: number;
+  id?: string | number;
+};
+
+type Order = {
+  id?: string | number;
+  status?: string;
+  items?: OrderItem[];
+  [key: string]: unknown;
+};
+
+export default function CustomerOrderDetailPage({ params }: { params: { id: string } }) {
   const router = useRouter();
   const { user, isLoading } = useAuth();
-  const resolvedParams = React.use(params);
-  const id = resolvedParams?.id;
-  const [order, setOrder] = useState<any>(null);
+  const id = params.id;
+  const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
-  const [selectedMeal, setSelectedMeal] = useState<any | null>(null);
+  const [selectedMeal, setSelectedMeal] = useState<ReviewMeal | null>(null);
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -28,21 +50,20 @@ export default function CustomerOrderDetailPage({ params }: { params: any }) {
         const o = json?.data?.order ?? json?.order ?? json;
         setOrder(o);
 
-        // fetch my reviews so we can mark which meals are reviewed
         const my = await reviewsService.getMyReviews().catch(() => null);
         const reviews = my?.data?.reviews ?? my?.reviews ?? [];
         const map: Record<string, boolean> = {};
         for (const r of reviews) map[r.mealId] = true;
         setMyReviewedMeals(map);
       } catch (e) {
-        // ignore
+        
       } finally {
         setLoading(false);
       }
     })();
   }, [id]);
 
-  const openReview = (meal: any) => {
+  const openReview = (meal: ReviewMeal) => {
     setSelectedMeal(meal);
     setRating(5);
     setComment("");
@@ -56,7 +77,8 @@ export default function CustomerOrderDetailPage({ params }: { params: any }) {
 
     setSubmitting(true);
     try {
-      const payload = { mealId: selectedMeal.mealId ?? selectedMeal.id ?? selectedMeal.id, orderId: id, rating, comment };
+      const mealId = String(selectedMeal.mealId ?? selectedMeal.id ?? selectedMeal.id);
+      const payload = { mealId, orderId: id, rating, comment };
       const res = await reviewsService.createReview(payload);
       if (res?.data?.review || res?.review) {
         toast.success("Review submitted");
@@ -65,8 +87,9 @@ export default function CustomerOrderDetailPage({ params }: { params: any }) {
       } else {
         throw new Error(res?.message || 'Failed to submit review');
       }
-    } catch (e: any) {
-      toast.error(e?.message || String(e));
+    } catch (e: unknown) {
+      const message = e instanceof Error ? e.message : String(e);
+      toast.error(message);
     } finally {
       setSubmitting(false);
     }
@@ -94,7 +117,7 @@ export default function CustomerOrderDetailPage({ params }: { params: any }) {
       )}
 
       <div className="space-y-4">
-        {(order.items || []).map((it: any, idx: number) => (
+        {(order.items || []).map((it: OrderItem, idx: number) => (
           <div key={idx} className="p-4 bg-white border rounded flex items-start justify-between">
             <div>
               <div className="font-medium">{it.meal?.name ?? it.name}</div>
@@ -102,13 +125,14 @@ export default function CustomerOrderDetailPage({ params }: { params: any }) {
             </div>
 
             <div className="flex items-center gap-3">
-              {order.status === 'DELIVERED' ? (
-                myReviewedMeals[it.mealId ?? it.meal?.id ?? it.id] ? (
+              {order.status === 'DELIVERED' ? (() => {
+                const key = String(it.mealId ?? it.meal?.id ?? it.id ?? '');
+                return myReviewedMeals[key] ? (
                   <span className="text-sm text-green-600">Reviewed</span>
                 ) : (
                   <button onClick={() => openReview({ mealId: it.mealId ?? it.meal?.id ?? it.id, mealName: it.meal?.name ?? it.name })} className="px-3 py-1 bg-amber-600 text-white rounded">Write review</button>
-                )
-              ) : null}
+                );
+              })() : null}
             </div>
           </div>
         ))}
