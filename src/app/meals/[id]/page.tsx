@@ -1,6 +1,7 @@
 import { API_BASE_URL } from '@/config';
 import Link from 'next/link';
 import BackButton from '@/components/ui/BackButton';
+import AddToCartButton from '@/components/meals/AddToCartButton';
 
 type Category = { id: string; name?: string; image?: string | null };
 type ProviderLite = { id: string; storeName?: string; logo?: string | null };
@@ -117,6 +118,10 @@ export default async function MealPage({ params }: { params: { id: string } | Pr
                         </div>
 
                         <div className="mt-6 text-sm text-slate-500">Added on {meal.createdAt ? new Date(meal.createdAt).toLocaleDateString() : ''}</div>
+                        <div>
+
+                            <AddToCartButton mealId={meal.id} providerId={meal.provider?.id ?? null} name={meal.name} price={meal.price} image={meal.image} />
+                        </div>
                     </div>
                 </div>
             </div>

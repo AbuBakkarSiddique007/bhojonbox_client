@@ -7,6 +7,7 @@ import { logoutUser } from "@/services/auth";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
+import CartBadge from "@/components/shared/CartBadge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -92,6 +93,11 @@ export default function Navbar() {
             </Button>
           ) : user ? (
             <>
+              {user?.role === "CUSTOMER" && (
+                <>
+                  <CartBadge />
+                </>
+              )}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
