@@ -1,7 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/hooks/AuthContext";
@@ -9,10 +8,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { API_BASE_URL } from "@/config";
 import { toast } from "sonner";
 
-type Meal = {
-  isAvailable?: boolean;
-  // add other properties as needed
-};
+type Meal = { isAvailable?: boolean };
 
 function ProviderStatsSection() {
   const [mealsCount, setMealsCount] = useState<number | null>(null);
@@ -21,7 +17,7 @@ function ProviderStatsSection() {
   const [ordersCount, setOrdersCount] = useState<number | null>(null);
   const [revenue, setRevenue] = useState<number>(0);
   const [ordersByStatus, setOrdersByStatus] = useState<Record<string, number>>({});
-    const [statsLoading, setStatsLoading] = useState(true);
+  const [statsLoading, setStatsLoading] = useState(true);
 
   useEffect(() => {
     let mounted = true;
@@ -56,7 +52,6 @@ function ProviderStatsSection() {
         }
         setOrdersByStatus(byStatus);
       } catch (err) {
-        // if fetch fails, log and provide sensible defaults so UI renders
         console.error('Failed to fetch provider stats', err);
         if (mounted) {
           setMealsCount(0);
@@ -70,19 +65,12 @@ function ProviderStatsSection() {
         if (mounted) setStatsLoading(false);
       }
     };
-    // initiate fetch
-    fetchData();
 
+    fetchData();
     return () => { mounted = false; };
   }, []);
 
-  if (statsLoading) {
-    return (
-      <div className="mb-6">
-        <div className="text-sm text-muted-foreground">Loading Provider Stats...</div>
-      </div>
-    );
-  }
+  if (statsLoading) return <div className="mb-6 text-sm text-muted-foreground">Loading provider dashboard...</div>;
 
   return (
     <div className="mb-6">
@@ -126,37 +114,142 @@ function ProviderStatsSection() {
     </div>
   );
 }
+  const CustomerSidebar = ({ user, pathname, handleLogout }: { user: User; pathname: string; handleLogout: () => void }) => (
+    <aside className="w-64 border-r p-6 hidden md:block bg-white">
+      <div className="mb-4">
+        <Link href="/" className="text-sm inline-flex items-center gap-2 px-3 py-2 rounded hover:bg-slate-50">
+          <span>🏠</span>
+          <span>Dashboard</span>
+        </Link>
+      </div>
 
-export default function DashboardLayout({
-  children,
-  admin,
-  provider,
-  customer,
-}: {
-  children: React.ReactNode;
-  admin?: React.ReactNode;
-  provider?: React.ReactNode;
-  customer?: React.ReactNode;
-}) {
+      <div className="mb-6 flex items-center gap-3">
+        <div className="w-11 h-11 rounded-full bg-slate-100 flex items-center justify-center text-xl font-semibold">{user?.name ? user.name.charAt(0) : 'U'}</div>
+        <div>
+          <div className="font-semibold">{user?.name ?? 'Customer'}</div>
+          <div className="text-xs text-slate-500">{user?.email ?? ''}</div>
+          <div className="mt-2">
+            <span className="inline-block text-xs px-2 py-1 rounded-full bg-amber-50 text-amber-700">CUSTOMER</span>
+          </div>
+        </div>
+      </div>
+
+      <nav className="flex flex-col gap-2">
+        <Link href="/customer-dashboard/orders" className={`flex items-center gap-3 px-3 py-3 rounded ${pathname?.startsWith('/customer-dashboard/orders') ? 'bg-amber-50 text-amber-700' : 'hover:bg-slate-50'}`}>
+          <span>📦</span>
+          <span>My Orders</span>
+        </Link>
+
+        <Link href="/customer-dashboard/profile" className={`flex items-center gap-3 px-3 py-3 rounded ${pathname?.startsWith('/customer-dashboard/profile') ? 'bg-amber-50 text-amber-700' : 'hover:bg-slate-50'}`}>
+          <span>👤</span>
+          <span>Profile</span>
+        </Link>
+
+        <button type="button" onClick={handleLogout} className="flex items-center gap-3 px-3 py-3 rounded text-red-600 hover:bg-slate-50 mt-4">
+          <span>🚪</span>
+          <span>Logout</span>
+        </button>
+      </nav>
+    </aside>
+  );
+ 
+
+interface User {
+  name?: string;
+  email?: string;
+  role?: 'ADMIN' | 'PROVIDER' | 'CUSTOMER' | string;
+}
+
+const Sidebar = ({ user, pathname, handleLogout }: { user: User; pathname: string; handleLogout: () => void }) => (
+  <aside className="w-64 border-r p-6 hidden md:block bg-white sticky top-6 self-start max-h-[calc(100vh-96px)] overflow-auto">
+    <div className="mb-4">
+      <Link href="/" className="text-sm inline-flex items-center gap-2 px-3 py-2 rounded hover:bg-slate-50">
+        <span>🏠</span>
+        <span>Dashboard</span>
+      </Link>
+    </div>
+
+    <div className="mb-6 flex items-center gap-3">
+      <Avatar size="lg">
+        {user?.name ? (
+          <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+        ) : (
+          <AvatarFallback>U</AvatarFallback>
+        )}
+      </Avatar>
+      <div>
+        <div className="font-semibold">{user?.name ?? 'User'}</div>
+        <div className="text-xs text-slate-500">{user?.email ?? ''}</div>
+        <div className="mt-2">
+          <span className="inline-block text-xs px-2 py-1 rounded-full bg-amber-50 text-amber-700">{user?.role ?? 'USER'}</span>
+        </div>
+      </div>
+    </div>
+
+    <nav className="flex-1 flex flex-col gap-2">
+      {user?.role === 'ADMIN' ? (
+        <>
+          <Link href="/admin-dashboard" className={`text-sm flex items-center gap-3 px-3 py-2 rounded ${pathname === '/admin-dashboard' || pathname === '/admin-dashboard/' ? 'bg-amber-50 text-amber-700 font-medium' : 'hover:bg-slate-50'}`}>
+            <span>🏠</span>
+            <span>Overview</span>
+          </Link>
+          <Link href="/admin-dashboard/users" className={`text-sm flex items-center gap-3 px-3 py-2 rounded ${pathname?.startsWith('/admin-dashboard/users') ? 'bg-amber-50 text-amber-700 font-medium' : 'hover:bg-slate-50'}`}>
+            <span>👥</span>
+            <span>Users</span>
+          </Link>
+          <Link href="/admin-dashboard/orders" className={`text-sm flex items-center gap-3 px-3 py-2 rounded ${pathname?.startsWith('/admin-dashboard/orders') ? 'bg-amber-50 text-amber-700 font-medium' : 'hover:bg-slate-50'}`}>
+            <span>📦</span>
+            <span>Orders</span>
+          </Link>
+          <Link href="/admin-dashboard/categories" className={`text-sm flex items-center gap-3 px-3 py-2 rounded ${pathname?.startsWith('/admin-dashboard/categories') ? 'bg-amber-50 text-amber-700 font-medium' : 'hover:bg-slate-50'}`}>
+            <span>📂</span>
+            <span>Categories</span>
+          </Link>
+        </>
+      ) : user?.role === 'PROVIDER' ? (
+        <>
+          <Link href="/provider-dashboard" className={`flex items-center gap-3 px-3 py-2 rounded ${pathname === '/provider-dashboard' || pathname === '/provider-dashboard/' ? 'bg-amber-50 text-amber-700 font-medium' : 'hover:bg-slate-50'}`}>
+            <span>🏠</span>
+            <span>Dashboard</span>
+          </Link>
+          <Link href="/provider-dashboard/menu" className={`flex items-center gap-3 px-3 py-2 rounded ${pathname?.startsWith('/provider-dashboard/menu') ? 'bg-amber-50 text-amber-700 font-medium' : 'hover:bg-slate-50'}`}>
+            <span>＋</span>
+            <span>My Menu</span>
+          </Link>
+          <Link href="/provider-dashboard/orders" className={`flex items-center gap-3 px-3 py-2 rounded ${pathname?.startsWith('/provider-dashboard/orders') ? 'bg-amber-50 text-amber-700 font-medium' : 'hover:bg-slate-50'}`}>
+            <span>📦</span>
+            <span>Orders</span>
+          </Link>
+          <Link href="/provider-dashboard/profile" className={`flex items-center gap-3 px-3 py-2 rounded ${pathname?.startsWith('/provider-dashboard/profile') ? 'bg-amber-50 text-amber-700 font-medium' : 'hover:bg-slate-50'}`}>
+            <span>👤</span>
+            <span>Profile</span>
+          </Link>
+        </>
+      ) : (
+        <>
+          <Link href="/customer-dashboard/orders" className={`text-sm flex items-center gap-3 px-3 py-2 rounded ${pathname?.startsWith('/customer-dashboard/orders') ? 'bg-amber-50 text-amber-700 font-medium' : 'hover:bg-slate-50'}`}>
+            <span>📦</span>
+            <span>My Orders</span>
+          </Link>
+          <Link href="/customer-dashboard/profile" className={`text-sm flex items-center gap-3 px-3 py-2 rounded ${pathname?.startsWith('/customer-dashboard/profile') ? 'bg-amber-50 text-amber-700 font-medium' : 'hover:bg-slate-50'}`}>
+            <span>👤</span>
+            <span>Profile</span>
+          </Link>
+        </>
+      )}
+
+      <button type="button" onClick={handleLogout} className="text-sm flex items-center gap-3 text-red-600 px-3 py-2 rounded hover:bg-slate-50 mt-4">
+        <span>🚪</span>
+        <span>Logout</span>
+      </button>
+    </nav>
+  </aside>
+);
+
+export default function DashboardLayout({ children, admin, provider, customer }: { children: React.ReactNode; admin?: React.ReactNode; provider?: React.ReactNode; customer?: React.ReactNode; }) {
   const { user, isLoading, setUser } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
-
-  useEffect(() => {
-    if (!isLoading) {
-      if (!user) {
-        router.push("/login");
-        return;
-      }
-
-
-      if (pathname === "/dashboard" || pathname === "/dashboard/") {
-        const rolePath = user.role === "ADMIN" ? "admin-dashboard" : user.role === "PROVIDER" ? "provider-dashboard" : "customer-dashboard";
-        router.replace(`/${rolePath}`);
-      }
-    }
-    
-  }, [isLoading, user, router, pathname]);
 
   const handleLogout = async () => {
     try {
@@ -169,6 +262,19 @@ export default function DashboardLayout({
     }
   };
 
+  useEffect(() => {
+    if (!isLoading) {
+      if (!user) {
+        router.push("/login");
+        return;
+      }
+
+      if (pathname === "/dashboard" || pathname === "/dashboard/") {
+        const rolePath = user.role === "ADMIN" ? "admin-dashboard" : user.role === "PROVIDER" ? "provider-dashboard" : "customer-dashboard";
+        router.replace(`/${rolePath}`);
+      }
+    }
+  }, [isLoading, user, router, pathname]);
 
   if (isLoading) {
     return (
@@ -180,179 +286,31 @@ export default function DashboardLayout({
 
   return (
     <div className="min-h-screen flex bg-slate-50">
-     
-     
-      {user?.role === "ADMIN" ? 
-      
-      // Admin Layout:
-      (
+      {user?.role === "ADMIN" ? (
         <>
-          <aside className="w-64 border-r p-6 hidden md:block bg-white">
-            <div className="mb-4">
-              <Link href="/" className="text-sm inline-flex items-center gap-2 px-3 py-2 rounded hover:bg-slate-50">
-                <span>🏠</span>
-                <span>Dashboard</span>
-              </Link>
-            </div>
-            <div className="mb-2">
-              <h2 className="text-lg font-semibold">Admin Dashboard</h2>
-            </div>
-
-            <nav className="flex flex-col space-y-3">
-              <Link href="/admin-dashboard" className="text-sm flex items-center gap-3 hover:text-primary">
-
-                <span>🏠</span>
-                <span>Overview</span>
-              </Link>
-
-              <Link href="/admin-dashboard/users" className="text-sm flex items-center gap-3 hover:text-primary">
-                <span>👥</span>
-                <span>Users</span>
-              </Link>
-
-              <Link href="/admin-dashboard/orders" className="text-sm flex items-center gap-3 hover:text-primary">
-                <span>📦</span>
-                <span>Orders</span>
-              </Link>
-
-              <Link href="/admin-dashboard/categories" className="text-sm flex items-center gap-3 hover:text-primary">
-                <span>📂</span>
-                <span>Categories</span>
-              </Link>
-
-              <button type="button" onClick={handleLogout} className="text-sm flex items-center gap-3 hover:text-red-600 mt-4">
-                <span>🚪</span>
-                <span>Logout</span>
-              </button>
-            </nav>
-          </aside>
-
+          <Sidebar user={user} pathname={pathname} handleLogout={handleLogout} />
           <main className="flex-1 p-6">
             <div className="max-w-7xl mx-auto">
               <h1 className="text-2xl font-semibold mb-6">Admin Overview</h1>
-
               <div className="mt-6">{admin ?? children}</div>
             </div>
           </main>
         </>
-      ) : user?.role === "PROVIDER" ? 
-      
-
-      // Provider Layout:
-      (
+      ) : user?.role === "PROVIDER" ? (
         <>
-          <aside className="w-64 hidden md:block bg-[#1f1410] text-[#f7efe6] px-4 py-6">
-            <div className="mb-6 px-2">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-lg bg-amber-600 flex items-center justify-center text-white">🍲</div>
-                <div>
-                  <div className="text-lg font-semibold">Bhojonbox</div>
-                </div>
-              </div>
-
-              <div className="bg-[#2b1b16] rounded-md p-3 mb-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded bg-amber-600 flex items-center justify-center font-semibold">{user?.name ? user.name.charAt(0) : 'S'}</div>
-                  <div>
-                    <div className="font-medium">{user?.name ?? 'Spice Garden'}</div>
-                    <div className="text-xs text-[#e6d8cc]">{user?.email ?? ''}</div>
-                    <div className="mt-2">
-                      <span className="inline-block text-xs px-2 py-1 rounded-full bg-amber-50 text-amber-700">PROVIDER</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <nav className="flex flex-col gap-2">
-                <Link href="/provider-dashboard" className={`flex items-center gap-3 px-3 py-3 rounded ${pathname === '/provider-dashboard' || pathname === '/provider-dashboard/' ? 'bg-amber-600 text-white' : 'text-[#f7efe6] hover:bg-[#2b1b16]'}`}>
-                  <span className="text-lg">🏠</span>
-                  <span className="font-medium">Dashboard</span>
-                </Link>
-
-                <Link href="/provider-dashboard/menu" className={`flex items-center gap-3 px-3 py-3 rounded ${pathname?.startsWith('/provider-dashboard/menu') ? 'bg-[#2b1b16] text-amber-300' : 'text-[#d9cbbf] hover:bg-[#2b1b16]'}`}>
-                  <span>＋</span>
-                  <span>My Menu</span>
-                </Link>
-
-                <Link href="/provider-dashboard/orders" className={`flex items-center gap-3 px-3 py-3 rounded ${pathname?.startsWith('/provider-dashboard/orders') ? 'bg-[#2b1b16] text-amber-300' : 'text-[#d9cbbf] hover:bg-[#2b1b16]'}`}>
-                  <span>📦</span>
-                  <span>Orders</span>
-                </Link>
-
-                <Link href="/provider-dashboard/profile" className={`flex items-center gap-3 px-3 py-3 rounded ${pathname?.startsWith('/provider-dashboard/profile') ? 'bg-[#2b1b16] text-amber-300' : 'text-[#d9cbbf] hover:bg-[#2b1b16]'}`}>
-                  <span>👤</span>
-                  <span>Profile</span>
-                </Link>
-
-                <button type="button" onClick={handleLogout} className="flex items-center gap-3 px-3 py-3 rounded text-red-400 hover:bg-[#2b1b16] mt-4">
-                  <span>🚪</span>
-                  <span>Logout</span>
-                </button>
-              </nav>
-            </div>
-          </aside>
-
+          <Sidebar user={user} pathname={pathname} handleLogout={handleLogout} />
           <main className="flex-1 p-6 bg-slate-50">
             <div className="max-w-7xl mx-auto">
               {pathname === '/provider-dashboard' || pathname === '/provider-dashboard/' ? (
                 <ProviderStatsSection />
               ) : null}
-
               <div className="mt-6">{provider ?? children}</div>
             </div>
           </main>
         </>
       ) : (
-
-
-        // Customer Layout:
         <>
-          <aside className="w-64 border-r p-6 hidden md:flex md:flex-col bg-white sticky top-6 self-start max-h-[calc(100vh-96px)] overflow-auto">
-            <div className="mb-4">
-              <Link href="/" className="text-sm inline-flex items-center gap-2 px-3 py-2 rounded hover:bg-slate-50">
-                <span>🏠</span>
-                <span>Dashboard</span>
-              </Link>
-            </div>
-
-            <div className="mb-6 flex items-center gap-3">
-              <Avatar size="lg">
-                {user?.name ? (
-                  // use initial letter as fallback
-                  <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
-                ) : (
-                  <AvatarFallback>U</AvatarFallback>
-                )}
-              </Avatar>
-              <div>
-                <div className="font-semibold">{user?.name ?? 'User'}</div>
-                <div className="text-xs text-slate-500">{user?.email ?? ''}</div>
-                <div className="mt-2">
-                  <span className="inline-block text-xs px-2 py-1 rounded-full bg-blue-50 text-blue-700">{user?.role ?? 'CUSTOMER'}</span>
-                </div>
-              </div>
-            </div>
-
-            <nav className="flex-1 flex flex-col gap-2">
-              <Link href="/customer-dashboard/orders" className={`text-sm flex items-center gap-3 px-3 py-2 rounded ${pathname?.startsWith('/customer-dashboard/orders') ? 'bg-amber-50 text-amber-700 font-medium' : 'hover:bg-slate-50'}`}>
-                <span>📦</span>
-                <span>My Orders</span>
-              </Link>
-
-              <Link href="/customer-dashboard/profile" className={`text-sm flex items-center gap-3 px-3 py-2 rounded ${pathname?.startsWith('/customer-dashboard/profile') ? 'bg-amber-50 text-amber-700 font-medium' : 'hover:bg-slate-50'}`}>
-                <span>👤</span>
-                <span>Profile</span>
-              </Link>
-            </nav>
-
-            <div className="mt-auto">
-              <button type="button" onClick={handleLogout} className="text-sm flex items-center gap-3 text-red-600 px-3 py-2 rounded hover:bg-slate-50">
-                <span>🚪</span>
-                <span>Logout</span>
-              </button>
-            </div>
-          </aside>
-
+          <CustomerSidebar user={user ?? {}} pathname={pathname} handleLogout={handleLogout} />
           <main className="flex-1 p-6">
             <div className="max-w-7xl mx-auto">
               <div className="mt-6">{customer ?? children}</div>

@@ -98,7 +98,6 @@ export default function CartPage() {
       if (!res.ok) throw new Error(json?.message || "Order failed");
       toast.success("Order created");
 
-      // remove checked items from cart
       const remaining = items.filter((it) => (it.providerId ?? "unknown") !== providerKey);
       localStorage.setItem("cart", JSON.stringify(remaining));
       cartBus.emit("cart-updated");
