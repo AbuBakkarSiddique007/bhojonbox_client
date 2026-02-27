@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import Link from "next/link";
 import { cartBus } from "@/lib/cartBus";
 import { useAuth } from "@/hooks/AuthContext";
+import { usePathname, useRouter } from "next/navigation";
 
 type CartItem = { id: string; providerId?: string | null; name?: string; price?: number; image?: string | null; qty: number };
 
@@ -24,6 +25,8 @@ export default function CartPage() {
   const [paymentByProvider, setPaymentByProvider] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
   const { user, isLoading } = useAuth();
+  const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     setItems(readCart());
@@ -196,13 +199,28 @@ export default function CartPage() {
                 </div>
 
                 <div>
-                  <button
-                    disabled={loading || isLoading || !user || user.role !== 'CUSTOMER'}
-                    onClick={() => checkoutProvider(pid === 'unknown' ? null : pid)}
-                    className="px-4 py-2 bg-amber-600 text-white rounded-md disabled:opacity-50"
-                  >
-                    {loading ? 'Processing…' : `Checkout ${list.length} item(s)`}
-                  </button>
+                  <div className="relative inline-block group">
+                    <button
+                      onClick={() => {
+                        if (isLoading) return toast.error("Checking authentication...");
+                        if (!user) return router.push(`/login?next=${encodeURIComponent(pathname || "/")}`);
+                        if (user.role !== 'CUSTOMER') return toast.error("Only customers can place orders");
+                        return checkoutProvider(pid === 'unknown' ? null : pid);
+                      }}
+                      disabled={loading}
+                      aria-disabled={loading}
+                      aria-describedby={loading ? `tooltip-checkout-${pid}` : undefined}
+                      className="px-4 py-2 bg-amber-600 text-white rounded-md disabled:opacity-50"
+                    >
+                      {loading ? 'Processing…' : `Checkout ${list.length} item(s)`}
+                    </button>
+
+                    {loading && (
+                      <div id={`tooltip-checkout-${pid}`} role="tooltip" className="pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-150 absolute left-1/2 -translate-x-1/2 -top-9 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap z-50">
+                        Checking authentication...
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>

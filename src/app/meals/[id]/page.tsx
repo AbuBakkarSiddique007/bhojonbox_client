@@ -32,6 +32,13 @@ export default async function MealPage({ params }: { params: { id: string } | Pr
     const resp = await fetchJson(`${base}/meals/${id}`);
     const meal: Meal | null = resp?.data?.meal ?? null;
 
+    // fetch reviews for this meal
+    const reviewsResp = await fetchJson(`${base}/reviews/meal/${id}`);
+    const reviewsData = reviewsResp?.data ?? reviewsResp ?? null;
+    const reviews: any[] = reviewsData?.reviews ?? [];
+    const averageRating: number = reviewsData?.averageRating ?? 0;
+    const totalRatings: number = reviewsData?.totalRatings ?? reviews.length;
+
     let providerDetails: { id: string; storeName?: string; user?: { name?: string; email?: string } | null; logo?: string | null; address?: string | null; phone?: string | null } | null = null;
     if (meal?.provider?.id) {
         const prov = await fetchJson(`${base}/providers/${meal.provider.id}`);
@@ -121,6 +128,43 @@ export default async function MealPage({ params }: { params: { id: string } | Pr
                         <div>
 
                             <AddToCartButton mealId={meal.id} providerId={meal.provider?.id ?? null} name={meal.name} price={meal.price} image={meal.image} />
+                        </div>
+                        {/* Reviews */}
+                        <div className="mt-8">
+                            <h3 className="text-xl font-semibold mb-2">Reviews</h3>
+                            <div className="flex items-center gap-3 mb-3">
+                                <div className="text-2xl font-bold">{averageRating > 0 ? averageRating : '—'}</div>
+                                <div className="text-sm text-slate-500">{totalRatings} rating{totalRatings !== 1 ? 's' : ''}</div>
+                            </div>
+
+                            {reviews.length === 0 ? (
+                                <div className="text-sm text-slate-600">No reviews yet. Be the first to review this meal after delivery.</div>
+                            ) : (
+                                <div className="space-y-4">
+                                    {reviews.map((r: any) => (
+                                        <div key={r.id} className="p-4 bg-white border rounded">
+                                            <div className="flex items-start gap-3">
+                                                <div className="w-10 h-10 rounded-full bg-gray-100 overflow-hidden flex items-center justify-center">
+                                                    {r.user?.avatar ? (
+                                                        // eslint-disable-next-line @next/next/no-img-element
+                                                        <img src={r.user.avatar} alt={r.user.name} className="object-cover w-full h-full" />
+                                                    ) : (
+                                                        <div className="text-sm text-slate-500">{r.user?.name ? r.user.name.charAt(0) : '?'}</div>
+                                                    )}
+                                                </div>
+                                                <div className="flex-1">
+                                                    <div className="flex items-center justify-between">
+                                                        <div className="font-medium">{r.user?.name ?? 'Anonymous'}</div>
+                                                        <div className="text-sm text-slate-500">{new Date(r.createdAt).toLocaleDateString()}</div>
+                                                    </div>
+                                                    <div className="mt-2 text-sm text-slate-700">{r.comment}</div>
+                                                    <div className="mt-2 text-sm text-amber-600">Rating: {r.rating}★</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
