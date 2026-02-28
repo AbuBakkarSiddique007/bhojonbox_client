@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/hooks/AuthContext";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import Loading from "@/components/ui/Loading";
 import { API_BASE_URL } from "@/config";
 import { toast } from "sonner";
 
@@ -70,7 +71,7 @@ function ProviderStatsSection() {
     return () => { mounted = false; };
   }, []);
 
-  if (statsLoading) return <div className="mb-6 text-sm text-muted-foreground">Loading provider dashboard...</div>;
+  if (statsLoading) return <div className="mb-6"><Loading /></div>;
 
   return (
     <div className="mb-6">
@@ -289,7 +290,7 @@ export default function DashboardLayout({ children, admin, provider, customer }:
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p className="text-sm text-muted-foreground">Loading...</p>
+        <Loading />
       </div>
     );
   }

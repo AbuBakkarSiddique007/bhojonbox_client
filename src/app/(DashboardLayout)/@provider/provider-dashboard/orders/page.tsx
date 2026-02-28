@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { API_BASE_URL } from "@/config";
 import { toast } from "sonner";
+import Loading from "@/components/ui/Loading";
 
 type Order = {
   id: string;
@@ -64,7 +65,7 @@ export default function ProviderOrdersPage() {
   };
 
   if (err) return <div className="p-6 text-red-600">Error: {err}</div>;
-  if (!orders) return <div className="p-6 text-sm text-muted-foreground">Loading orders…</div>;
+  if (!orders) return <div className="p-6"><Loading /></div>;
   if (orders.length === 0) return <div className="p-6 text-sm text-muted-foreground">No incoming orders.</div>;
 
   const STATUS_OPTIONS = ['ALL', 'PLACED', 'PREPARING', 'READY', 'DELIVERED', 'CANCELLED'];
@@ -118,7 +119,7 @@ export default function ProviderOrdersPage() {
                       onClick={() => advanceStatus(o.id, o.status)}
                       disabled={processingId === o.id}
                     >
-                      {processingId === o.id ? 'Processing...' : `Mark ${NEXT_STATUS[o.status ?? '']}`}
+                      {processingId === o.id ? <Loading inline size="sm" label="Processing…" /> : `Mark ${NEXT_STATUS[o.status ?? '']}`}
                     </button>
                   </div>
                 )}

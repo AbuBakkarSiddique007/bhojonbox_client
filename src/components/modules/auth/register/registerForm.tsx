@@ -20,8 +20,6 @@ import { toast } from "sonner";
 import { useAuth } from "@/hooks/AuthContext";
 
 import { registerUser } from "@/services/auth";
-
-// Form validation using Zod:
 const registerSchema = z
   .object({
     name: z.string().min(2, "Name must be at least 2 characters"),
@@ -33,7 +31,7 @@ const registerSchema = z
     phone: z.string().optional(),
     address: z.string().optional(),
 
-    // For Providers only:
+    
     storeName: z.string().optional(),
     cuisine: z.string().optional(),
     description: z.string().optional(),
@@ -86,7 +84,7 @@ export default function RegisterForm() {
     if (r === "PROVIDER") {
       handleRoleChange("PROVIDER");
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    
   }, [searchParams]);
 
   const isProvider = selectedRole === "PROVIDER";

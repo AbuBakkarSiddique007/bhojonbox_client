@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { useAuth } from "@/hooks/AuthContext";
 import { Button } from "@/components/ui/button";
+import Loading from "@/components/ui/Loading";
 import { API_BASE_URL } from "@/config";
 import { toast } from "sonner";
 
@@ -87,7 +88,7 @@ export default function CustomerProfilePage() {
             <div className="flex items-center gap-3">
               <Button onClick={() => setEditing((v) => !v)}>{editing ? 'Cancel' : 'Edit Profile'}</Button>
               <Button disabled={!editing || loading} onClick={saveProfile} className="bg-amber-600 text-white">
-                {loading ? 'Saving…' : 'Save Profile'}
+                {loading ? <Loading inline size="sm" label="Saving…" /> : 'Save Profile'}
               </Button>
             </div>
           </div>

@@ -1,6 +1,7 @@
 "use client"
 import React from "react";
 import { useAuth } from "@/hooks/AuthContext";
+import Loading from "@/components/ui/Loading";
 import { useRouter } from "next/navigation";
 
 export default function AdminProfilePage() {
@@ -22,7 +23,7 @@ export default function AdminProfilePage() {
       <div className="max-w-3xl">
         <div className="bg-white rounded-lg p-6 border shadow-sm">
           {isLoading ? (
-            <p className="text-sm text-slate-500">Loading profile…</p>
+            <div className="text-sm text-slate-500"><Loading inline size="sm" label="Loading profile…" /></div>
           ) : user ? (
             <div className="flex gap-6">
               <div className="w-24 h-24 rounded-full bg-gray-100 flex items-center justify-center text-2xl font-semibold text-slate-700">

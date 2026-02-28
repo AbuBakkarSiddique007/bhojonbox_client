@@ -1,6 +1,7 @@
 "use client"
 
 import React from "react";
+import Loading from "@/components/ui/Loading";
 
 interface Props {
   open: boolean;
@@ -35,7 +36,7 @@ export default function ConfirmDialog({ open, title = 'Are you sure?', descripti
             onClick={() => onConfirm()}
             disabled={loading}
           >
-            {loading ? 'Processing...' : confirmLabel}
+            {loading ? <Loading inline size="sm" label="Processing…" /> : confirmLabel}
           </button>
         </div>
       </div>

@@ -123,7 +123,7 @@ export default function AdminCategoriesPage() {
           <div key={c.id} className="flex items-center gap-4 bg-white rounded-lg p-4 border shadow-sm">
             <div className="w-12 h-12 rounded-full bg-amber-50 flex items-center justify-center overflow-hidden">
               {c.image ? (
-                // plain img to avoid Next Image domain config during dev
+               
                 <img src={c.image} alt={c.name} className="w-full h-full object-cover" />
               ) : (
                 <div className="w-full h-full flex items-center justify-center text-2xl text-amber-700">🍽️</div>

@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/AuthContext";
 import { Button } from "@/components/ui/button";
+import Loading from "@/components/ui/Loading";
 import { API_BASE_URL } from "@/config";
 import { toast } from "sonner";
 import { getMe } from "@/services/auth";
@@ -127,8 +128,7 @@ export default function ProviderProfilePage() {
       <div className="p-6">
         <div className="max-w-3xl bg-amber-50 border border-amber-100 rounded-lg p-6">
           <div className="flex items-center justify-center flex-col gap-4 py-8">
-            <div className="w-12 h-12 rounded-full border-4 border-amber-200 border-t-amber-600 animate-spin" />
-            <div className="text-sm text-amber-700">Loading profile…</div>
+            <Loading label="Loading profile…" />
           </div>
 
           <div className="space-y-3 mt-4 animate-pulse">
@@ -204,7 +204,7 @@ export default function ProviderProfilePage() {
             <div className="flex items-center gap-3">
               <Button onClick={() => setEditing((v) => !v)}>{editing ? 'Cancel' : 'Edit Profile'}</Button>
               <Button disabled={!editing || loading} onClick={saveProfile} className="bg-amber-600 text-white">
-                {loading ? 'Saving…' : 'Save Profile'}
+                {loading ? <Loading inline size="sm" label="Saving…" /> : 'Save Profile'}
               </Button>
             </div>
           </div>

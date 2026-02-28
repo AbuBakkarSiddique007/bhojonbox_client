@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { API_BASE_URL } from "@/config";
 import { toast } from "sonner";
+import Loading from "@/components/ui/Loading";
 import reviewsService from "@/services/reviews";
 import { useAuth } from "@/hooks/AuthContext";
 
@@ -99,7 +100,7 @@ export default function CustomerOrderDetailPage({ params }: { params: { id: stri
     }
   };
 
-  if (loading) return <div className="p-6">Loading order…</div>;
+  if (loading) return <div className="p-6"><Loading /></div>;
 
   if (!order) return (
     <div className="p-6">
@@ -165,7 +166,7 @@ export default function CustomerOrderDetailPage({ params }: { params: { id: stri
             </div>
             <div className="flex justify-end gap-2">
               <button onClick={() => setSelectedMeal(null)} className="px-3 py-2 bg-gray-100 rounded">Cancel</button>
-              <button onClick={submitReview} disabled={submitting} className="px-3 py-2 bg-amber-600 text-white rounded">{submitting ? 'Submitting…' : 'Submit review'}</button>
+              <button onClick={submitReview} disabled={submitting} className="px-3 py-2 bg-amber-600 text-white rounded">{submitting ? <Loading inline size="sm" label="Submitting…" /> : 'Submit review'}</button>
             </div>
           </div>
         </div>

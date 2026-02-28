@@ -5,6 +5,7 @@ import Link from "next/link";
 import { API_BASE_URL } from "@/config";
 import { toast } from "sonner";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
+import Loading from "@/components/ui/Loading";
 
 type Order = {
   id: string;
@@ -46,7 +47,7 @@ export default function CustomerOrdersPage() {
   }, []);
 
   if (err) return <div className="p-6 text-red-600">Error: {err}</div>;
-  if (!orders) return <div className="p-6 text-sm text-muted-foreground">Loading orders…</div>;
+  if (!orders) return <div className="p-6"><Loading /></div>;
   if (orders.length === 0) return <div className="p-6 text-sm text-muted-foreground">You have no orders yet.</div>;
 
   return (
@@ -86,7 +87,7 @@ export default function CustomerOrdersPage() {
                       }}
                       disabled={processingId === o.id}
                     >
-                      {processingId === o.id ? 'Processing...' : 'Cancel'}
+                      {processingId === o.id ? <Loading inline size="sm" label="Processing…" /> : 'Cancel'}
                     </button>
                   </div>
                 )}

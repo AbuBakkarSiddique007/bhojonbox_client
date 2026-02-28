@@ -17,11 +17,12 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { toast } from "sonner";
+import Loading from "@/components/ui/Loading";
 
 import { loginUser } from "@/services/auth";
 import { useAuth } from "@/hooks/AuthContext";
 
-// Form validation using Zod:
+
 const loginSchema = z.object({
   email: z.string().email("Invalid email address"),
   password: z.string().min(6, "Password must be at least 6 characters"),
@@ -75,7 +76,6 @@ export default function LoginForm() {
       setUser(result.data.user); 
       toast.success(result.message || "Logged in successfully!");
 
-      // Redirect to `next` param if present, otherwise fall back to any pending path stored in sessionStorage, then to site root.
       const next = searchParams?.get("next");
       if (next) {
         router.replace(next);
@@ -91,10 +91,8 @@ export default function LoginForm() {
           }
         }
       } catch (e) {
-        // ignore
+        
       }
-
-      // Default fallback
       router.replace("/");
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : "Login failed";
@@ -133,7 +131,7 @@ export default function LoginForm() {
           />
 
           <Button type="submit" className="w-full" disabled={isSubmitting}>
-            {isSubmitting ? "Logging in..." : "Login"}
+            {isSubmitting ? <Loading inline size="sm" label="Logging in..." /> : "Login"}
           </Button>
         </form>
       </CardContent>

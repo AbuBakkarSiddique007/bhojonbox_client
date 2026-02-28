@@ -12,7 +12,7 @@ type Meal = {
 };
 
 export default async function FeaturedMeals({ limit = 6 }: { limit?: number }) {
-  const base = API_BASE_URL || "http://localhost:5000/api";
+  const base = API_BASE_URL || "https://bhojonbox-server.onrender.com/api";
   const res = await fetch(`${base}/meals?limit=${limit}`, { next: { revalidate: 10 } });
   if (!res.ok) {
     return <div className="text-sm text-muted-foreground">Failed to load featured meals.</div>;
@@ -36,7 +36,6 @@ export default async function FeaturedMeals({ limit = 6 }: { limit?: number }) {
           <Link key={m.id} href={`/meals/${m.id}`} className="block bg-white rounded-lg shadow hover:shadow-lg overflow-hidden border border-gray-100">
             <div className="h-44 bg-gray-100 flex items-center justify-center overflow-hidden">
               {m.image ? (
-                // eslint-disable-next-line @next/next/no-img-element
                 <img src={m.image} alt={m.name} className="object-cover w-full h-full" />
               ) : (
                 <div className="text-gray-300">No image</div>

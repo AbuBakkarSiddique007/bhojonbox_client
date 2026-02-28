@@ -25,7 +25,7 @@ export type Meal = {
     // Add other fields as needed
 };
 
-const base = API_BASE_URL || "http://localhost:5000/api";
+const base = API_BASE_URL || "https://bhojonbox-server.onrender.com/api";
 
 interface ServerResponse<T = unknown> {
     success?: boolean;

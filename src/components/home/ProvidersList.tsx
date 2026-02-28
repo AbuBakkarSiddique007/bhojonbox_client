@@ -22,7 +22,7 @@ export default async function ProvidersList({
   title?: string;
   description?: string;
 }) {
-  const base = API_BASE_URL || "http://localhost:5000/api";
+  const base = API_BASE_URL || "https://bhojonbox-server.onrender.com/api";
   const res = await fetch(`${base}/providers`, { next: { revalidate: 10 } });
   if (!res.ok) {
     return <div className="text-sm text-muted-foreground">Failed to load providers.</div>;
@@ -50,7 +50,6 @@ export default async function ProvidersList({
         >
           <div className="h-44 w-full bg-gradient-to-br from-white to-gray-50 flex items-center justify-center overflow-hidden">
             {p.logo ? (
-              // eslint-disable-next-line @next/next/no-img-element
               <img src={p.logo} alt={p.storeName} className="object-cover h-full w-full" />
             ) : (
               <div className="flex items-center justify-center w-full h-full text-gray-300">

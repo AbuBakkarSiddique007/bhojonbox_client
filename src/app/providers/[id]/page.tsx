@@ -33,7 +33,7 @@ async function fetchJson(url: string) {
 }
 
 export default async function ProviderPage({ params }: { params: { id: string } | Promise<{ id: string }> }) {
-  const base = API_BASE_URL || 'http://localhost:5000/api';
+  const base = API_BASE_URL || 'https://bhojonbox-server.onrender.com/api';
   const { id } = (await params) as { id: string };
 
   const provResp = await fetchJson(`${base}/providers/${id}`);

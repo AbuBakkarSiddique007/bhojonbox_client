@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { API_BASE_URL } from "@/config";
+import Loading from "@/components/ui/Loading";
 import { toast } from "sonner";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
 
@@ -146,7 +147,7 @@ export default function ProviderMenuPage() {
   };
 
   if (err) return <div className="p-6 text-red-600">Error: {err}</div>;
-  if (!meals) return <div className="p-6 text-sm text-muted-foreground">Loading meals…</div>;
+  if (!meals) return <div className="p-6"><Loading /></div>;
 
   return (
     <div className="p-6">
@@ -233,7 +234,7 @@ export default function ProviderMenuPage() {
             </div>
             <div className="mt-4 flex justify-end gap-2">
               <button className="px-3 py-1 rounded-md bg-gray-100" onClick={() => setModalOpen(false)}>Cancel</button>
-              <button className="px-3 py-1 rounded-md bg-amber-600 text-white" onClick={saveMeal} disabled={loading}>{loading ? 'Saving…' : 'Save'}</button>
+              <button className="px-3 py-1 rounded-md bg-amber-600 text-white" onClick={saveMeal} disabled={loading}>{loading ? <Loading inline size="sm" label="Saving…" /> : 'Save'}</button>
             </div>
           </div>
         </div>

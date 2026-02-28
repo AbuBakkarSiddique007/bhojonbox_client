@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Loading from "@/components/ui/Loading";
 import Image from "next/image";
 import adminService from "../../../../../services/admin";
 import { toast } from "sonner";
@@ -201,7 +202,7 @@ export default function AdminUsersPage() {
 
         <div className="divide-y">
           {loading ? (
-            <div className="p-6 text-center">Loading users…</div>
+            <div className="p-6 text-center"><Loading /></div>
           ) : (
             users.map((u) => (
               <div key={u.id} className="grid grid-cols-6 items-center gap-4 py-4 px-3">
@@ -281,7 +282,7 @@ export default function AdminUsersPage() {
             </div>
 
             {detailLoading ? (
-              <p>Loading…</p>
+              <div className="text-center"><Loading /></div>
             ) : (
               <div className="space-y-6">
                 {selected.providerProfile ? (

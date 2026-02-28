@@ -5,7 +5,7 @@ export const getAllMeals = async (
   limit = 10,
   filters?: { minPrice?: number; maxPrice?: number; category?: string; cuisine?: string; q?: string }
 ) => {
-  const base = API_BASE_URL || "http://localhost:5000/api";
+  const base = API_BASE_URL || "https://bhojonbox-server.onrender.com/api";
   const params = new URLSearchParams();
   params.set('page', String(page));
   params.set('limit', String(limit));

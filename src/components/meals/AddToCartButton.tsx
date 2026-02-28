@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import Loading from "@/components/ui/Loading";
 import { toast } from "sonner";
 import { cartBus } from "@/lib/cartBus";
 import { useAuth } from "@/hooks/AuthContext";
@@ -59,16 +60,16 @@ export default function AddToCartButton({
   };
 
   const add = () => {
-    if (isLoading) return;
+    if (isLoading && !user) {
+    } else if (isLoading) return;
+
     if (!user) {
-      // store pending add action in sessionStorage so we can resume after login
       try {
         if (typeof window !== "undefined") {
           sessionStorage.setItem("pendingAddToCart", mealId);
           sessionStorage.setItem("pendingAddToCartPath", pathname || "/");
         }
       } catch (e) {
-        // ignore
       }
       const next = pathname || "/";
       router.push(`/login?next=${encodeURIComponent(next)}`);
@@ -82,7 +83,6 @@ export default function AddToCartButton({
     performAdd();
   };
 
-  // Auto-perform add when returning from login using sessionStorage
   useEffect(() => {
     try {
       if (typeof window === "undefined") return;
@@ -93,14 +93,12 @@ export default function AddToCartButton({
         performAdd();
         sessionStorage.removeItem("pendingAddToCart");
         sessionStorage.removeItem("pendingAddToCartPath");
-        // Replace URL to remove any next/query params
         const base = pendingPath || window.location.pathname;
         router.replace(base);
       }
     } catch (e) {
-      // ignore
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    
   }, [user]);
 
   const tooltipId = `tooltip-addtocart-${mealId}`;
@@ -125,7 +123,7 @@ export default function AddToCartButton({
           role="tooltip"
           className="pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-150 absolute left-1/2 -translate-x-1/2 -top-9 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap z-50"
         >
-          {isLoading ? "Checking authentication..." : !user ? "Sign in to add to cart" : user.role !== "CUSTOMER" ? "Only customers can add to cart" : ""}
+          {isLoading ? <Loading inline size="sm" label="Checking authentication…" /> : !user ? "Sign in to add to cart" : user.role !== "CUSTOMER" ? "Only customers can add to cart" : ""}
         </div>
       )}
     </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Loading from "@/components/ui/Loading";
 import { API_BASE_URL } from "@/config";
 import { toast } from "sonner";
 import Link from "next/link";
@@ -74,6 +75,7 @@ export default function CartPage() {
 
   const checkoutProvider = async (providerId: string | null) => {
     if (!address) return toast.error("Please enter delivery address");
+    
     // require authenticated customer
     if (isLoading) return toast.error("Checking authentication...");
     if (!user) return toast.error("Please login as a customer to place orders");
@@ -145,7 +147,7 @@ export default function CartPage() {
 
       {/* Auth checks */}
       {isLoading ? (
-        <div className="mb-4 text-sm text-slate-500">Checking authentication…</div>
+        <div className="mb-4 text-sm text-slate-500"><Loading inline size="sm" label="Checking authentication…" /></div>
       ) : !user ? (
         <div className="mb-4 p-4 bg-yellow-50 border border-yellow-100 rounded">
           <div className="text-sm text-slate-700">Please <Link href="/login" className="text-primary underline">login</Link> as a customer to place orders.</div>
@@ -215,12 +217,12 @@ export default function CartPage() {
                       aria-describedby={processingProviders.includes(pid) ? `tooltip-checkout-${pid}` : undefined}
                       className="px-4 py-2 bg-amber-600 text-white rounded-md disabled:opacity-50"
                     >
-                      {processingProviders.includes(pid) ? 'Processing…' : `Checkout ${list.length} item(s)`}
+                      {processingProviders.includes(pid) ? <Loading inline size="sm" label="Processing…" /> : `Checkout ${list.length} item(s)`}
                     </button>
 
                     {processingProviders.includes(pid) && (
                       <div id={`tooltip-checkout-${pid}`} role="tooltip" className="pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-150 absolute left-1/2 -translate-x-1/2 -top-9 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap z-50">
-                        Processing…
+                        <Loading inline size="sm" label="Processing…" />
                       </div>
                     )}
                   </div>

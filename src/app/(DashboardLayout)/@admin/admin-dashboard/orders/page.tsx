@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Loading from "@/components/ui/Loading";
 import adminService from "../../../../../services/admin";
 
 function OrderStatusBadge({ status }: { status?: string }) {
@@ -110,7 +111,7 @@ export default function AdminOrdersPage() {
           </thead>
           <tbody>
             {loading ? (
-              <tr><td colSpan={6} className="p-6 text-center">Loading orders…</td></tr>
+              <tr><td colSpan={6} className="p-6 text-center"><Loading /></td></tr>
             ) : orders.length === 0 ? (
               <tr><td colSpan={6} className="p-6 text-center">No orders found.</td></tr>
             ) : (

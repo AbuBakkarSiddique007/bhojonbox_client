@@ -4,6 +4,7 @@
 
 import { useEffect, useState } from "react";
 import adminService from "../../../../services/admin";
+import Loading from "@/components/ui/Loading";
 
 function StatCard({ title, value, subtitle, className = "", footer, }: { title: string; value: React.ReactNode; subtitle?: string; className?: string; footer?: React.ReactNode }) {
   return (
@@ -63,7 +64,7 @@ export default function AdminDashboardPage() {
       <p className="text-sm text-muted-foreground mb-6">Platform stats and quick actions.</p>
 
       {loading ? (
-        <p>Loading stats…</p>
+        <div className="mb-6"><Loading /></div>
       ) : stats ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4">
           <StatCard
