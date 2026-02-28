@@ -260,7 +260,13 @@ export default function DashboardLayout({ children, admin, provider, customer }:
       await fetch(`${API_BASE_URL}/auth/logout`, { method: 'POST', credentials: 'include' });
       if (typeof setUser === 'function') setUser(null);
       toast.success('Logged out');
-      router.push('/login');
+      // If the user was on a protected dashboard route, send them to login.
+      // Otherwise return them to the public home page for a smoother UX.
+      if (pathname?.startsWith('/admin-dashboard') || pathname?.startsWith('/provider-dashboard') || pathname?.startsWith('/customer-dashboard') || pathname?.startsWith('/dashboard')) {
+        router.push('/login');
+      } else {
+        router.push('/');
+      }
     } catch {
       toast.error('Failed to logout');
     }

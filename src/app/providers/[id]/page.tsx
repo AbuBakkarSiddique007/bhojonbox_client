@@ -1,5 +1,6 @@
 import { API_BASE_URL } from '@/config';
 import Link from 'next/link';
+import BackButton from '@/components/ui/BackButton';
 
 type Provider = {
   id: string;
@@ -52,6 +53,9 @@ export default async function ProviderPage({ params }: { params: { id: string } 
 
   return (
     <main className="max-w-6xl mx-auto p-6">
+      <div className="mb-4">
+        <BackButton />
+      </div>
       <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-0">
           <div className="md:col-span-1 bg-gradient-to-br from-gray-50 to-white flex items-center justify-center p-6">
@@ -113,24 +117,26 @@ export default async function ProviderPage({ params }: { params: { id: string } 
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {meals.map((m) => (
-              <article key={m.id} className="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100">
-                <div className="h-40 bg-gray-100 flex items-center justify-center overflow-hidden">
-                  {m.image ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={m.image} alt={m.name} className="object-cover w-full h-full" />
-                  ) : (
-                    <div className="text-gray-300">No image</div>
-                  )}
-                </div>
-                <div className="p-4">
-                  <h3 className="font-semibold text-lg">{m.name}</h3>
-                  <p className="mt-2 text-sm text-slate-600 line-clamp-2">{m.description}</p>
-                  <div className="mt-3 flex items-center justify-between">
-                    <div className="text-sm font-medium text-slate-900">{m.price ? `৳ ${m.price}` : ''}</div>
-                    <div className={`text-xs px-2 py-1 rounded ${m.isAvailable ? 'bg-green-50 text-green-700' : 'bg-gray-100 text-gray-600'}`}>{m.isAvailable ? 'Available' : 'Unavailable'}</div>
+              <Link key={m.id} href={`/meals/${m.id}`} aria-label={`View ${m.name}`} className="block">
+                <article className="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100 hover:shadow-md transition">
+                  <div className="h-40 bg-gray-100 flex items-center justify-center overflow-hidden">
+                    {m.image ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={m.image} alt={m.name} className="object-cover w-full h-full" />
+                    ) : (
+                      <div className="text-gray-300">No image</div>
+                    )}
                   </div>
-                </div>
-              </article>
+                  <div className="p-4">
+                    <h3 className="font-semibold text-lg">{m.name}</h3>
+                    <p className="mt-2 text-sm text-slate-600 line-clamp-2">{m.description}</p>
+                    <div className="mt-3 flex items-center justify-between">
+                      <div className="text-sm font-medium text-slate-900">{m.price ? `৳ ${m.price}` : ''}</div>
+                      <div className={`text-xs px-2 py-1 rounded ${m.isAvailable ? 'bg-green-50 text-green-700' : 'bg-gray-100 text-gray-600'}`}>{m.isAvailable ? 'Available' : 'Unavailable'}</div>
+                    </div>
+                  </div>
+                </article>
+              </Link>
             ))}
           </div>
         )}

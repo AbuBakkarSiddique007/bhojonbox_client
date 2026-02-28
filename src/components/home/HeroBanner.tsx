@@ -11,8 +11,8 @@ export default function HeroBanner() {
           <p className="text-lg text-white/90 mb-6 max-w-xl">Explore curated menus from neighborhood chefs and food hubs. Order for pickup or delivery with real-time tracking.</p>
 
           <div className="flex gap-3">
-            <Link href="#" className="px-6 py-3 bg-white text-indigo-700 rounded-md font-semibold">Browse Menus</Link>
-            <Link href="#" className="px-6 py-3 bg-indigo-800 text-white rounded-md font-medium">Become a Provider</Link>
+            <Link href="/meals" aria-label="Browse menus" className="px-6 py-3 bg-white text-indigo-700 rounded-md font-semibold">Browse Menus</Link>
+            <Link href="/register?role=provider" aria-label="Become a provider" className="px-6 py-3 bg-indigo-800 text-white rounded-md font-medium">Become a Provider</Link>
           </div>
         </div>
 

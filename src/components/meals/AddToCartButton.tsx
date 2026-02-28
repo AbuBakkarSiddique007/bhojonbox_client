@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { toast } from "sonner";
 import { cartBus } from "@/lib/cartBus";
 import { useAuth } from "@/hooks/AuthContext";
@@ -32,20 +32,12 @@ export default function AddToCartButton({
   const { user, isLoading } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
+  const autoAdded = useRef(false);
 
-  const canAdd = !isLoading && user?.role === "CUSTOMER";
+  const isCustomer = user?.role === "CUSTOMER";
+  const canAdd = !isLoading && isCustomer;
 
-  const add = () => {
-    if (isLoading) return;
-    if (!user) {
-      router.push(`/login?next=${encodeURIComponent(pathname || "/")}`);
-      return;
-    }
-    if (user.role !== "CUSTOMER") {
-      toast.error("Only customers can add meals to cart");
-      return;
-    }
-
+  const performAdd = () => {
     setLoading(true);
     try {
       const raw = localStorage.getItem("cart");
@@ -66,19 +58,64 @@ export default function AddToCartButton({
     }
   };
 
+  const add = () => {
+    if (isLoading) return;
+    if (!user) {
+      // store pending add action in sessionStorage so we can resume after login
+      try {
+        if (typeof window !== "undefined") {
+          sessionStorage.setItem("pendingAddToCart", mealId);
+          sessionStorage.setItem("pendingAddToCartPath", pathname || "/");
+        }
+      } catch (e) {
+        // ignore
+      }
+      const next = pathname || "/";
+      router.push(`/login?next=${encodeURIComponent(next)}`);
+      return;
+    }
+    if (user.role !== "CUSTOMER") {
+      toast.error("Only customers can add meals to cart");
+      return;
+    }
+
+    performAdd();
+  };
+
+  // Auto-perform add when returning from login using sessionStorage
+  useEffect(() => {
+    try {
+      if (typeof window === "undefined") return;
+      const pending = sessionStorage.getItem("pendingAddToCart");
+      const pendingPath = sessionStorage.getItem("pendingAddToCartPath");
+      if (!autoAdded.current && pending && pending === mealId && user && user.role === "CUSTOMER") {
+        autoAdded.current = true;
+        performAdd();
+        sessionStorage.removeItem("pendingAddToCart");
+        sessionStorage.removeItem("pendingAddToCartPath");
+        // Replace URL to remove any next/query params
+        const base = pendingPath || window.location.pathname;
+        router.replace(base);
+      }
+    } catch (e) {
+      // ignore
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
+
   const tooltipId = `tooltip-addtocart-${mealId}`;
 
   return (
     <div className="relative inline-block group">
       <button
         onClick={add}
-        disabled={loading || !canAdd}
-        aria-disabled={loading || !canAdd}
+        disabled={loading}
+        aria-disabled={loading}
         aria-describedby={loading || !canAdd ? tooltipId : undefined}
-        className={`mt-6 inline-flex items-center gap-2 px-4 py-2 rounded-md ${canAdd ? "bg-amber-600 text-white hover:bg-amber-700" : "bg-gray-100 text-slate-500 cursor-not-allowed"}`}
+        className={`mt-6 inline-flex items-center gap-2 px-4 py-2 rounded-md ${canAdd ? "bg-amber-600 text-white hover:bg-amber-700" : "bg-gray-100 text-slate-700 hover:bg-gray-200"}`}
         title={!user ? "Sign in to add to cart" : user?.role !== "CUSTOMER" ? "Only customers can add to cart" : undefined}
       >
-        <span>{canAdd ? "Add to cart" : "Add to cart"}</span>
+        <span>Add to cart</span>
         <span className="text-sm opacity-80">{price ? `৳ ${price}` : ""}</span>
       </button>
 

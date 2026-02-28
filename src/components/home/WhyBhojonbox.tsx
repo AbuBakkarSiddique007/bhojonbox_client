@@ -28,10 +28,6 @@ export default function WhyBhojonbox() {
             <p className="mt-2 text-sm text-slate-600">Optimized routing gets meals to you quickly and hot.</p>
           </div>
         </div>
-
-        <div className="mt-8 text-center">
-          <Link href="/providers" className="inline-block px-6 py-3 bg-amber-600 text-white rounded-md shadow-sm">Browse Restaurants</Link>
-        </div>
       </div>
     </section>
   );

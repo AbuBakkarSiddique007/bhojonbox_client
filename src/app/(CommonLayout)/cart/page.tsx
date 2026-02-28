@@ -24,6 +24,7 @@ export default function CartPage() {
   const [address, setAddress] = useState("");
   const [paymentByProvider, setPaymentByProvider] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
+  const [processingProviders, setProcessingProviders] = useState<string[]>([]);
   const { user, isLoading } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
@@ -81,6 +82,7 @@ export default function CartPage() {
     const providerItems = grouped.get(providerKey) ?? [];
     if (providerItems.length === 0) return;
     const paymentMethod = paymentByProvider[providerKey] ?? "Cash on Delivery";
+    setProcessingProviders((p) => (p.includes(providerKey) ? p : [...p, providerKey]));
     setLoading(true);
     try {
       const payload = {
@@ -113,6 +115,7 @@ export default function CartPage() {
       }
     } finally {
       setLoading(false);
+      setProcessingProviders((p) => p.filter((id) => id !== providerKey));
     }
   };
 
@@ -175,8 +178,8 @@ export default function CartPage() {
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <input type="number" min={1} value={it.qty} onChange={(e) => updateQty(it.id, Number(e.target.value) || 1)} className="w-20 px-2 py-1 border rounded-md" />
-                  <button onClick={() => removeItem(it.id)} className="px-3 py-1 bg-gray-100 rounded-md">Remove</button>
+                  <input disabled={processingProviders.includes(pid)} type="number" min={1} value={it.qty} onChange={(e) => updateQty(it.id, Number(e.target.value) || 1)} className="w-20 px-2 py-1 border rounded-md" />
+                  <button disabled={processingProviders.includes(pid)} onClick={() => removeItem(it.id)} className="px-3 py-1 bg-gray-100 rounded-md">Remove</button>
                 </div>
               </div>
             ))}
@@ -207,17 +210,17 @@ export default function CartPage() {
                         if (user.role !== 'CUSTOMER') return toast.error("Only customers can place orders");
                         return checkoutProvider(pid === 'unknown' ? null : pid);
                       }}
-                      disabled={loading}
-                      aria-disabled={loading}
-                      aria-describedby={loading ? `tooltip-checkout-${pid}` : undefined}
+                      disabled={loading || processingProviders.includes(pid)}
+                      aria-disabled={loading || processingProviders.includes(pid)}
+                      aria-describedby={processingProviders.includes(pid) ? `tooltip-checkout-${pid}` : undefined}
                       className="px-4 py-2 bg-amber-600 text-white rounded-md disabled:opacity-50"
                     >
-                      {loading ? 'Processing…' : `Checkout ${list.length} item(s)`}
+                      {processingProviders.includes(pid) ? 'Processing…' : `Checkout ${list.length} item(s)`}
                     </button>
 
-                    {loading && (
+                    {processingProviders.includes(pid) && (
                       <div id={`tooltip-checkout-${pid}`} role="tooltip" className="pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-150 absolute left-1/2 -translate-x-1/2 -top-9 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap z-50">
-                        Checking authentication...
+                        Processing…
                       </div>
                     )}
                   </div>

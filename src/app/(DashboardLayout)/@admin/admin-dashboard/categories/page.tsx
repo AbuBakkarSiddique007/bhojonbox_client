@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import categoriesService from "../../../../../services/categories";
 import { toast } from "sonner";
+import ConfirmDialog from "@/components/ui/ConfirmDialog";
 
 interface Category {
   id: string;
@@ -86,6 +87,24 @@ export default function AdminCategoriesPage() {
     }
   };
 
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [selectedDeleteId, setSelectedDeleteId] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
+
+  const doDelete = async () => {
+    if (!selectedDeleteId) return;
+    setDeleting(true);
+    try {
+      await handleDelete(selectedDeleteId);
+      setConfirmOpen(false);
+      setSelectedDeleteId(null);
+    } catch (e) {
+      // errors handled in handleDelete
+    } finally {
+      setDeleting(false);
+    }
+  };
+
   return (
     <div className="p-6">
       <div className="flex items-center justify-between mb-4">
@@ -115,7 +134,7 @@ export default function AdminCategoriesPage() {
                 <div className="font-medium text-slate-800">{c.name}</div>
                 <div className="flex items-center gap-2">
                   <button onClick={() => { setEditing(c.id); setName(c.name); setImage(c.image || ""); }} className="btn btn-sm">Edit</button>
-                  <button onClick={() => { if (confirm('Delete category?')) handleDelete(c.id); }} className="btn btn-sm btn-outline text-rose-600">Del</button>
+                  <button onClick={() => { setSelectedDeleteId(c.id); setConfirmOpen(true); }} className="btn btn-sm btn-outline text-rose-600">Del</button>
                 </div>
               </div>
             </div>
@@ -125,42 +144,72 @@ export default function AdminCategoriesPage() {
 
       {/* Add / Edit Category Modal */}
       {(addOpen || editing) && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="bg-white rounded-lg w-full max-w-md p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold">{editing ? 'Edit Category' : 'Add Category'}</h3>
-              <button onClick={() => { setAddOpen(false); setEditing(null); setName(''); setNewName(''); }} className="text-sm text-slate-500">Close</button>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="bg-white rounded-xl w-full max-w-2xl p-6 shadow-lg ring-1 ring-black/5">
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-amber-50 flex items-center justify-center text-2xl">🍽️</div>
+                <div>
+                  <h3 className="text-lg font-semibold">{editing ? 'Edit Category' : 'Add Category'}</h3>
+                  <p className="text-sm text-muted-foreground">Add a category name and optional image URL to display to customers.</p>
+                </div>
+              </div>
+              <button onClick={() => { setAddOpen(false); setEditing(null); setName(''); setNewName(''); setImage(''); setNewImage(''); }} className="text-sm text-slate-500">Close</button>
             </div>
-            <div className="space-y-4">
-              <div>
-                <label className="text-sm text-slate-600 block mb-1">Name</label>
-                <input
-                  value={editing ? name : newName}
-                  onChange={(e) => editing ? setName(e.target.value) : setNewName(e.target.value)}
-                  className="w-full p-2 border rounded"
-                />
+
+            <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="md:col-span-1 flex items-center justify-center">
+                <div className="w-36 h-36 bg-amber-50 rounded-lg overflow-hidden flex items-center justify-center border border-dashed border-amber-100">
+                  {(editing ? image : newImage) ? (
+                    <img src={editing ? image : newImage} alt="preview" className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="text-2xl text-amber-700">🍽️</div>
+                  )}
+                </div>
               </div>
-              <div>
-                <label className="text-sm text-slate-600 block mb-1">Image URL (optional)</label>
-                <input
-                  value={editing ? image : newImage}
-                  onChange={(e) => editing ? setImage(e.target.value) : setNewImage(e.target.value)}
-                  placeholder="https://...jpg"
-                  className="w-full p-2 border rounded"
-                />
-              </div>
-              <div className="flex justify-end gap-2">
-                <button onClick={() => { setAddOpen(false); setEditing(null); setName(''); setNewName(''); }} className="btn btn-ghost">Cancel</button>
-                {editing ? (
-                  <button onClick={() => { if (editing) handleUpdate(editing); }} className="btn btn-primary">Save</button>
-                ) : (
-                  <button onClick={handleCreateFromModal} className="btn btn-primary">Create</button>
-                )}
+
+              <div className="md:col-span-2 space-y-4">
+                <div>
+                  <label className="text-sm text-slate-600 block mb-1">Name</label>
+                  <input
+                    value={editing ? name : newName}
+                    onChange={(e) => editing ? setName(e.target.value) : setNewName(e.target.value)}
+                    className="w-full p-3 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-300"
+                    placeholder="e.g., Fast Food"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm text-slate-600 block mb-1">Image URL (optional)</label>
+                  <input
+                    value={editing ? image : newImage}
+                    onChange={(e) => editing ? setImage(e.target.value) : setNewImage(e.target.value)}
+                    placeholder="https://...jpg"
+                    className="w-full p-3 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-300"
+                  />
+                </div>
+                <div className="flex justify-end gap-2 pt-2">
+                  <button onClick={() => { setAddOpen(false); setEditing(null); setName(''); setNewName(''); setImage(''); setNewImage(''); }} className="btn bg-rose-600 text-white hover:bg-rose-700">Cancel</button>
+                  {editing ? (
+                    <button onClick={() => { if (editing) handleUpdate(editing); }} className="btn bg-emerald-600 text-white hover:bg-emerald-700">Save</button>
+                  ) : (
+                    <button onClick={handleCreateFromModal} className="btn bg-emerald-600 text-white hover:bg-emerald-700">Create</button>
+                  )}
+                </div>
               </div>
             </div>
           </div>
         </div>
       )}
+      <ConfirmDialog
+        open={confirmOpen}
+        title="Delete category"
+        description="Are you sure you want to delete this category? This action cannot be undone."
+        confirmLabel="Delete"
+        cancelLabel="Cancel"
+        loading={deleting}
+        onConfirm={doDelete}
+        onCancel={() => { setConfirmOpen(false); setSelectedDeleteId(null); }}
+      />
     </div>
   );
 }

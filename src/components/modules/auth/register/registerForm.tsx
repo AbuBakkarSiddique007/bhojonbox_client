@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -75,9 +75,19 @@ export default function RegisterForm() {
   const router = useRouter();
   const { setUser } = useAuth();
 
+  const searchParams = useSearchParams();
+
   const [selectedRole, setSelectedRole] = useState<"CUSTOMER" | "PROVIDER">(
     "CUSTOMER"
   );
+
+  useEffect(() => {
+    const r = searchParams?.get("role")?.toUpperCase();
+    if (r === "PROVIDER") {
+      handleRoleChange("PROVIDER");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
   const isProvider = selectedRole === "PROVIDER";
 

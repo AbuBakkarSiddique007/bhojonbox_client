@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -59,6 +59,7 @@ function FormField({
 export default function LoginForm() {
   const router = useRouter();
   const { setUser } = useAuth();
+  const searchParams = useSearchParams();
 
   const {
     register,
@@ -74,8 +75,26 @@ export default function LoginForm() {
       setUser(result.data.user); 
       toast.success(result.message || "Logged in successfully!");
 
-      // After a normal login we return users to the site root instead of forcing the dashboard.
-      // Protected-route flows can pass an explicit "next" param later if needed.
+      // Redirect to `next` param if present, otherwise fall back to any pending path stored in sessionStorage, then to site root.
+      const next = searchParams?.get("next");
+      if (next) {
+        router.replace(next);
+        return;
+      }
+
+      try {
+        if (typeof window !== "undefined") {
+          const pendingPath = sessionStorage.getItem("pendingAddToCartPath");
+          if (pendingPath) {
+            router.replace(pendingPath);
+            return;
+          }
+        }
+      } catch (e) {
+        // ignore
+      }
+
+      // Default fallback
       router.replace("/");
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : "Login failed";

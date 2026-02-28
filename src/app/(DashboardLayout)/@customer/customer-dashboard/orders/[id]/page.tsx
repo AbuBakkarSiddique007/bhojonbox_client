@@ -33,7 +33,11 @@ type Order = {
 export default function CustomerOrderDetailPage({ params }: { params: { id: string } }) {
   const router = useRouter();
   const { user, isLoading } = useAuth();
-  const id = params.id;
+  // `params` is a Promise in App Router client components — unwrap with React.use
+  // See: https://nextjs.org/docs/messages/sync-dynamic-apis
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const routeParams = (React as any).use(params) as { id: string };
+  const id = routeParams.id;
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedMeal, setSelectedMeal] = useState<ReviewMeal | null>(null);
