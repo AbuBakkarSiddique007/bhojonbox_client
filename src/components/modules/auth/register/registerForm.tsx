@@ -19,7 +19,7 @@ import {
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/AuthContext";
 
-import { registerUser } from "@/services/auth";
+import { authService } from "@/services";
 const registerSchema = z
   .object({
     name: z.string().min(2, "Name must be at least 2 characters"),
@@ -111,7 +111,7 @@ export default function RegisterForm() {
       const { confirmPassword, ...submitData } = data;
       void confirmPassword;
 
-      const result = await registerUser(submitData);
+      const result = await authService.registerUser(submitData);
       setUser(result.data.user);
 
       toast.success(result.message || "Registered successfully!");

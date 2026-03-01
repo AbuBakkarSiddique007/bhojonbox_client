@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import Loading from "@/components/ui/Loading";
 import { API_BASE_URL } from "@/config";
 import { toast } from "sonner";
-import { getMe } from "@/services/auth";
+import { authService } from "@/services";
 
 type ProviderProfile = {
   storeName?: string;
@@ -107,9 +107,9 @@ export default function ProviderProfilePage() {
 
       toast.success("Profile updated");
 
-      // refresh auth state (so providerProfile on user is up-to-date)
+    
       try {
-        const me = await getMe();
+        const me = await authService.getMe();
         if (me?.data?.user) setUser(me.data.user);
       } catch {
       }

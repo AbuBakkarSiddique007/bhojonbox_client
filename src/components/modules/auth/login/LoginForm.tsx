@@ -19,8 +19,9 @@ import {
 import { toast } from "sonner";
 import Loading from "@/components/ui/Loading";
 
-import { loginUser } from "@/services/auth";
+import { authService } from "@/services";
 import { useAuth } from "@/hooks/AuthContext";
+import { cartBus } from "@/lib/cartBus";
 
 
 const loginSchema = z.object({
@@ -72,8 +73,27 @@ export default function LoginForm() {
 
   const onSubmit = async (data: LoginFormValues) => {
     try {
-      const result = await loginUser(data);
-      setUser(result.data.user); 
+      const result = await authService.loginUser(data);
+      setUser(result.data.user);
+
+      try {
+        if (typeof window !== "undefined") {
+          const pending = sessionStorage.getItem("pendingAddToCart");
+          if (pending) {
+            const cartRaw = localStorage.getItem("cart");
+            type CartItem = { id: string; providerId: string | null; name: string; price: number; image: string | null; qty: number };
+            const cart: CartItem[] = cartRaw ? JSON.parse(cartRaw) : [];
+            const existing = cart.find((c: CartItem) => c.id === pending);
+            if (existing) existing.qty = (existing.qty || 1) + 1;
+            else cart.push({ id: pending, providerId: null, name: "", price: 0, image: null, qty: 1 });
+            localStorage.setItem("cart", JSON.stringify(cart));
+            try { window.dispatchEvent(new Event('storage')); } catch {}
+            try { cartBus.emit("cart-updated"); } catch {}
+            sessionStorage.removeItem("pendingAddToCart");
+            sessionStorage.removeItem("pendingAddToCartPath");
+          }
+        }
+      } catch (e) {}
       toast.success(result.message || "Logged in successfully!");
 
       const next = searchParams?.get("next");

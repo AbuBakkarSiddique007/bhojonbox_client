@@ -22,7 +22,6 @@ export type Meal = {
     price: number;
     image?: string | null;
     providerId: string;
-    // Add other fields as needed
 };
 
 const base = API_BASE_URL || "https://bhojonbox-server.onrender.com/api";
@@ -79,3 +78,5 @@ export async function getMealsByProvider(id: string, opts?: { page?: number; lim
     const data = await handleRes<{ meals?: Meal[] }>(res);
     return data?.data?.meals ?? [];
 }
+
+export default { getAllProviders, getProviderById, getMealsByProvider };

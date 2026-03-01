@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import categoriesService from "../../../../../services/categories";
+import categoriesService from "@/services/categories";
 import { toast } from "sonner";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
 

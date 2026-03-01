@@ -3,7 +3,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import adminService from "../../../../services/admin";
+import { adminService } from "@/services";
 import Loading from "@/components/ui/Loading";
 
 function StatCard({ title, value, subtitle, className = "", footer, }: { title: string; value: React.ReactNode; subtitle?: string; className?: string; footer?: React.ReactNode }) {

@@ -1,4 +1,4 @@
-import { API_BASE_URL } from "../config";
+import { API_BASE_URL } from "@/config";
 
 export const getCategories = async () => {
   const res = await fetch(`${API_BASE_URL}/categories`, { credentials: "include" });

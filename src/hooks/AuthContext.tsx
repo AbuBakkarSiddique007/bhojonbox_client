@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
-import { getMe } from "@/services/auth";
+import { authService } from "@/services";
 import { TUser } from "@/hooks/useUser";
 
 type AuthContextType = {
@@ -21,7 +21,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    getMe()
+    authService
+      .getMe()
       .then((res) => setUser(res.data.user))
       .catch(() => setUser(null))
       .finally(() => setIsLoading(false));

@@ -12,10 +12,11 @@ export const getAllMeals = async (
   if (filters) {
     if (filters.minPrice != null) params.set('minPrice', String(filters.minPrice));
     if (filters.maxPrice != null) params.set('maxPrice', String(filters.maxPrice));
-    // backend expects a `category` query param (which represents cuisine here)
+  
     const cuisineVal = filters.cuisine ?? filters.category;
     if (cuisineVal) params.set('category', cuisineVal);
-    // backend expects `search` as the query key for name searches
+
+    
     if (filters.q) params.set('search', filters.q);
   }
   const url = `${base}/meals?${params.toString()}`;

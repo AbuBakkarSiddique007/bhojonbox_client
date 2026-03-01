@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { getAllMeals } from '@/services/meals/meals';
+import { mealsService } from '@/services';
 import MealsFilters from '../../components/meals/MealsFilters';
 import { API_BASE_URL } from '@/config';
 
@@ -24,7 +24,7 @@ export default async function MealsPage({ searchParams }: { searchParams?: Recor
     q: sp.q ?? undefined,
   };
 
-  const { meals, pagination } = await getAllMeals(page, limit, filters);
+  const { meals, pagination } = await mealsService.getAllMeals(page, limit, filters);
 
   const catRes = await fetch(`${API_BASE_URL}/categories`, { next: { revalidate: 60 } });
   const catJson = await catRes.json().catch(() => null);

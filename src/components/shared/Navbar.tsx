@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/hooks/AuthContext";
-import { logoutUser } from "@/services/auth";
+import { authService } from "@/services";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -33,7 +33,7 @@ export default function Navbar() {
   };
 
   const handleLogout = async () => {
-    await logoutUser();
+    await authService.logoutUser();
     setUser(null);
     toast.success("Logged out successfully");
     router.push("/login");

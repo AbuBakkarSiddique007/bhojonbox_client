@@ -6,8 +6,9 @@ import Loading from "@/components/ui/Loading";
 import { toast } from "sonner";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
 
-type Meal = { id: string; name: string; description?: string; price: number; isAvailable?: boolean; categoryId?: string };
+type Meal = { id: string; name: string; description?: string; price: number; isAvailable?: boolean; categoryId?: string; image?: string };
 type Category = { id: string; name: string };
+type MealPayload = { name: string; price: number; description: string; categoryId: string | null; isAvailable: boolean; image?: string };
 
 export default function ProviderMenuPage() {
   const [meals, setMeals] = useState<Meal[] | null>(null);
@@ -23,6 +24,7 @@ export default function ProviderMenuPage() {
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
   const [categoryId, setCategoryId] = useState<string | null>(null);
   const [isAvailable, setIsAvailable] = useState(true);
 
@@ -47,30 +49,34 @@ export default function ProviderMenuPage() {
   const fetchCategories = async () => {
     try {
       const res = await fetch(`${API_BASE_URL}/categories`);
-      const json = await res.json();
-      if (res.ok) setCategories(json?.data?.categories ?? []);
+      const json = await res.json().catch(() => null);
+      if (res.ok) {
+        const cats = json?.data?.categories ?? [];
+        setCategories(cats);
+        return cats;
+      }
+      return [];
     } catch {
+      return [];
     }
   };
 
-  
-  useEffect(() => {
-    if (categories.length && !categoryId) setCategoryId(categories[0].id);
-  }, [categories, categoryId]);
+  const openAdd = async () => {
+    setIsEditing(false);
+    setEditingId(null);
+    setName(""); setPrice(""); setDescription("");
+    const cats = categories.length ? categories : await fetchCategories();
+    setCategoryId((cats[0]?.id) ?? null);
+    setIsAvailable(true);
+    setImageUrl("");
+    setModalOpen(true);
+  };
 
   useEffect(() => {
     fetchMeals();
     fetchCategories();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const openAdd = () => {
-    setIsEditing(false);
-    setEditingId(null);
-    setName(""); setPrice(""); setDescription("");
-    setCategoryId(categories[0]?.id ?? null);
-    setIsAvailable(true);
-    setModalOpen(true);
-  };
 
   const openEdit = (m: Meal) => {
     setIsEditing(true);
@@ -80,6 +86,7 @@ export default function ProviderMenuPage() {
     setDescription(m.description ?? "");
     setCategoryId(m.categoryId ?? categories[0]?.id ?? null);
     setIsAvailable(m.isAvailable ?? true);
+    setImageUrl(m.image ?? "");
     setModalOpen(true);
   };
 
@@ -91,7 +98,8 @@ export default function ProviderMenuPage() {
     if (!isFinite(parsedPrice) || parsedPrice <= 0) return toast.error('Enter a valid price');
     try {
       setLoading(true);
-      const payload = { name: trimmedName, price: parsedPrice, description, categoryId, isAvailable };
+      const payload: MealPayload = { name: trimmedName, price: parsedPrice, description, categoryId, isAvailable };
+      if (imageUrl && imageUrl.trim()) payload.image = imageUrl.trim();
       const url = isEditing ? `${API_BASE_URL}/meals/${editingId}` : `${API_BASE_URL}/meals`;
       const method = isEditing ? 'PUT' : 'POST';
       const res = await fetch(url, { method, credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
@@ -123,6 +131,29 @@ export default function ProviderMenuPage() {
       setSelectedDeleteId(null);
       fetchMeals();
     } catch (err: unknown) {
+
+      
+      try {
+        if (selectedDeleteId) {
+          const res2 = await fetch(`${API_BASE_URL}/meals/${selectedDeleteId}`, {
+            method: 'PUT',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ isAvailable: false }),
+          });
+          const j2 = await res2.json().catch(() => null);
+          if (res2.ok) {
+            toast.error('Could not delete — meal has related orders. It was marked unavailable instead.');
+            setConfirmOpen(false);
+            setSelectedDeleteId(null);
+            fetchMeals();
+            return;
+          }
+        }
+      } catch (fallbackErr) {
+        // ignore
+      }
+
       if (err instanceof Error) toast.error(err.message);
       else toast.error(String(err));
     } finally { setLoading(false); }
@@ -146,6 +177,61 @@ export default function ProviderMenuPage() {
     }
   };
 
+  // Local component to render each meal card and show a loading placeholder for images.
+  function MealCard({ m }: { m: Meal }) {
+    const [imgLoading, setImgLoading] = useState(!!m.image);
+    const [imgError, setImgError] = useState(false);
+
+    return (
+      <div className={`rounded-xl overflow-hidden shadow-sm border ${m.isAvailable === false ? 'opacity-70' : ''}`}>
+        <div className={`h-36 bg-amber-50 flex items-center justify-center overflow-hidden relative ${m.isAvailable === false ? 'bg-slate-200' : ''}`}>
+          {m.image && !imgError ? (
+            <>
+              {imgLoading && (
+                <div className="absolute inset-0 flex items-center justify-center bg-white/60 z-10">
+                  <Loading />
+                </div>
+              )}
+              <img
+                src={m.image}
+                alt={m.name ?? 'meal image'}
+                className={`w-full h-full object-cover ${imgLoading ? 'opacity-0' : 'opacity-100'} transition-opacity`}
+                onLoad={() => setImgLoading(false)}
+                onError={() => { setImgError(true); setImgLoading(false); }}
+              />
+            </>
+          ) : (
+            <div className="text-5xl">🍽️</div>
+          )}
+        </div>
+        <div className="p-4 bg-white border-t">
+          <div className="flex items-start justify-between">
+            <div>
+              <div className="font-semibold text-lg">{m.name}</div>
+              <div className="text-xs uppercase text-slate-400">{categories.find(c => c.id === m.categoryId)?.name ?? ''}</div>
+            </div>
+            <div className="text-amber-600 font-semibold">৳ {m.price}</div>
+          </div>
+
+          <div className="mt-3 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <button onClick={() => openEdit(m)} className="px-3 py-1 border rounded-md text-sm">Edit</button>
+              <button onClick={() => confirmDelete(m.id)} className="px-3 py-1 border rounded-md text-sm text-red-600">Delete</button>
+            </div>
+
+            <div>
+              {m.isAvailable === false ? (
+                <button onClick={() => toggleAvailability(m)} className="text-xs px-3 py-1 bg-green-50 text-green-700 rounded-md">Make available</button>
+              ) : (
+                <button onClick={() => toggleAvailability(m)} className="text-xs px-3 py-1 bg-amber-50 text-amber-700 rounded-md">Make unavailable</button>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (err) return <div className="p-6 text-red-600">Error: {err}</div>;
   if (!meals) return <div className="p-6"><Loading /></div>;
 
@@ -162,6 +248,8 @@ export default function ProviderMenuPage() {
         </div>
       </div>
 
+      
+
       <div className="mb-6">
         <h2 className="text-xl font-semibold">My Menu</h2>
         <p className="text-sm text-muted-foreground">Add, edit, and manage your meal listings.</p>
@@ -169,35 +257,7 @@ export default function ProviderMenuPage() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {meals.map((m) => (
-          <div key={m.id} className={`rounded-xl overflow-hidden shadow-sm border ${m.isAvailable === false ? 'opacity-70' : ''}`}>
-            <div className={`h-36 bg-amber-50 flex items-center justify-center ${m.isAvailable === false ? 'bg-slate-200' : ''}`}>
-              <div className="text-5xl">🍽️</div>
-            </div>
-            <div className="p-4 bg-white border-t">
-              <div className="flex items-start justify-between">
-                <div>
-                  <div className="font-semibold text-lg">{m.name}</div>
-                  <div className="text-xs uppercase text-slate-400">{categories.find(c => c.id === m.categoryId)?.name ?? ''}</div>
-                </div>
-                <div className="text-amber-600 font-semibold">৳ {m.price}</div>
-              </div>
-
-              <div className="mt-3 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <button onClick={() => openEdit(m)} className="px-3 py-1 border rounded-md text-sm">Edit</button>
-                  <button onClick={() => confirmDelete(m.id)} className="px-3 py-1 border rounded-md text-sm text-red-600">Delete</button>
-                </div>
-
-                <div>
-                  {m.isAvailable === false ? (
-                    <button onClick={() => toggleAvailability(m)} className="text-xs px-3 py-1 bg-green-50 text-green-700 rounded-md">Make available</button>
-                  ) : (
-                    <button onClick={() => toggleAvailability(m)} className="text-xs px-3 py-1 bg-amber-50 text-amber-700 rounded-md">Make unavailable</button>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
+          <MealCard key={m.id} m={m} />
         ))}
       </div>
 
@@ -214,7 +274,16 @@ export default function ProviderMenuPage() {
               </div>
               <div>
                 <label className="block text-sm font-medium mb-1">Price</label>
-                <input value={price} onChange={(e) => setPrice(e.target.value)} className="w-full px-3 py-2 border rounded-md" />
+                <input
+                  value={price}
+                  onChange={(e) => setPrice(e.target.value)}
+                  type="number"
+                  inputMode="decimal"
+                  min="0"
+                  step="0.01"
+                  placeholder="0.00"
+                  className="w-full px-3 py-2 border rounded-md"
+                />
               </div>
               <div>
                 <label className="block text-sm font-medium mb-1">Category</label>
@@ -226,6 +295,10 @@ export default function ProviderMenuPage() {
               <div>
                 <label className="block text-sm font-medium mb-1">Description</label>
                 <textarea value={description} onChange={(e) => setDescription(e.target.value)} className="w-full px-3 py-2 border rounded-md" rows={3} />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Image URL (optional)</label>
+                <input value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} placeholder="https://...jpg" className="w-full px-3 py-2 border rounded-md" />
               </div>
               <div className="flex items-center gap-3">
                 <input id="avail" type="checkbox" checked={isAvailable} onChange={(e) => setIsAvailable(e.target.checked)} />

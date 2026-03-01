@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Loading from "@/components/ui/Loading";
-import adminService from "../../../../../services/admin";
+import { adminService } from "@/services";
 
 function OrderStatusBadge({ status }: { status?: string }) {
   const s = (status || "").toUpperCase();

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { API_BASE_URL } from "@/config";
 import { toast } from "sonner";
 import Loading from "@/components/ui/Loading";
-import reviewsService from "@/services/reviews";
+import { reviewsService } from "@/services";
 import { useAuth } from "@/hooks/AuthContext";
 
 type ReviewMeal = {
@@ -22,6 +22,11 @@ type OrderItem = {
   quantity?: number;
   qty?: number;
   id?: string | number;
+};
+
+type Review = {
+  mealId: string | number;
+  [key: string]: unknown;
 };
 
 type Order = {
@@ -82,6 +87,15 @@ export default function CustomerOrderDetailPage({ params }: { params: { id: stri
 
     setSubmitting(true);
     try {
+      // Re-check user's reviews to avoid duplicate review attempts (client-side guard)
+      const my = await reviewsService.getMyReviews().catch(() => null);
+      const reviews = my?.data?.reviews ?? my?.reviews ?? [];
+      const already = reviews.some((r: Review) => String(r.mealId) === String(selectedMeal.mealId ?? selectedMeal.id ?? selectedMeal.id));
+      if (already) {
+        toast.error("You already reviewed this meal");
+        setSelectedMeal(null);
+        return;
+      }
       const mealId = String(selectedMeal.mealId ?? selectedMeal.id ?? selectedMeal.id);
       const payload = { mealId, orderId: id, rating, comment };
       const res = await reviewsService.createReview(payload);

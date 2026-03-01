@@ -3,11 +3,12 @@
 import { useEffect, useRef, useState } from "react";
 import Loading from "@/components/ui/Loading";
 import Image from "next/image";
-import adminService from "../../../../../services/admin";
+import { adminService } from "@/services";
 import { toast } from "sonner";
 
 function RoleBadge({ role }: { role: string }) {
   if (role === "PROVIDER") return <span className="inline-block text-xs font-semibold px-3 py-1 rounded-full bg-orange-100 text-orange-700">PROVIDER</span>;
+  if (role === "ADMIN") return <span className="inline-block text-xs font-semibold px-3 py-1 rounded-full bg-amber-100 text-amber-700">ADMIN</span>;
   return <span className="inline-block text-xs font-semibold px-3 py-1 rounded-full bg-sky-100 text-sky-700">CUSTOMER</span>;
 }
 
@@ -187,6 +188,7 @@ export default function AdminUsersPage() {
             <option value="">All Roles</option>
             <option value="CUSTOMER">Customer</option>
             <option value="PROVIDER">Provider</option>
+            <option value="ADMIN">Admin</option>
           </select>
         </div>
       </div>

@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { getAllProviders } from '@/services/provider';
+import { providerService } from '@/services';
 
 type Provider = {
   id: string;
@@ -18,7 +18,7 @@ export default async function ProvidersPage({ searchParams }: { searchParams?: R
   const page = Number(sp.page ?? '1') || 1;
   const limit = Number(sp.limit ?? '9') || 9;
 
-  const all = await getAllProviders();
+  const all = await providerService.getAllProviders();
   const total = all.length;
   const pages = Math.max(1, Math.ceil(total / limit));
   const providers = all.slice((page - 1) * limit, page * limit);
