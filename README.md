@@ -1,36 +1,47 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# BhojonBox
 
-## Getting Started
+BhojonBox is a food-ordering web app connecting customers with local food providers. The frontend is a Next.js app deployed on Vercel and the backend is an Express + TypeScript API deployed on Render.
 
-First, run the development server:
+Live sites
+- Client (Vercel): https://bhojonbox-client.vercel.app
+- Server (Render): https://bhojonbox-server.onrender.com
+
+Features
+- Browse meals and providers
+- Add to cart and place orders
+- Provider dashboard to manage menu and orders
+- Customer dashboard to view orders and add reviews
+- Admin dashboard to manage users, providers and content
+- JWT-based auth stored in an HttpOnly cookie for secure sessions
+
+Technology stack
+- Client: Next.js, React, TypeScript
+- Server: Node.js, Express, TypeScript
+- Database: PostgreSQL
+- ORM: Prisma
+- Deployment: Vercel (client) and Render (server)
+
+Short setup & usage
+
+Prerequisites
+- Node.js (16+), npm (or pnpm)
+- PostgreSQL database (local or hosted)
+
+Client (run locally)
 
 ```bash
+cd bhojonbox_client
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Server (run locally)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+cd bhojonbox_server
+npm install
+# create .env with DATABASE_URL, JWT_SECRET, FRONTEND_URL, NODE_ENV
+npx prisma migrate dev --name init
+npx prisma generate
+npm run dev
+```
