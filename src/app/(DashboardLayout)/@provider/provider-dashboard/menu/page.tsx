@@ -177,82 +177,98 @@ export default function ProviderMenuPage() {
     }
   };
 
-  // Local component to render each meal card and show a loading placeholder for images.
   function MealCard({ m }: { m: Meal }) {
     const [imgLoading, setImgLoading] = useState(!!m.image);
     const [imgError, setImgError] = useState(false);
 
     return (
-      <div className={`rounded-xl overflow-hidden shadow-sm border ${m.isAvailable === false ? 'opacity-70' : ''}`}>
-        <div className={`h-36 bg-amber-50 flex items-center justify-center overflow-hidden relative ${m.isAvailable === false ? 'bg-slate-200' : ''}`}>
+      <div className={`group bg-card border border-border rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 ${m.isAvailable === false ? 'opacity-60 grayscale-[0.5]' : ''}`}>
+        <div className={`h-48 bg-muted/30 flex items-center justify-center overflow-hidden relative ${m.isAvailable === false ? 'bg-muted' : ''}`}>
           {m.image && !imgError ? (
             <>
               {imgLoading && (
-                <div className="absolute inset-0 flex items-center justify-center bg-white/60 z-10">
-                  <Loading />
+                <div className="absolute inset-0 flex items-center justify-center bg-card/60 backdrop-blur-sm z-10 transition-all">
+                  <Loading size="sm" />
                 </div>
               )}
               <img
                 src={m.image}
                 alt={m.name ?? 'meal image'}
-                className={`w-full h-full object-cover ${imgLoading ? 'opacity-0' : 'opacity-100'} transition-opacity`}
+                className={`w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ${imgLoading ? 'opacity-0' : 'opacity-100'}`}
                 onLoad={() => setImgLoading(false)}
                 onError={() => { setImgError(true); setImgLoading(false); }}
               />
             </>
           ) : (
-            <div className="text-5xl">🍽️</div>
+            <div className="text-6xl opacity-20 filter grayscale group-hover:grayscale-0 transition-all">🍽️</div>
           )}
-        </div>
-        <div className="p-4 bg-white border-t">
-          <div className="flex items-start justify-between">
-            <div>
-              <div className="font-semibold text-lg">{m.name}</div>
-              <div className="text-xs uppercase text-slate-400">{categories.find(c => c.id === m.categoryId)?.name ?? ''}</div>
-            </div>
-            <div className="text-amber-600 font-semibold">৳ {m.price}</div>
+          
+          <div className="absolute top-4 right-4 flex gap-2">
+             <button 
+              onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleAvailability(m); }}
+              className={`px-3 py-1 text-[10px] font-black uppercase tracking-widest rounded-full shadow-lg backdrop-blur-md transition-all active:scale-95 ${m.isAvailable === false ? 'bg-emerald-500 text-white' : 'bg-white/90 text-slate-900 border border-white/20 hover:bg-white'}`}
+            >
+              {m.isAvailable === false ? 'Enable' : 'Disable'}
+            </button>
           </div>
+        </div>
 
-          <div className="mt-3 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <button onClick={() => openEdit(m)} className="px-3 py-1 border rounded-md text-sm">Edit</button>
-              <button onClick={() => confirmDelete(m.id)} className="px-3 py-1 border rounded-md text-sm text-red-600">Delete</button>
-            </div>
-
+        <div className="p-5">
+          <div className="flex items-start justify-between mb-2">
             <div>
-              {m.isAvailable === false ? (
-                <button onClick={() => toggleAvailability(m)} className="text-xs px-3 py-1 bg-green-50 text-green-700 rounded-md">Make available</button>
-              ) : (
-                <button onClick={() => toggleAvailability(m)} className="text-xs px-3 py-1 bg-amber-50 text-amber-700 rounded-md">Make unavailable</button>
-              )}
+              <div className="text-xs font-black text-primary uppercase tracking-tighter mb-0.5">{categories.find(c => c.id === m.categoryId)?.name ?? 'Meal'}</div>
+              <div className="font-bold text-lg text-card-foreground brand line-clamp-1">{m.name}</div>
             </div>
+            <div className="text-xl font-black text-foreground">৳{m.price}</div>
+          </div>
+          
+          <p className="text-sm text-muted-foreground line-clamp-2 mb-6 h-10 italic">{m.description || "No description available."}</p>
+
+          <div className="flex items-center gap-2">
+            <button 
+              onClick={() => openEdit(m)} 
+              className="flex-1 px-4 py-2.5 bg-secondary text-secondary-foreground border border-border rounded-xl font-bold text-xs hover:bg-muted transition-all active:scale-95"
+            >
+              Edit Details
+            </button>
+            <button 
+              onClick={() => confirmDelete(m.id)} 
+              className="px-4 py-2.5 bg-destructive/10 text-destructive border border-destructive/20 rounded-xl font-bold text-xs hover:bg-destructive hover:text-destructive-foreground transition-all active:scale-95"
+            >
+              🗑️
+            </button>
           </div>
         </div>
       </div>
     );
   }
 
-  if (err) return <div className="p-6 text-red-600">Error: {err}</div>;
+  if (err) return <div className="p-6 text-destructive">Error: {err}</div>;
   if (!meals) return <div className="p-6"><Loading /></div>;
 
   return (
-    <div className="p-6">
-      <div className="flex items-center justify-between mb-6">
+    <div className="p-2 md:p-6 lg:p-8">
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-10 gap-4">
         <div>
-          <h1 className="text-2xl font-semibold">Menu Management</h1>
-          <p className="text-sm text-muted-foreground">Add, edit, and manage your meal listings.</p>
+          <h1 className="text-3xl font-extrabold text-foreground tracking-tight">Menu Management</h1>
+          <p className="text-muted-foreground mt-1 font-medium italic">Create and curate your signature culinary experiences.</p>
         </div>
 
-        <div>
-          <button onClick={openAdd} className="inline-flex items-center gap-2 px-4 py-2 bg-amber-600 text-white rounded-md">+ Add Meal</button>
-        </div>
+        <button 
+          onClick={openAdd} 
+          className="group px-6 py-3 bg-primary text-primary-foreground rounded-2xl font-black text-sm shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center gap-2"
+        >
+          <span className="text-xl">+</span>
+          <span>ADD NEW ITEM</span>
+        </button>
       </div>
 
-      
-
-      <div className="mb-6">
-        <h2 className="text-xl font-semibold">My Menu</h2>
-        <p className="text-sm text-muted-foreground">Add, edit, and manage your meal listings.</p>
+      <div className="mb-8 p-6 rounded-3xl bg-card border border-border flex items-center justify-between">
+        <div>
+          <h2 className="text-xl font-bold text-foreground brand">Current Menu</h2>
+          <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mt-1">Showing all {meals.length} available dishes</p>
+        </div>
+        <div className="text-6xl opacity-10 select-none">🥗</div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
@@ -261,53 +277,62 @@ export default function ProviderMenuPage() {
         ))}
       </div>
 
-      {/* Add/Edit Modal */}
       {modalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
-          <div className="fixed inset-0 bg-black/40" onClick={() => setModalOpen(false)} />
-          <div className="relative bg-white rounded-lg shadow-lg max-w-xl w-full p-6 mx-4">
-            <h3 className="text-lg font-semibold">{isEditing ? 'Edit Meal' : 'Add Meal'}</h3>
-            <div className="mt-4 space-y-3">
-              <div>
-                <label className="block text-sm font-medium mb-1">Name</label>
-                <input value={name} onChange={(e) => setName(e.target.value)} className="w-full px-3 py-2 border rounded-md" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="fixed inset-0 bg-background/80 backdrop-blur-md transition-all" onClick={() => setModalOpen(false)} />
+          <div className="relative bg-card border border-border rounded-[2rem] shadow-2xl max-w-xl w-full p-8 lg:p-10 animate-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between mb-8">
+              <h3 className="text-2xl font-black text-foreground brand">{isEditing ? 'Edit Culinary Item' : 'Create New Item'}</h3>
+              <button onClick={() => setModalOpen(false)} className="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-colors">✕</button>
+            </div>
+            
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2">Item Name</label>
+                  <input value={name} onChange={(e) => setName(e.target.value)} className="w-full px-4 py-3 rounded-xl bg-muted border-none focus:ring-2 focus:ring-primary/50 outline-none transition-all placeholder:text-muted-foreground/30" placeholder="e.g. Spiced Beef Biryani" />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2">Price (৳)</label>
+                  <input
+                    value={price}
+                    onChange={(e) => setPrice(e.target.value)}
+                    type="number"
+                    className="w-full px-4 py-3 rounded-xl bg-muted border-none focus:ring-2 focus:ring-primary/50 outline-none transition-all"
+                    placeholder="0.00"
+                  />
+                </div>
               </div>
+
               <div>
-                <label className="block text-sm font-medium mb-1">Price</label>
-                <input
-                  value={price}
-                  onChange={(e) => setPrice(e.target.value)}
-                  type="number"
-                  inputMode="decimal"
-                  min="0"
-                  step="0.01"
-                  placeholder="0.00"
-                  className="w-full px-3 py-2 border rounded-md"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">Category</label>
-                <select value={categoryId ?? ''} onChange={(e) => setCategoryId(e.target.value)} className="w-full px-3 py-2 border rounded-md">
-                  <option value="">Select category</option>
+                <label className="block text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2">Category</label>
+                <select value={categoryId ?? ''} onChange={(e) => setCategoryId(e.target.value)} className="w-full px-4 py-3 rounded-xl bg-muted border-none focus:ring-2 focus:ring-primary/50 outline-none transition-all appearance-none cursor-pointer">
+                  <option value="">Select a category</option>
                   {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                 </select>
               </div>
+
               <div>
-                <label className="block text-sm font-medium mb-1">Description</label>
-                <textarea value={description} onChange={(e) => setDescription(e.target.value)} className="w-full px-3 py-2 border rounded-md" rows={3} />
+                <label className="block text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2">Description</label>
+                <textarea value={description} onChange={(e) => setDescription(e.target.value)} className="w-full px-4 py-3 rounded-xl bg-muted border-none focus:ring-2 focus:ring-primary/50 outline-none transition-all resize-none" rows={3} placeholder="Tell us more about this dish..." />
               </div>
+
               <div>
-                <label className="block text-sm font-medium mb-1">Image URL (optional)</label>
-                <input value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} placeholder="https://...jpg" className="w-full px-3 py-2 border rounded-md" />
+                <label className="block text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2">Display Image URL</label>
+                <input value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} placeholder="https://images.unsplash.com/..." className="w-full px-4 py-3 rounded-xl bg-muted border-none focus:ring-2 focus:ring-primary/50 outline-none transition-all placeholder:text-muted-foreground/30" />
               </div>
-              <div className="flex items-center gap-3">
-                <input id="avail" type="checkbox" checked={isAvailable} onChange={(e) => setIsAvailable(e.target.checked)} />
-                <label htmlFor="avail" className="text-sm">Available</label>
+
+              <div className="flex items-center gap-3 p-4 bg-muted/50 rounded-2xl border border-border/50">
+                <input id="avail" type="checkbox" checked={isAvailable} onChange={(e) => setIsAvailable(e.target.checked)} className="w-5 h-5 rounded-md border-primary text-primary focus:ring-primary/30 cursor-pointer" />
+                <label htmlFor="avail" className="text-sm font-bold text-foreground cursor-pointer">Available for Ordering</label>
               </div>
             </div>
-            <div className="mt-4 flex justify-end gap-2">
-              <button className="px-3 py-1 rounded-md bg-gray-100" onClick={() => setModalOpen(false)}>Cancel</button>
-              <button className="px-3 py-1 rounded-md bg-amber-600 text-white" onClick={saveMeal} disabled={loading}>{loading ? <Loading inline size="sm" label="Saving…" /> : 'Save'}</button>
+
+            <div className="mt-10 flex gap-3">
+              <button className="flex-1 py-4 rounded-2xl bg-secondary text-secondary-foreground font-black text-xs uppercase tracking-widest hover:bg-muted transition-all active:scale-95" onClick={() => setModalOpen(false)}>Discard</button>
+              <button className="flex-[2] py-4 rounded-2xl bg-primary text-primary-foreground font-black text-xs uppercase tracking-widest shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all" onClick={saveMeal} disabled={loading}>
+                {loading ? <Loading inline size="sm" label="Saving…" /> : (isEditing ? 'Update Culinary Item' : 'Create Culinary Item')}
+              </button>
             </div>
           </div>
         </div>

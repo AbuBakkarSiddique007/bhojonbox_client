@@ -35,10 +35,12 @@ export default function CartBadge() {
   }, []);
 
   return (
-    <Link href="/cart" className="relative inline-flex items-center mr-2">
-      <span className="text-xl">🛒</span>
+    <Link href="/cart" className="relative group p-2 hover:bg-primary/10 rounded-xl transition-all duration-300 active:scale-90">
+      <span className="text-xl group-hover:scale-110 transition-transform block">🛒</span>
       {count > 0 && (
-        <span className="absolute -top-1 -right-2 inline-flex items-center justify-center px-1.5 py-0.5 text-xs font-semibold text-white bg-red-600 rounded-full">{count}</span>
+        <span className="absolute top-0 right-0 inline-flex items-center justify-center min-w-[20px] h-[20px] px-1.5 text-[10px] font-black text-primary-foreground bg-primary rounded-full shadow-lg shadow-primary/30 border-2 border-background animate-in zoom-in duration-300">
+          {count}
+        </span>
       )}
     </Link>
   );

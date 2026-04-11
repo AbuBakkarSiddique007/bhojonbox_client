@@ -18,25 +18,26 @@ export default function ConfirmDialog({ open, title = 'Are you sure?', descripti
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="fixed inset-0 bg-black/40" onClick={onCancel} />
-      <div className="relative bg-white rounded-lg shadow-lg max-w-md w-full p-6 mx-4">
-        <h3 className="text-lg font-semibold">{title}</h3>
-        {description && <p className="mt-2 text-sm text-slate-600">{description}</p>}
-        <div className="mt-4 flex justify-end space-x-2">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onClick={onCancel} />
+      <div className="relative bg-card border border-border rounded-[2rem] shadow-2xl max-w-md w-full p-8 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+        <div className="absolute top-0 right-0 -mr-16 -mt-16 w-40 h-40 bg-primary/5 rounded-full blur-3xl -z-10"></div>
+        <h3 className="text-2xl font-black text-foreground brand tracking-tight mb-2">{title}</h3>
+        {description && <p className="text-sm text-muted-foreground italic leading-relaxed">{description}</p>}
+        <div className="mt-8 flex flex-col sm:flex-row justify-end gap-3">
           <button
-            className="px-3 py-1 rounded-md bg-gray-100 text-slate-700"
+            className="px-6 py-3 rounded-2xl bg-muted hover:bg-muted/80 text-foreground text-xs font-black uppercase tracking-widest transition-all active:scale-95 border border-border"
             onClick={onCancel}
             disabled={loading}
           >
             {cancelLabel}
           </button>
           <button
-            className="px-3 py-1 rounded-md bg-red-600 text-white"
+            className="px-6 py-3 rounded-2xl bg-destructive text-destructive-foreground text-xs font-black uppercase tracking-widest transition-all hover:scale-[1.02] active:scale-95 shadow-lg shadow-destructive/20"
             onClick={() => onConfirm()}
             disabled={loading}
           >
-            {loading ? <Loading inline size="sm" label="Processing…" /> : confirmLabel}
+            {loading ? <Loading inline size="sm" /> : confirmLabel}
           </button>
         </div>
       </div>

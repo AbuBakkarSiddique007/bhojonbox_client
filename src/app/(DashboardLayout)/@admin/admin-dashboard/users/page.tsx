@@ -7,17 +7,17 @@ import { adminService } from "@/services";
 import { toast } from "sonner";
 
 function RoleBadge({ role }: { role: string }) {
-  if (role === "PROVIDER") return <span className="inline-block text-xs font-semibold px-3 py-1 rounded-full bg-orange-100 text-orange-700">PROVIDER</span>;
-  if (role === "ADMIN") return <span className="inline-block text-xs font-semibold px-3 py-1 rounded-full bg-amber-100 text-amber-700">ADMIN</span>;
-  return <span className="inline-block text-xs font-semibold px-3 py-1 rounded-full bg-sky-100 text-sky-700">CUSTOMER</span>;
+  if (role === "PROVIDER") return <span className="inline-flex text-[10px] font-black px-3 py-1 rounded-full bg-primary/10 text-primary border border-primary/20 uppercase tracking-widest">PROVIDER</span>;
+  if (role === "ADMIN") return <span className="inline-flex text-[10px] font-black px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 uppercase tracking-widest">ADMIN</span>;
+  return <span className="inline-flex text-[10px] font-black px-3 py-1 rounded-full bg-blue-500/10 text-blue-500 border border-blue-500/20 uppercase tracking-widest">CUSTOMER</span>;
 }
 
 
 function StatusBadge({ active }: { active: boolean }) {
   return active ? (
-    <span className="inline-block text-xs font-medium px-3 py-1 rounded-full bg-emerald-100 text-emerald-700">Active</span>
+    <span className="inline-flex text-[10px] font-black px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 uppercase tracking-widest">Active</span>
   ) : (
-    <span className="inline-block text-xs font-medium px-3 py-1 rounded-full bg-rose-100 text-rose-700">Suspended</span>
+    <span className="inline-flex text-[10px] font-black px-3 py-1 rounded-full bg-destructive/10 text-destructive border border-destructive/20 uppercase tracking-widest">Suspended</span>
   );
 }
 
@@ -174,17 +174,17 @@ export default function AdminUsersPage() {
 
       <div className="flex items-center gap-4 mb-6">
         <div className="relative flex-1">
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">🔍</span>
+          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/40">🔍</span>
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search name or email..."
-            className="w-full p-3 pl-10 rounded-lg bg-white border shadow-sm"
+            placeholder="Search by name or email..."
+            className="w-full p-3 pl-11 rounded-xl bg-card border border-border text-foreground placeholder:text-muted-foreground/30 focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition-all"
           />
         </div>
 
-        <div className="w-40">
-          <select value={role} onChange={(e) => setRole(e.target.value)} className="w-full p-3 rounded-lg bg-white border">
+        <div className="w-44">
+          <select value={role} onChange={(e) => setRole(e.target.value)} className="w-full p-3 rounded-xl bg-card border border-border text-foreground focus:ring-2 focus:ring-primary/30 outline-none transition-all text-sm font-medium">
             <option value="">All Roles</option>
             <option value="CUSTOMER">Customer</option>
             <option value="PROVIDER">Provider</option>
@@ -193,8 +193,8 @@ export default function AdminUsersPage() {
         </div>
       </div>
 
-      <div className="bg-amber-50 rounded-lg p-3">
-        <div className="grid grid-cols-6 gap-4 py-2 px-3 text-xs text-slate-500 uppercase font-semibold">
+      <div className="bg-card rounded-[2rem] border border-border overflow-hidden shadow-sm">
+        <div className="grid grid-cols-6 gap-4 py-3 px-6 text-[10px] text-muted-foreground uppercase font-black tracking-widest border-b border-border bg-muted/30">
           <div className="col-span-2">User</div>
           <div>Role</div>
           <div>Joined</div>
@@ -202,34 +202,32 @@ export default function AdminUsersPage() {
           <div>Action</div>
         </div>
 
-        <div className="divide-y">
+        <div className="divide-y divide-border">
           {loading ? (
             <div className="p-6 text-center"><Loading /></div>
           ) : (
             users.map((u) => (
-              <div key={u.id} className="grid grid-cols-6 items-center gap-4 py-4 px-3">
+          <div key={u.id} className="grid grid-cols-6 items-center gap-4 py-4 px-6 hover:bg-muted/20 transition-colors">
                 <div className="col-span-2 flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-sm font-semibold text-amber-600 overflow-hidden">
+              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-sm font-black text-primary overflow-hidden">
                     {u.avatar ? (
                       <Image src={u.avatar} alt={u.name ?? "avatar"} width={40} height={40} className="object-cover rounded-full" />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center">{u.name ? u.name.charAt(0) : "?"}</div>
                     )}
                   </div>
-                  <div>
-                    <div className="font-medium text-slate-800">{u.name}</div>
-                    <div className="text-sm text-slate-500">{u.email}</div>
-                    <div className="mt-2">
-                      <button onClick={() => openDetails(u.id)} className="text-sm px-3 py-1 rounded bg-white">Details</button>
-                    </div>
-                  </div>
+              <div>
+                <div className="font-semibold text-foreground text-sm">{u.name}</div>
+                <div className="text-xs text-muted-foreground">{u.email}</div>
+                <button onClick={() => openDetails(u.id)} className="mt-2 text-[10px] px-3 py-1 rounded-lg bg-muted text-muted-foreground hover:bg-primary/10 hover:text-primary transition-all font-black uppercase tracking-widest">Details</button>
+              </div>
                 </div>
 
                 <div>
                   <RoleBadge role={u.role} />
                 </div>
 
-                <div className="text-slate-600">{u.createdAt ? new Date(u.createdAt).toLocaleDateString() : "—"}</div>
+            <div className="text-sm text-muted-foreground">{u.createdAt ? new Date(u.createdAt).toLocaleDateString() : "—"}</div>
 
                 <div>
                   <StatusBadge active={!!u.isActive} />
@@ -258,27 +256,28 @@ export default function AdminUsersPage() {
       <div className="flex items-center justify-between mt-4">
         <div className="text-sm text-muted-foreground">Page {page} of {pages}</div>
         <div className="flex gap-2">
-          <button disabled={page <= 1} onClick={() => fetchUsers({ page: page - 1 })} className="px-3 py-1 rounded bg-white border">Prev</button>
-          <button disabled={page >= pages} onClick={() => fetchUsers({ page: page + 1 })} className="px-3 py-1 rounded bg-white border">Next</button>
+        <button disabled={page <= 1} onClick={() => fetchUsers({ page: page - 1 })} className="px-4 py-2 rounded-xl bg-card border border-border text-foreground text-xs font-black uppercase tracking-widest disabled:opacity-40 hover:bg-muted transition-all">Prev</button>
+          <button disabled={page >= pages} onClick={() => fetchUsers({ page: page + 1 })} className="px-4 py-2 rounded-xl bg-card border border-border text-foreground text-xs font-black uppercase tracking-widest disabled:opacity-40 hover:bg-muted transition-all">Next</button>
         </div>
       </div>
 
-      {/* Details modal */}
+
+
       {selected && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="bg-white rounded-lg max-w-xl w-full p-6 shadow-lg">
+          <div className="bg-card border border-border rounded-[2rem] max-w-xl w-full p-8 shadow-2xl animate-in zoom-in-95 duration-300">
             <div className="flex items-start justify-between mb-4">
               <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-full bg-gray-100 overflow-hidden flex-shrink-0">
+              <div className="w-16 h-16 rounded-2xl bg-muted overflow-hidden flex-shrink-0 flex items-center justify-center border border-border">
                   {selected.avatar ? (
                     <Image src={selected.avatar} alt={selected.name ?? "avatar"} width={64} height={64} className="w-full h-full object-cover" />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-xl text-slate-500">{selected.name ? selected.name.charAt(0) : "?"}</div>
+                    <div className="w-full h-full flex items-center justify-center text-xl font-black text-muted-foreground">{selected.name ? selected.name.charAt(0) : "?"}</div>
                   )}
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold">{selected.name}</h3>
-                  <div className="text-sm text-muted-foreground">{selected.email}</div>
+                  <h3 className="text-xl font-black text-foreground brand">{selected.name}</h3>
+                  <div className="text-xs text-muted-foreground">{selected.email}</div>
                 </div>
               </div>
             </div>
@@ -288,13 +287,11 @@ export default function AdminUsersPage() {
             ) : (
               <div className="space-y-6">
                 {selected.providerProfile ? (
-                  <div className="p-6 rounded-lg bg-gradient-to-r from-amber-50 to-amber-100 border border-amber-200">
-                    <div className="flex items-center justify-between">
+                  <div className="p-6 rounded-2xl bg-primary/5 border border-primary/10">
                       <div>
-                        <div className="text-xs text-amber-700 font-semibold">Provider</div>
-                        <h4 className="text-xl font-bold text-amber-900">{selected.providerProfile.storeName || 'Provider'}</h4>
+                        <div className="text-[10px] text-primary font-black uppercase tracking-widest">Provider</div>
+                        <h4 className="text-lg font-black text-foreground brand">{selected.providerProfile.storeName || 'Provider'}</h4>
                       </div>
-                    </div>
 
                     <div className="mt-4 grid gap-3">
                       {(() => {
@@ -325,20 +322,20 @@ export default function AdminUsersPage() {
                         return keys
                           .filter((k) => !!profile[k as keyof ProviderProfile])
                           .map((k) => (
-                            <div key={k} className="flex items-start justify-between gap-4 bg-white/60 p-3 rounded">
-                              <div className="text-xs text-slate-500 uppercase">{labels[k] || k}</div>
-                              <div className="text-sm font-medium text-slate-800">{String(profile[k as keyof ProviderProfile])}</div>
+                            <div key={k} className="flex items-start justify-between gap-4 bg-card/50 p-3 rounded-xl border border-border">
+                              <div className="text-[10px] text-muted-foreground uppercase tracking-widest font-black">{labels[k] || k}</div>
+                              <div className="text-xs font-semibold text-foreground">{String(profile[k as keyof ProviderProfile])}</div>
                             </div>
                           ));
                       })()}
                     </div>
                   </div>
                 ) : (
-                  <div className="p-6 rounded-lg bg-slate-50 text-center text-slate-600">No provider information available.</div>
+                  <div className="p-6 rounded-2xl bg-muted/30 border border-border text-center text-muted-foreground italic text-sm">No provider information available.</div>
                 )}
 
                 <div className="flex justify-end">
-                  <button onClick={() => setSelected(null)} className="btn btn-primary" aria-label="Close modal btn-error">Close</button>
+                  <button onClick={() => setSelected(null)} className="px-8 py-3 rounded-xl bg-primary text-primary-foreground text-[10px] font-black uppercase tracking-widest hover:scale-[1.02] active:scale-95 transition-all" aria-label="Close modal">Close</button>
                 </div>
               </div>
             )}

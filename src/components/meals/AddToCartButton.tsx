@@ -104,26 +104,26 @@ export default function AddToCartButton({
   const tooltipId = `tooltip-addtocart-${mealId}`;
 
   return (
-    <div className="relative inline-block group">
+    <div className="relative inline-block group mt-6">
       <button
         onClick={add}
         disabled={loading}
         aria-disabled={loading}
         aria-describedby={loading || !canAdd ? tooltipId : undefined}
-        className={`mt-6 inline-flex items-center gap-2 px-4 py-2 rounded-md ${canAdd ? "bg-amber-600 text-white hover:bg-amber-700" : "bg-gray-100 text-slate-700 hover:bg-gray-200"}`}
-        title={!user ? "Sign in to add to cart" : user?.role !== "CUSTOMER" ? "Only customers can add to cart" : undefined}
+        className={`px-8 py-4 rounded-2xl font-black text-[11px] uppercase tracking-[0.2em] transition-all shadow-lg active:scale-95 flex items-center justify-center gap-3 ${canAdd ? "bg-primary text-primary-foreground shadow-primary/20 hover:scale-[1.02] hover:-translate-y-0.5" : "bg-muted text-muted-foreground opacity-50 cursor-not-allowed shadow-none"}`}
       >
-        <span>Add to cart</span>
-        <span className="text-sm opacity-80">{price ? `৳ ${price}` : ""}</span>
+        <span>Add to Signature Order</span>
+        <span className="w-1.5 h-1.5 rounded-full bg-current opacity-30"></span>
+        <span className="font-black text-xs">{price ? `৳ ${price}` : ""}</span>
       </button>
 
       {(loading || !canAdd) && (
         <div
           id={tooltipId}
           role="tooltip"
-          className="pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-150 absolute left-1/2 -translate-x-1/2 -top-9 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap z-50"
+          className="pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300 absolute left-1/2 -translate-x-1/2 -top-12 bg-popover text-popover-foreground border border-border text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-xl shadow-2xl whitespace-nowrap z-50 backdrop-blur-md"
         >
-          {isLoading ? <Loading inline size="sm" label="Checking authentication…" /> : !user ? "Sign in to add to cart" : user.role !== "CUSTOMER" ? "Only customers can add to cart" : ""}
+          {isLoading ? <Loading inline size="sm" /> : !user ? "Membership Required" : user.role !== "CUSTOMER" ? "Customer Only Access" : ""}
         </div>
       )}
     </div>

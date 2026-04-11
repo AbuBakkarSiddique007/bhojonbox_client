@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/hooks/AuthContext";
 import { authService } from "@/services";
@@ -17,6 +18,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+
+import { ThemeToggle } from "@/components/shared/ThemeToggle";
 
 export default function Navbar() {
   const { user, isLoading, setUser } = useAuth();
@@ -55,39 +58,40 @@ export default function Navbar() {
 
   return (
     <nav className="sticky top-0 z-50 navbar-watercolor">
-      <div className="flex items-center justify-between px-4 sm:px-6 py-3 max-w-7xl mx-auto bg-transparent backdrop-blur-sm">
+      <div className="flex items-center justify-between px-4 sm:px-6 py-3 max-w-7xl mx-auto">
 
         <div className="flex items-center gap-3">
-          <Link href="/" className="flex items-center -ml-2">
-            <span className="brand text-2xl md:text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-amber-600 via-pink-600 to-indigo-600">Bhojonbox</span>
+          <Link href="/" className="flex items-center -ml-2 group">
+            <img src="/image2.png" alt="Bhojonbox Logo" className="h-10 md:h-12 w-auto object-contain brightness-110 contrast-110 drop-shadow-[0_0_8px_rgba(255,215,0,0.3)] group-hover:drop-shadow-[0_0_12px_rgba(255,215,0,0.5)] group-hover:scale-105 transition-all duration-500" />
+            <span className="sr-only">Bhojonbox</span>
           </Link>
         </div>
 
 
-        <div className="hidden md:flex items-center gap-4 text-base">
+        <div className="hidden md:flex items-center gap-2 text-[11px] font-black uppercase tracking-widest">
           <Link href="/" className="relative">
-            <span className={`${pathname === '/' ? 'inline-flex items-center px-3 py-1 rounded-full bg-amber-600 text-white shadow-sm' : 'inline-flex items-center px-3 py-1 rounded-full text-slate-700 hover:bg-amber-50'}`}>
+            <span className={`inline-flex items-center px-5 py-2 rounded-full transition-all ${pathname === '/' ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/20' : 'text-foreground/60 hover:text-foreground hover:bg-muted'}`}>
               Home
             </span>
           </Link>
-          
 
           <Link href="/meals" className="relative">
-            <span className={`${pathname?.startsWith('/meals') ? 'inline-flex items-center px-3 py-1 rounded-full bg-amber-600 text-white shadow-sm' : 'inline-flex items-center px-3 py-1 rounded-full text-slate-700 hover:bg-amber-50'}`}>
+            <span className={`inline-flex items-center px-5 py-2 rounded-full transition-all ${pathname?.startsWith('/meals') ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/20' : 'text-foreground/60 hover:text-foreground hover:bg-muted'}`}>
               Browse Meals
             </span>
           </Link>
 
           <Link href="/providers" className="relative">
-            <span className={`${pathname?.startsWith('/providers') ? 'inline-flex items-center px-3 py-1 rounded-full bg-amber-600 text-white shadow-sm' : 'inline-flex items-center px-3 py-1 rounded-full text-slate-700 hover:bg-amber-50'}`}>
+            <span className={`inline-flex items-center px-5 py-2 rounded-full transition-all ${pathname?.startsWith('/providers') ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/20' : 'text-foreground/60 hover:text-foreground hover:bg-muted'}`}>
               Restaurants
             </span>
           </Link>
         </div>
 
-        
+
         <div className="flex items-center gap-3">
-          {/* show cart for guests and customers */}
+          <ThemeToggle />
+
           {(!user || user.role === "CUSTOMER") && <CartBadge />}
 
           {isLoading ? (
@@ -139,10 +143,10 @@ export default function Navbar() {
           ) : (
             <>
               <Link href="/login">
-                <Button variant="ghost" size="sm" className="text-slate-700">Sign In</Button>
+                <Button variant="ghost" size="sm" className="text-foreground font-bold hover:bg-muted rounded-xl">Sign In</Button>
               </Link>
               <Link href="/register">
-                <Button size="sm" className="bg-amber-600 border-amber-600 text-white hover:bg-amber-700">Get Started</Button>
+                <Button size="sm" className="bg-primary text-primary-foreground hover:scale-[1.02] active:scale-95 transition-all shadow-lg shadow-primary/20 rounded-xl font-bold px-6">Get Started</Button>
               </Link>
             </>
           )}

@@ -15,9 +15,14 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "BhojonBox - Discover & Order Delicious Meals",
-  description: "Browse menus, place orders, and enjoy meals from local food providers.",
+  title: "The BhojonBox — Artisanal Cuisine, Delivered.",
+  description: "The BhojonBox curates exceptional menus from vetted local culinary artisans. Experience a distinguished dining experience, delivered to your door.",
+  icons: {
+    icon: "/facIcon.png",
+  },
 };
+
+import { ThemeProvider } from "@/components/providers/theme-provider";
 
 export default function RootLayout({
   children,
@@ -29,10 +34,17 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <AuthProvider>
-          {children}
-        </AuthProvider>
-        <Toaster />
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <AuthProvider>
+            {children}
+          </AuthProvider>
+          <Toaster />
+        </ThemeProvider>
       </body>
     </html>
   );

@@ -74,39 +74,42 @@ function ProviderStatsSection() {
   if (statsLoading) return <div className="mb-6"><Loading /></div>;
 
   return (
-    <div className="mb-6">
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
-        <div className="bg-white rounded-md p-4 shadow-sm">
-          <div className="text-sm text-slate-500">Meals</div>
-          <div className="mt-2 text-2xl font-semibold">{mealsCount ?? '—'}</div>
-          <div className="mt-1 text-sm text-slate-400">Active: {activeMeals} · Inactive: {inactiveMeals}</div>
+    <div className="mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-6">
+        <div className="bg-card rounded-2xl p-6 shadow-sm border border-border">
+          <div className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Meals</div>
+          <div className="mt-2 text-3xl font-bold text-card-foreground">{mealsCount ?? '—'}</div>
+          <div className="mt-2 text-xs text-muted-foreground flex items-center gap-2">
+            <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-emerald-500"></span>{activeMeals} Active</span>
+            <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-muted-foreground/30"></span>{inactiveMeals} Inactive</span>
+          </div>
         </div>
 
-        <div className="bg-white rounded-md p-4 shadow-sm">
-          <div className="text-sm text-slate-500">Orders</div>
-          <div className="mt-2 text-2xl font-semibold">{ordersCount ?? '—'}</div>
-          <div className="mt-1 text-sm text-slate-400">Revenue: ৳ {revenue}</div>
+        <div className="bg-card rounded-2xl p-6 shadow-sm border border-border">
+          <div className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Orders</div>
+          <div className="mt-2 text-3xl font-bold text-card-foreground">{ordersCount ?? '—'}</div>
+          <div className="mt-2 text-xs text-muted-foreground font-medium">Revenue: <span className="text-emerald-600 dark:text-emerald-400 font-bold">৳ {revenue}</span></div>
         </div>
 
-        <div className="bg-white rounded-md p-4 shadow-sm">
-          <div className="text-sm text-slate-500">Quick Actions</div>
-          <div className="mt-2 flex items-center gap-2">
-            <Link href="/provider-dashboard/menu" className="px-3 py-1 bg-amber-600 text-white rounded">Add Meal</Link>
-            <Link href="/provider-dashboard/orders" className="px-3 py-1 border rounded">View Orders</Link>
+        <div className="bg-card rounded-2xl p-6 shadow-sm border border-border">
+          <div className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Quick Actions</div>
+          <div className="mt-4 flex flex-col gap-2">
+            <Link href="/provider-dashboard/menu" className="flex items-center justify-center px-4 py-2 bg-primary text-primary-foreground rounded-xl font-bold text-sm shadow-sm hover:scale-[1.02] transition-transform">Add New Meal</Link>
+            <Link href="/provider-dashboard/orders" className="flex items-center justify-center px-4 py-2 bg-secondary text-secondary-foreground border border-border rounded-xl font-semibold text-sm hover:bg-muted transition-colors">Manage Orders</Link>
           </div>
         </div>
       </div>
 
-      <div className="bg-white rounded-md p-4 shadow-sm">
-        <div className="text-sm text-slate-500 mb-2">Orders by status</div>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+      <div className="bg-card rounded-2xl p-6 shadow-sm border border-border">
+        <div className="text-sm font-medium text-muted-foreground uppercase tracking-wider mb-4">Orders by status</div>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {Object.entries(ordersByStatus).length === 0 ? (
-            <div className="text-sm text-slate-400 col-span-4">No orders yet.</div>
+            <div className="text-sm text-muted-foreground col-span-4 py-4 text-center border-2 border-dashed border-border rounded-xl">No orders yet.</div>
           ) : (
             Object.entries(ordersByStatus).map(([status, count]) => (
-              <div key={status} className={`rounded-md p-2 text-sm font-medium ${status === 'PLACED' ? 'bg-amber-50 text-amber-700' : status === 'PREPARING' ? 'bg-yellow-50 text-yellow-700' : status === 'READY' ? 'bg-green-50 text-green-700' : status === 'DELIVERED' ? 'bg-green-100 text-green-800' : 'bg-slate-100 text-slate-700'}`}>
-                <div>{status}</div>
-                <div className="text-lg font-semibold">{count}</div>
+              <div key={status} className={`rounded-xl p-4 border transition-all ${status === 'PLACED' ? 'bg-amber-500/10 border-amber-500/20 text-amber-600 dark:text-amber-400' : status === 'PREPARING' ? 'bg-yellow-500/10 border-yellow-500/20 text-yellow-600 dark:text-yellow-400' : status === 'READY' ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-600 dark:text-emerald-400' : status === 'DELIVERED' ? 'bg-blue-500/10 border-blue-500/20 text-blue-600 dark:text-blue-400' : 'bg-muted border-border text-muted-foreground'}`}>
+                <div className="text-xs font-bold uppercase tracking-tighter mb-1 opacity-80">{status}</div>
+                <div className="text-2xl font-bold">{count}</div>
               </div>
             ))
           )}
@@ -115,46 +118,6 @@ function ProviderStatsSection() {
     </div>
   );
 }
-  const CustomerSidebar = ({ user, pathname, handleLogout }: { user: User; pathname: string; handleLogout: () => void }) => (
-    <aside className="w-64 border-r p-6 hidden md:block bg-white">
-      <div className="mb-4">
-        <Link href="/" className="text-sm inline-flex items-center gap-2 px-3 py-2 rounded hover:bg-slate-50">
-          <span>🏠</span>
-          <span>Dashboard</span>
-        </Link>
-      </div>
-
-      <div className="mb-6 flex items-center gap-3">
-        <div className="w-11 h-11 rounded-full bg-slate-100 flex items-center justify-center text-xl font-semibold">{user?.name ? user.name.charAt(0) : 'U'}</div>
-        <div>
-          <div className="font-semibold">{user?.name ?? 'Customer'}</div>
-          <div className="text-xs text-slate-500">{user?.email ?? ''}</div>
-          <div className="mt-2">
-            <span className="inline-block text-xs px-2 py-1 rounded-full bg-amber-50 text-amber-700">CUSTOMER</span>
-          </div>
-        </div>
-      </div>
-
-      <nav className="flex flex-col gap-2">
-        <Link href="/customer-dashboard/orders" className={`flex items-center gap-3 px-3 py-3 rounded ${pathname?.startsWith('/customer-dashboard/orders') ? 'bg-amber-50 text-amber-700' : 'hover:bg-slate-50'}`}>
-          <span>📦</span>
-          <span>My Orders</span>
-        </Link>
-
-        <Link href="/customer-dashboard/profile" className={`flex items-center gap-3 px-3 py-3 rounded ${pathname?.startsWith('/customer-dashboard/profile') ? 'bg-amber-50 text-amber-700' : 'hover:bg-slate-50'}`}>
-          <span>👤</span>
-          <span>Profile</span>
-        </Link>
-
-        <button type="button" onClick={handleLogout} className="flex items-center gap-3 px-3 py-3 rounded text-red-600 hover:bg-slate-50 mt-4">
-          <span>🚪</span>
-          <span>Logout</span>
-        </button>
-      </nav>
-    </aside>
-  );
- 
-
 interface User {
   name?: string;
   email?: string;
@@ -162,89 +125,99 @@ interface User {
 }
 
 const Sidebar = ({ user, pathname, handleLogout }: { user: User; pathname: string; handleLogout: () => void }) => (
-  <aside className="w-64 border-r p-6 hidden md:block bg-white sticky top-6 self-start max-h-[calc(100vh-96px)] overflow-auto">
-    <div className="mb-4">
-      <Link href="/" className="text-sm inline-flex items-center gap-2 px-3 py-2 rounded hover:bg-slate-50">
+  <aside className="w-64 border-r border-border p-6 hidden md:flex flex-col bg-card sticky top-0 h-screen overflow-auto">
+    <div className="mb-8">
+      <Link href="/" className="group inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-primary/10 text-primary font-bold hover:bg-primary transition-all hover:text-primary-foreground">
         <span>🏠</span>
-        <span>Dashboard</span>
+        <span>Go to Home</span>
       </Link>
     </div>
 
-    <div className="mb-6 flex items-center gap-3">
-      <Avatar size="lg">
-        {user?.name ? (
-          <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
-        ) : (
-          <AvatarFallback>U</AvatarFallback>
-        )}
-      </Avatar>
-      <div>
-        <div className="font-semibold">{user?.name ?? 'User'}</div>
-        <div className="text-xs text-slate-500">{user?.email ?? ''}</div>
-        <div className="mt-2">
-          <span className="inline-block text-xs px-2 py-1 rounded-full bg-amber-50 text-amber-700">{user?.role ?? 'USER'}</span>
+    <div className="mb-8 p-4 rounded-2xl bg-muted/50 border border-border/50">
+      <div className="flex items-center gap-3">
+        <Avatar size="lg" className="border-2 border-primary/20">
+          {user?.name ? (
+            <AvatarFallback className="bg-primary text-primary-foreground">{user.name.charAt(0)}</AvatarFallback>
+          ) : (
+            <AvatarFallback className="bg-primary text-primary-foreground">U</AvatarFallback>
+          )}
+        </Avatar>
+        <div className="overflow-hidden">
+          <div className="font-bold text-card-foreground truncate">{user?.name ?? 'User'}</div>
+          <div className="text-[10px] text-muted-foreground truncate uppercase font-bold tracking-widest">{user?.role ?? 'USER'}</div>
         </div>
       </div>
     </div>
 
-    <nav className="flex-1 flex flex-col gap-2">
+    <nav className="flex-1 flex flex-col gap-1">
       {user?.role === 'ADMIN' ? (
         <>
-          <Link href="/admin-dashboard" className={`text-sm flex items-center gap-3 px-3 py-2 rounded ${pathname === '/admin-dashboard' || pathname === '/admin-dashboard/' ? 'bg-amber-50 text-amber-700 font-medium' : 'hover:bg-slate-50'}`}>
-            <span>🏠</span>
+          <Link href="/admin-dashboard" className={`group flex items-center gap-3 px-4 py-3 rounded-xl transition-all relative ${pathname === '/admin-dashboard' || pathname === '/admin-dashboard/' ? 'bg-primary/10 text-primary font-bold' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}>
+            { (pathname === '/admin-dashboard' || pathname === '/admin-dashboard/') && <div className="absolute right-0 top-3 bottom-3 w-1 bg-primary rounded-l-full" /> }
+            <span className="text-xl">📊</span>
             <span>Overview</span>
           </Link>
-          <Link href="/admin-dashboard/users" className={`text-sm flex items-center gap-3 px-3 py-2 rounded ${pathname?.startsWith('/admin-dashboard/users') ? 'bg-amber-50 text-amber-700 font-medium' : 'hover:bg-slate-50'}`}>
-            <span>👥</span>
+          <Link href="/admin-dashboard/users" className={`group flex items-center gap-3 px-4 py-3 rounded-xl transition-all relative ${pathname?.startsWith('/admin-dashboard/users') ? 'bg-primary/10 text-primary font-bold' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}>
+            { pathname?.startsWith('/admin-dashboard/users') && <div className="absolute right-0 top-3 bottom-3 w-1 bg-primary rounded-l-full" /> }
+            <span className="text-xl">👥</span>
             <span>Users</span>
           </Link>
-          <Link href="/admin-dashboard/orders" className={`text-sm flex items-center gap-3 px-3 py-2 rounded ${pathname?.startsWith('/admin-dashboard/orders') ? 'bg-amber-50 text-amber-700 font-medium' : 'hover:bg-slate-50'}`}>
-            <span>📦</span>
+          <Link href="/admin-dashboard/orders" className={`group flex items-center gap-3 px-4 py-3 rounded-xl transition-all relative ${pathname?.startsWith('/admin-dashboard/orders') ? 'bg-primary/10 text-primary font-bold' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}>
+            { pathname?.startsWith('/admin-dashboard/orders') && <div className="absolute right-0 top-3 bottom-3 w-1 bg-primary rounded-l-full" /> }
+            <span className="text-xl">📦</span>
             <span>Orders</span>
           </Link>
-          <Link href="/admin-dashboard/categories" className={`text-sm flex items-center gap-3 px-3 py-2 rounded ${pathname?.startsWith('/admin-dashboard/categories') ? 'bg-amber-50 text-amber-700 font-medium' : 'hover:bg-slate-50'}`}>
-            <span>📂</span>
+          <Link href="/admin-dashboard/categories" className={`group flex items-center gap-3 px-4 py-3 rounded-xl transition-all relative ${pathname?.startsWith('/admin-dashboard/categories') ? 'bg-primary/10 text-primary font-bold' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}>
+            { pathname?.startsWith('/admin-dashboard/categories') && <div className="absolute right-0 top-3 bottom-3 w-1 bg-primary rounded-l-full" /> }
+            <span className="text-xl">📂</span>
             <span>Categories</span>
           </Link>
-          <Link href="/admin-dashboard/profile" className={`text-sm flex items-center gap-3 px-3 py-2 rounded ${pathname?.startsWith('/admin-dashboard/profile') ? 'bg-amber-50 text-amber-700 font-medium' : 'hover:bg-slate-50'}`}>
-            <span>👤</span>
+          <Link href="/admin-dashboard/profile" className={`group flex items-center gap-3 px-4 py-3 rounded-xl transition-all relative ${pathname?.startsWith('/admin-dashboard/profile') ? 'bg-primary/10 text-primary font-bold' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}>
+            { pathname?.startsWith('/admin-dashboard/profile') && <div className="absolute right-0 top-3 bottom-3 w-1 bg-primary rounded-l-full" /> }
+            <span className="text-xl">👤</span>
             <span>Profile</span>
           </Link>
         </>
       ) : user?.role === 'PROVIDER' ? (
         <>
-          <Link href="/provider-dashboard" className={`flex items-center gap-3 px-3 py-2 rounded ${pathname === '/provider-dashboard' || pathname === '/provider-dashboard/' ? 'bg-amber-50 text-amber-700 font-medium' : 'hover:bg-slate-50'}`}>
-            <span>🏠</span>
+          <Link href="/provider-dashboard" className={`group flex items-center gap-3 px-4 py-3 rounded-xl transition-all relative ${pathname === '/provider-dashboard' || pathname === '/provider-dashboard/' ? 'bg-primary/10 text-primary font-bold' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}>
+            { (pathname === '/provider-dashboard' || pathname === '/provider-dashboard/') && <div className="absolute right-0 top-3 bottom-3 w-1 bg-primary rounded-l-full" /> }
+            <span className="text-xl">📊</span>
             <span>Dashboard</span>
           </Link>
-          <Link href="/provider-dashboard/menu" className={`flex items-center gap-3 px-3 py-2 rounded ${pathname?.startsWith('/provider-dashboard/menu') ? 'bg-amber-50 text-amber-700 font-medium' : 'hover:bg-slate-50'}`}>
-            <span>＋</span>
+          <Link href="/provider-dashboard/menu" className={`group flex items-center gap-3 px-4 py-3 rounded-xl transition-all relative ${pathname?.startsWith('/provider-dashboard/menu') ? 'bg-primary/10 text-primary font-bold' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}>
+            { pathname?.startsWith('/provider-dashboard/menu') && <div className="absolute right-0 top-3 bottom-3 w-1 bg-primary rounded-l-full" /> }
+            <span className="text-xl">🍽️</span>
             <span>My Menu</span>
           </Link>
-          <Link href="/provider-dashboard/orders" className={`flex items-center gap-3 px-3 py-2 rounded ${pathname?.startsWith('/provider-dashboard/orders') ? 'bg-amber-50 text-amber-700 font-medium' : 'hover:bg-slate-50'}`}>
-            <span>📦</span>
+          <Link href="/provider-dashboard/orders" className={`group flex items-center gap-3 px-4 py-3 rounded-xl transition-all relative ${pathname?.startsWith('/provider-dashboard/orders') ? 'bg-primary/10 text-primary font-bold' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}>
+            { pathname?.startsWith('/provider-dashboard/orders') && <div className="absolute right-0 top-3 bottom-3 w-1 bg-primary rounded-l-full" /> }
+            <span className="text-xl">📦</span>
             <span>Orders</span>
           </Link>
-          <Link href="/provider-dashboard/profile" className={`flex items-center gap-3 px-3 py-2 rounded ${pathname?.startsWith('/provider-dashboard/profile') ? 'bg-amber-50 text-amber-700 font-medium' : 'hover:bg-slate-50'}`}>
-            <span>👤</span>
+          <Link href="/provider-dashboard/profile" className={`group flex items-center gap-3 px-4 py-3 rounded-xl transition-all relative ${pathname?.startsWith('/provider-dashboard/profile') ? 'bg-primary/10 text-primary font-bold' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}>
+            { pathname?.startsWith('/provider-dashboard/profile') && <div className="absolute right-0 top-3 bottom-3 w-1 bg-primary rounded-l-full" /> }
+            <span className="text-xl">👤</span>
             <span>Profile</span>
           </Link>
         </>
       ) : (
         <>
-          <Link href="/customer-dashboard/orders" className={`text-sm flex items-center gap-3 px-3 py-2 rounded ${pathname?.startsWith('/customer-dashboard/orders') ? 'bg-amber-50 text-amber-700 font-medium' : 'hover:bg-slate-50'}`}>
-            <span>📦</span>
+          <Link href="/customer-dashboard/orders" className={`group flex items-center gap-3 px-4 py-3 rounded-xl transition-all relative ${pathname?.startsWith('/customer-dashboard/orders') ? 'bg-primary/10 text-primary font-bold' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}>
+            { pathname?.startsWith('/customer-dashboard/orders') && <div className="absolute right-0 top-3 bottom-3 w-1 bg-primary rounded-l-full" /> }
+            <span className="text-xl">🛍️</span>
             <span>My Orders</span>
           </Link>
-          <Link href="/customer-dashboard/profile" className={`text-sm flex items-center gap-3 px-3 py-2 rounded ${pathname?.startsWith('/customer-dashboard/profile') ? 'bg-amber-50 text-amber-700 font-medium' : 'hover:bg-slate-50'}`}>
-            <span>👤</span>
+          <Link href="/customer-dashboard/profile" className={`group flex items-center gap-3 px-4 py-3 rounded-xl transition-all relative ${pathname?.startsWith('/customer-dashboard/profile') ? 'bg-primary/10 text-primary font-bold' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}>
+            { pathname?.startsWith('/customer-dashboard/profile') && <div className="absolute right-0 top-3 bottom-3 w-1 bg-primary rounded-l-full" /> }
+            <span className="text-xl">👤</span>
             <span>Profile</span>
           </Link>
         </>
       )}
 
-      <button type="button" onClick={handleLogout} className="text-sm flex items-center gap-3 text-red-600 px-3 py-2 rounded hover:bg-slate-50 mt-4">
-        <span>🚪</span>
+      <button type="button" onClick={handleLogout} className="mt-auto group flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-destructive hover:bg-destructive/10 font-bold">
+        <span className="text-xl">🚪</span>
         <span>Logout</span>
       </button>
     </nav>
@@ -296,13 +269,19 @@ export default function DashboardLayout({ children, admin, provider, customer }:
   }
 
   return (
-    <div className="min-h-screen flex bg-slate-50">
+    <div className="min-h-screen flex bg-background">
       {user?.role === "ADMIN" ? (
         <>
           <Sidebar user={user} pathname={pathname} handleLogout={handleLogout} />
-          <main className="flex-1 p-6">
+          <main className="flex-1 p-6 lg:p-10">
             <div className="max-w-7xl mx-auto">
-              <h1 className="text-2xl font-semibold mb-6">Admin Overview</h1>
+              <div className="flex items-center justify-between mb-8">
+                <h1 className="text-3xl font-extrabold text-foreground tracking-tight">Admin Overview</h1>
+                <div className="flex items-center gap-3 px-4 py-2 bg-card border border-border rounded-xl shadow-sm">
+                  <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+                  <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Admin Mode</span>
+                </div>
+              </div>
               <div className="mt-6">{admin ?? children}</div>
             </div>
           </main>
@@ -310,8 +289,15 @@ export default function DashboardLayout({ children, admin, provider, customer }:
       ) : user?.role === "PROVIDER" ? (
         <>
           <Sidebar user={user} pathname={pathname} handleLogout={handleLogout} />
-          <main className="flex-1 p-6 bg-slate-50">
+          <main className="flex-1 p-6 lg:p-10">
             <div className="max-w-7xl mx-auto">
+              <div className="flex items-center justify-between mb-8">
+                <h1 className="text-3xl font-extrabold text-foreground tracking-tight">Provider Dashboard</h1>
+                <div className="flex items-center gap-3 px-4 py-2 bg-card border border-border rounded-xl shadow-sm">
+                  <div className="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></div>
+                  <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Provider Mode</span>
+                </div>
+              </div>
               {pathname === '/provider-dashboard' || pathname === '/provider-dashboard/' ? (
                 <ProviderStatsSection />
               ) : null}
@@ -321,9 +307,16 @@ export default function DashboardLayout({ children, admin, provider, customer }:
         </>
       ) : (
         <>
-          <CustomerSidebar user={user ?? {}} pathname={pathname} handleLogout={handleLogout} />
-          <main className="flex-1 p-6">
+          <Sidebar user={user ?? {}} pathname={pathname} handleLogout={handleLogout} />
+          <main className="flex-1 p-6 lg:p-10">
             <div className="max-w-7xl mx-auto">
+              <div className="flex items-center justify-between mb-8">
+                <h1 className="text-3xl font-extrabold text-foreground tracking-tight">Customer Dashboard</h1>
+                <div className="flex items-center gap-3 px-4 py-2 bg-card border border-border rounded-xl shadow-sm">
+                  <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></div>
+                  <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Customer Mode</span>
+                </div>
+              </div>
               <div className="mt-6">{customer ?? children}</div>
             </div>
           </main>
