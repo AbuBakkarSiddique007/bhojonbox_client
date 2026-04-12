@@ -7,6 +7,8 @@ import Loading from "@/components/ui/Loading";
 import { API_BASE_URL } from "@/config";
 import { toast } from "sonner";
 import { authService } from "@/services";
+import ImageUpload from "@/components/ui/ImageUpload";
+
 
 type ProviderProfile = {
   storeName?: string;
@@ -197,15 +199,19 @@ export default function ProviderProfilePage() {
             <div className="absolute top-0 right-0 -mr-16 -mt-16 w-40 h-40 bg-primary/5 rounded-full blur-3xl group-hover:bg-primary/10 transition-colors"></div>
             
             <div className="flex flex-col items-center text-center relative z-10">
-              <div className="relative group/logo">
-                <div className="w-40 h-40 rounded-[2.5rem] bg-primary/10 flex items-center justify-center text-6xl font-black text-primary mb-8 border-8 border-card shadow-2xl group-hover/logo:scale-105 transition-transform duration-500 overflow-hidden">
-                  {logo ? <img src={logo} alt="Store logo" className="w-full h-full object-cover" /> : (storeName ? storeName.charAt(0) : (user?.name ? user.name.charAt(0) : 'P'))}
+              <div className="relative group/logo w-full flex justify-center pb-8 border-b border-border/50 mb-8">
+                <div className="w-40 h-40 rounded-[2.5rem] bg-primary/10 flex items-center justify-center text-6xl font-black text-primary border-4 border-card shadow-2xl group-hover/logo:scale-105 transition-transform duration-500 overflow-hidden relative">
+                  {editing ? (
+                    <ImageUpload 
+                      className="w-full h-full absolute inset-0" 
+                      label="" 
+                      value={logo} 
+                      onChange={setLogo} 
+                    />
+                  ) : (
+                    logo ? <img src={logo} alt="Store logo" className="w-full h-full object-cover" /> : (storeName ? storeName.charAt(0) : (user?.name ? user.name.charAt(0) : 'P'))
+                  )}
                 </div>
-                {editing && (
-                  <div className="absolute inset-0 bg-black/40 rounded-[2.5rem] flex items-center justify-center opacity-0 group-hover/logo:opacity-100 transition-opacity cursor-pointer">
-                    <span className="text-white text-xs font-black uppercase tracking-widest">Update Logo</span>
-                  </div>
-                )}
               </div>
               
               <h2 className="text-3xl font-black text-foreground brand mb-3 leading-tight">{storeName || 'Your Gourmet Store'}</h2>
@@ -260,9 +266,8 @@ export default function ProviderProfilePage() {
               </div>
 
               <div className="space-y-8">
-                 <div>
-                  <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground mb-3 ml-1">Logo Reference</label>
-                  <input value={logo} onChange={(e) => setLogo(e.target.value)} disabled={!editing} className="w-full px-6 py-5 rounded-[1.25rem] bg-muted/30 border border-border focus:ring-2 focus:ring-primary/40 focus:border-primary outline-none transition-all disabled:opacity-75 disabled:cursor-not-allowed font-semibold text-foreground placeholder:text-muted-foreground/30 shadow-sm" placeholder="https://external-resource.com/logo.png" />
+                 <div className="hidden">
+                  {/* Removed manual text input for Logo Reference; now handled by ImageUpload */}
                 </div>
 
                 <div>

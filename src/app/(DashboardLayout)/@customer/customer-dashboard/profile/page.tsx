@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import Loading from "@/components/ui/Loading";
 import { API_BASE_URL } from "@/config";
 import { toast } from "sonner";
+import ImageUpload from "@/components/ui/ImageUpload";
 
 export default function CustomerProfilePage() {
   const { user, setUser } = useAuth();
@@ -14,6 +15,7 @@ export default function CustomerProfilePage() {
   const [email] = useState(user?.email ?? "");
   const [phone, setPhone] = useState(user?.phone ?? "");
   const [address, setAddress] = useState(user?.address ?? "");
+  const [avatar, setAvatar] = useState(user?.avatar ?? "");
   const [loading, setLoading] = useState(false);
 
   const saveProfile = async () => {
@@ -24,7 +26,7 @@ export default function CustomerProfilePage() {
         method: "PUT",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, phone, address }),
+        body: JSON.stringify({ name, phone, address, avatar }),
       });
       const json = await res.json().catch(() => null);
       if (!res.ok) throw new Error(json?.message || "Failed to update profile");
@@ -71,9 +73,21 @@ export default function CustomerProfilePage() {
           <div className="bg-card border border-border rounded-[2.5rem] p-10 lg:p-12 shadow-2xl relative overflow-hidden group h-fit sticky top-8">
             <div className="absolute top-0 right-0 -mr-16 -mt-16 w-40 h-40 bg-primary/5 rounded-full blur-3xl group-hover:bg-primary/10 transition-colors"></div>
             
-            <div className="flex flex-col items-center text-center relative z-10">
-              <div className="w-40 h-40 rounded-[2.5rem] bg-primary/10 flex items-center justify-center text-6xl font-black text-primary mb-8 border-8 border-card shadow-2xl group-hover:scale-105 transition-transform duration-500 overflow-hidden">
-                {user?.name ? user.name.charAt(0) : 'U'}
+            <div className="flex flex-col items-center text-center relative z-10 w-full">
+              <div className="w-40 h-40 mb-8 border-4 border-card shadow-2xl rounded-full relative z-20 group-hover:scale-105 transition-transform duration-500 overflow-hidden bg-primary/5">
+                {editing ? (
+                  <ImageUpload 
+                    className="w-full h-full absolute inset-0" 
+                    isAvatar
+                    label="" 
+                    value={avatar} 
+                    onChange={setAvatar} 
+                  />
+                ) : (
+                  <div className="w-full h-full rounded-full flex items-center justify-center text-6xl font-black text-primary overflow-hidden">
+                    {avatar ? <img src={avatar} alt="avatar" className="w-full h-full object-cover" /> : (user?.name ? user.name.charAt(0) : 'U')}
+                  </div>
+                )}
               </div>
               <h2 className="text-3xl font-black text-foreground brand mb-2">{user?.name || 'Gourmet Enthusiast'}</h2>
               <div className="px-5 py-2 rounded-full bg-primary/10 text-primary text-[10px] font-black tracking-[0.3em] uppercase mb-8">Premium Customer</div>

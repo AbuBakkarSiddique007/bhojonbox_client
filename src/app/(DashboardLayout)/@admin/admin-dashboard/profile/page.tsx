@@ -3,10 +3,53 @@ import React from "react";
 import { useAuth } from "@/hooks/AuthContext";
 import Loading from "@/components/ui/Loading";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import ImageUpload from "@/components/ui/ImageUpload";
+import { API_BASE_URL } from "@/config";
+import { toast } from "sonner";
+
 
 export default function AdminProfilePage() {
-  const { user, isLoading } = useAuth();
+  const { user, setUser, isLoading } = useAuth();
   const router = useRouter();
+  const [editing, setEditing] = useState(false);
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [avatar, setAvatar] = useState("");
+  const [saving, setSaving] = useState(false);
+
+  // Initialize fields once user is loaded
+  React.useEffect(() => {
+    if (user && !name && !editing) {
+      setName(user.name ?? "");
+      setPhone(user.phone ?? "");
+      setAvatar(user.avatar ?? "");
+    }
+  }, [user, editing, name]);
+
+  const saveProfile = async () => {
+    if (!name) return toast.error("Name is required");
+    setSaving(true);
+    try {
+      const res = await fetch(`${API_BASE_URL}/auth/profile`, {
+        method: "PUT",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, phone, avatar }),
+      });
+      const json = await res.json().catch(() => null);
+      if (!res.ok) throw new Error(json?.message || "Failed to update profile");
+      const updated = json?.data?.user;
+      if (updated) setUser(updated);
+      toast.success("Profile updated");
+      setEditing(false);
+    } catch (err: unknown) {
+      if (err instanceof Error) toast.error(err.message);
+      else toast.error(String(err));
+    } finally {
+      setSaving(false);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -32,12 +75,23 @@ export default function AdminProfilePage() {
           <h1 className="text-4xl font-black text-foreground tracking-tighter brand uppercase text-primary">Administrative Core</h1>
           <p className="text-muted-foreground mt-2 font-medium italic opacity-80">Platform governance and executive identity management.</p>
         </div>
-        <button
-          onClick={() => router.back()}
-          className="px-8 py-4 rounded-2xl bg-secondary text-secondary-foreground border border-border font-black text-xs uppercase tracking-widest hover:bg-muted transition-all active:scale-95 shadow-sm"
-        >
-          Return to Dashboard
-        </button>
+        <div className="flex items-center gap-3">
+          <button 
+            onClick={() => setEditing((v) => !v)}
+            className={`px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all active:scale-95 flex items-center gap-2 shadow-sm ${editing ? 'bg-destructive/10 text-destructive border border-destructive/20' : 'bg-secondary text-secondary-foreground border border-border hover:bg-muted'}`}
+          >
+            {editing ? 'Cancel' : 'Edit Identity'}
+          </button>
+          {editing && (
+            <button 
+              disabled={saving} 
+              onClick={saveProfile} 
+              className="px-8 py-4 bg-primary text-primary-foreground rounded-2xl font-black text-xs uppercase tracking-widest shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center gap-2"
+            >
+              {saving ? <Loading inline size="sm" /> : 'Confirm'}
+            </button>
+          )}
+        </div>
       </div>
 
       <div className="max-w-4xl mx-auto">
@@ -47,18 +101,39 @@ export default function AdminProfilePage() {
           {user ? (
             <div className="flex flex-col md:flex-row gap-12 items-center md:items-start text-center md:text-left">
               <div className="relative group/avatar">
-                <div className="w-40 h-40 rounded-[2.5rem] bg-primary/10 flex items-center justify-center text-6xl font-black text-primary border-8 border-card shadow-2xl group-hover/avatar:scale-105 transition-transform duration-500 overflow-hidden">
-                  {user.name ? user.name.charAt(0) : (user.email?.charAt(0) ?? "A")}
+                <div className="w-40 h-40 rounded-full bg-primary/10 flex items-center justify-center text-6xl font-black text-primary border-4 border-card shadow-2xl group-hover/avatar:scale-105 transition-transform duration-500 overflow-hidden">
+                  {editing ? (
+                    <ImageUpload 
+                      className="w-full h-full absolute inset-0" 
+                      isAvatar
+                      label="" 
+                      value={avatar} 
+                      onChange={setAvatar} 
+                    />
+                  ) : (
+                    avatar ? <img src={avatar} alt="avatar" className="w-full h-full object-cover" /> : (user.name ? user.name.charAt(0) : (user.email?.charAt(0) ?? "A"))
+                  )}
                 </div>
-                <div className="absolute -bottom-2 -right-2 w-10 h-10 rounded-xl bg-primary text-primary-foreground flex items-center justify-center shadow-lg border-4 border-card">
+                <div className="absolute -bottom-2 -right-2 w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-lg border-4 border-card z-10">
                    <span className="text-xs">🛡️</span>
                 </div>
               </div>
 
               <div className="flex-1 space-y-8">
                 <div>
-                    <h2 className="text-3xl font-black text-foreground brand mb-2">{user.name}</h2>
-                    <p className="text-primary font-black text-[10px] uppercase tracking-[0.3em] mb-4 bg-primary/10 inline-block px-4 py-1.5 rounded-full">Executive Administrator</p>
+                    {editing ? (
+                      <input 
+                        value={name} 
+                        onChange={(e) => setName(e.target.value)} 
+                        className="w-full max-w-sm px-4 py-2 rounded-xl bg-muted/30 border border-border focus:ring-2 focus:ring-primary/40 outline-none transition-all font-black text-3xl mb-2 text-foreground"
+                        placeholder="Name" 
+                      />
+                    ) : (
+                      <h2 className="text-3xl font-black text-foreground brand mb-2">{user.name}</h2>
+                    )}
+                    <div className="flex items-center gap-2 mb-4">
+                      <p className="text-primary font-black text-[10px] uppercase tracking-[0.3em] bg-primary/10 inline-block px-4 py-1.5 rounded-full">Executive Administrator</p>
+                    </div>
                     <div className="text-sm text-muted-foreground italic opacity-70 tracking-tight">{user.email}</div>
                 </div>
 
@@ -76,7 +151,16 @@ export default function AdminProfilePage() {
                        <span className="w-1.5 h-1.5 rounded-full bg-primary/40"></span>
                        Secure Contact
                     </div>
-                    <div className="font-black text-foreground brand uppercase tracking-tighter text-lg">{user.phone ?? "N/A"}</div>
+                    {editing ? (
+                      <input 
+                        value={phone} 
+                        onChange={(e) => setPhone(e.target.value)} 
+                        className="w-full px-4 py-2 rounded-xl bg-muted/30 border border-border focus:ring-2 focus:ring-primary/40 outline-none transition-all font-black text-lg text-foreground"
+                        placeholder="Phone" 
+                      />
+                    ) : (
+                      <div className="font-black text-foreground brand uppercase tracking-tighter text-lg">{user.phone ?? "N/A"}</div>
+                    )}
                   </div>
 
                   <div className="p-6 bg-muted/20 rounded-3xl border border-border shadow-inner">

@@ -9,7 +9,7 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import CartBadge from "@/components/shared/CartBadge";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -107,8 +107,9 @@ export default function Navbar() {
                     className="relative h-9 w-9 rounded-full"
                   >
                     <Avatar className="h-9 w-9">
+                      <AvatarImage src={user.avatar || ""} alt={user.name || "User Avatar"} className="object-cover" />
                       <AvatarFallback className="bg-primary text-primary-foreground text-sm">
-                        {getInitials(user.name)}
+                        {getInitials(user.name || "User")}
                       </AvatarFallback>
                     </Avatar>
                   </Button>

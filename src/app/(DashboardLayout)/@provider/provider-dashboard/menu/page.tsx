@@ -5,6 +5,7 @@ import { API_BASE_URL } from "@/config";
 import Loading from "@/components/ui/Loading";
 import { toast } from "sonner";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
+import ImageUpload from "@/components/ui/ImageUpload";
 
 type Meal = { id: string; name: string; description?: string; price: number; isAvailable?: boolean; categoryId?: string; image?: string };
 type Category = { id: string; name: string };
@@ -259,7 +260,7 @@ export default function ProviderMenuPage() {
           className="group px-6 py-3 bg-primary text-primary-foreground rounded-2xl font-black text-sm shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center gap-2"
         >
           <span className="text-xl">+</span>
-          <span>ADD NEW ITEM</span>
+          <span>Add Meal</span>
         </button>
       </div>
 
@@ -280,9 +281,9 @@ export default function ProviderMenuPage() {
       {modalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="fixed inset-0 bg-background/80 backdrop-blur-md transition-all" onClick={() => setModalOpen(false)} />
-          <div className="relative bg-card border border-border rounded-[2rem] shadow-2xl max-w-xl w-full p-8 lg:p-10 animate-in zoom-in-95 duration-200">
+          <div className="relative bg-card border border-border rounded-[2rem] shadow-2xl max-w-xl w-full p-8 lg:p-10 animate-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-8">
-              <h3 className="text-2xl font-black text-foreground brand">{isEditing ? 'Edit Culinary Item' : 'Create New Item'}</h3>
+              <h3 className="text-2xl font-black text-foreground brand">{isEditing ? 'Edit Meal' : 'Add Meal'}</h3>
               <button onClick={() => setModalOpen(false)} className="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-colors">✕</button>
             </div>
             
@@ -317,9 +318,12 @@ export default function ProviderMenuPage() {
                 <textarea value={description} onChange={(e) => setDescription(e.target.value)} className="w-full px-4 py-3 rounded-xl bg-muted border-none focus:ring-2 focus:ring-primary/50 outline-none transition-all resize-none" rows={3} placeholder="Tell us more about this dish..." />
               </div>
 
-              <div>
-                <label className="block text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2">Display Image URL</label>
-                <input value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} placeholder="https://images.unsplash.com/..." className="w-full px-4 py-3 rounded-xl bg-muted border-none focus:ring-2 focus:ring-primary/50 outline-none transition-all placeholder:text-muted-foreground/30" />
+              <div className="w-full">
+                <ImageUpload 
+                  label="Display Image (Optional)"
+                  value={imageUrl} 
+                  onChange={setImageUrl} 
+                />
               </div>
 
               <div className="flex items-center gap-3 p-4 bg-muted/50 rounded-2xl border border-border/50">
@@ -329,9 +333,9 @@ export default function ProviderMenuPage() {
             </div>
 
             <div className="mt-10 flex gap-3">
-              <button className="flex-1 py-4 rounded-2xl bg-secondary text-secondary-foreground font-black text-xs uppercase tracking-widest hover:bg-muted transition-all active:scale-95" onClick={() => setModalOpen(false)}>Discard</button>
+              <button className="flex-1 py-4 rounded-2xl bg-secondary text-secondary-foreground font-black text-xs uppercase tracking-widest hover:bg-muted transition-all active:scale-95" onClick={() => setModalOpen(false)}>Cancel</button>
               <button className="flex-[2] py-4 rounded-2xl bg-primary text-primary-foreground font-black text-xs uppercase tracking-widest shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all" onClick={saveMeal} disabled={loading}>
-                {loading ? <Loading inline size="sm" label="Saving…" /> : (isEditing ? 'Update Culinary Item' : 'Create Culinary Item')}
+                {loading ? <Loading inline size="sm" label="Saving…" /> : (isEditing ? 'Save Changes' : 'Add Meal')}
               </button>
             </div>
           </div>

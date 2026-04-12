@@ -115,14 +115,21 @@ export default function BhojonConcierge() {
                     }`}>
                     {m.split(/(https?:\/\/[^\s]+|\/[^\s]+)/g).map((part, index) => {
                       if (part.startsWith('http') || part.startsWith('/')) {
+                     
+                        const match = part.match(/[.,!?;:]+$/);
+                        const punctuation = match ? match[0] : '';
+                        const cleanUrl = match ? part.slice(0, -punctuation.length) : part;
+                        
                         return (
-                          <Link 
-                            key={index} 
-                            href={part} 
-                            className="underline decoration-gold font-black hover:text-gold transition-colors inline-flex items-center gap-1"
-                          >
-                            {part} <ExternalLink size={10} />
-                          </Link>
+                          <span key={index}>
+                            <Link 
+                              href={cleanUrl} 
+                              className="underline decoration-gold font-black hover:text-gold transition-colors inline-flex items-center gap-1"
+                            >
+                              {cleanUrl} <ExternalLink size={10} />
+                            </Link>
+                            {punctuation}
+                          </span>
                         );
                       }
                       return part;

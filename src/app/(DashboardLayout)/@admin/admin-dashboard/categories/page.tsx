@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import categoriesService from "@/services/categories";
 import { toast } from "sonner";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
+import ImageUpload from "@/components/ui/ImageUpload";
 
 interface Category {
   id: string;
@@ -90,7 +91,7 @@ export default function AdminCategoriesPage() {
           onClick={() => setAddOpen(true)}
           className="px-8 py-4 bg-primary text-primary-foreground rounded-2xl font-black text-xs uppercase tracking-widest shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all"
         >
-          + Register Category
+          + Add Category
         </button>
       </div>
 
@@ -134,8 +135,8 @@ export default function AdminCategoriesPage() {
       )}
 
       {(addOpen || editing) && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="bg-card border border-border rounded-[2rem] w-full max-w-2xl p-8 shadow-2xl animate-in fade-in zoom-in-95 duration-300">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="bg-card border border-border rounded-[2rem] w-full max-w-2xl p-8 shadow-2xl animate-in fade-in zoom-in-95 duration-300 max-h-[90vh] overflow-y-auto">
             <div className="flex items-start justify-between gap-4 mb-8">
               <div>
                 <h3 className="text-2xl font-black text-foreground brand uppercase tracking-tight">
@@ -148,51 +149,39 @@ export default function AdminCategoriesPage() {
               <button onClick={closeModal} className="text-muted-foreground hover:text-foreground transition-colors text-lg font-black">✕</button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="flex items-center justify-center">
-                <div className="w-36 h-36 bg-muted/50 rounded-2xl overflow-hidden flex items-center justify-center border-2 border-dashed border-border">
-                  {(editing ? image : newImage) ? (
-                    <img src={editing ? image : newImage} alt="preview" className="w-full h-full object-cover" />
-                  ) : (
-                    <div className="text-4xl opacity-30">🍽️</div>
-                  )}
-                </div>
+            <div className="space-y-6">
+              <div>
+                <label className="block text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2 ml-1">Category Name</label>
+                <input
+                  value={editing ? name : newName}
+                  onChange={(e) => editing ? setName(e.target.value) : setNewName(e.target.value)}
+                  className="w-full px-5 py-4 rounded-[1.25rem] bg-muted/30 border border-border text-foreground focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition-all font-semibold shadow-sm"
+                  placeholder="e.g., Fast Food, Desserts"
+                />
               </div>
 
-              <div className="md:col-span-2 space-y-5">
-                <div>
-                  <label className="block text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2">Category Name</label>
-                  <input
-                    value={editing ? name : newName}
-                    onChange={(e) => editing ? setName(e.target.value) : setNewName(e.target.value)}
-                    className="w-full px-5 py-3 rounded-xl bg-muted/30 border border-border text-foreground focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition-all font-semibold"
-                    placeholder="e.g., Fast Food, Desserts"
-                  />
-                </div>
-                <div>
-                  <label className="block text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2">Image URL (optional)</label>
-                  <input
-                    value={editing ? image : newImage}
-                    onChange={(e) => editing ? setImage(e.target.value) : setNewImage(e.target.value)}
-                    placeholder="https://example.com/image.jpg"
-                    className="w-full px-5 py-3 rounded-xl bg-muted/30 border border-border text-foreground focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition-all font-semibold"
-                  />
-                </div>
-                <div className="flex justify-end gap-3 pt-2">
+              <div>
+                <ImageUpload 
+                  label="Category Image (Optional)"
+                  value={editing ? image : newImage} 
+                  onChange={(url) => editing ? setImage(url) : setNewImage(url)} 
+                />
+              </div>
+
+              <div className="flex justify-end gap-3 pt-4">
                   <button onClick={closeModal} className="px-6 py-3 rounded-xl bg-muted text-muted-foreground text-[10px] font-black uppercase tracking-widest hover:bg-destructive/10 hover:text-destructive transition-all">
                     Cancel
                   </button>
                   {editing ? (
                     <button onClick={() => { if (editing) handleUpdate(editing); }} className="px-8 py-3 rounded-xl bg-primary text-primary-foreground text-[10px] font-black uppercase tracking-widest shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all">
-                      Save
+                      Save Changes
                     </button>
                   ) : (
                     <button onClick={handleCreateFromModal} className="px-8 py-3 rounded-xl bg-primary text-primary-foreground text-[10px] font-black uppercase tracking-widest shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all">
-                      Create
+                      Add Category
                     </button>
                   )}
                 </div>
-              </div>
             </div>
           </div>
         </div>
