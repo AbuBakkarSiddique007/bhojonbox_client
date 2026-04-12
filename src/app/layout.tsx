@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/hooks/AuthContext";
+import { ThemeProvider } from "@/components/providers/theme-provider";
+import BhojonConcierge from "@/components/ai/BhojonConcierge";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -22,8 +24,6 @@ export const metadata: Metadata = {
   },
 };
 
-import { ThemeProvider } from "@/components/providers/theme-provider";
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -42,6 +42,7 @@ export default function RootLayout({
         >
           <AuthProvider>
             {children}
+            <BhojonConcierge />
           </AuthProvider>
           <Toaster />
         </ThemeProvider>
