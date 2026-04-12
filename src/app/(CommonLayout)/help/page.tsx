@@ -1,47 +1,51 @@
-"use client"
+"use client";
 
+import React from "react";
 import Link from "next/link";
+import { ThemeToggle } from "@/components/shared/ThemeToggle"; // For aesthetics
 
-export default function HelpPage() {
+export default function HelpCenterPage() {
   return (
-    <div className="py-12">
-      <section className="mx-4 md:mx-8 lg:mx-16 bg-slate-800/60 rounded-2xl p-8 shadow-inner border border-white/5 backdrop-blur-sm">
-        <div className="max-w-4xl mx-auto">
-          <h1 className="text-3xl font-bold text-white">Help Center</h1>
-          <p className="mt-4 text-white/80">Find answers to common questions about ordering, delivery, payments, and provider policies.</p>
+    <main className="min-h-screen py-20 px-6 max-w-4xl mx-auto animate-in fade-in duration-700">
+      <div className="mb-16 text-center">
+        <h1 className="text-5xl font-black brand tracking-tighter text-foreground mb-6">
+          How Can We <span className="text-primary border-b-4 border-primary">Help?</span>
+        </h1>
+        <p className="text-muted-foreground text-lg leading-relaxed max-w-2xl mx-auto italic">
+          BhojonBox Support is here to ensure your culinary journey is seamless. Browse our FAQs or contact us directly.
+        </p>
+      </div>
 
-          <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="p-4 bg-slate-900/40 rounded border border-white/5">
-              <h3 className="font-semibold text-white">Ordering</h3>
-              <p className="mt-2 text-sm text-white/80">How to browse menus, add items to cart, and complete checkout.</p>
-              <a  className="mt-3 inline-block text-amber-400 underline">Learn more</a>
-            </div>
+      <div className="space-y-6">
+        <section className="p-8 bg-card border border-border rounded-3xl shadow-sm hover:shadow-md transition-shadow">
+          <h2 className="text-2xl font-black text-foreground brand mb-4">Ordering Meals</h2>
+          <p className="text-muted-foreground leading-relaxed mb-4">
+            To place an order, simply browse our curated catalog of meals, add your selections to the cart, and proceed to checkout. You must be signed in as a Customer to complete a transaction.
+          </p>
+        </section>
 
-            <div className="p-4 bg-slate-900/40 rounded border border-white/5">
-              <h3 className="font-semibold text-white">Delivery & Pickup</h3>
-              <p className="mt-2 text-sm text-white/80">Options, tracking, and what to expect when your order is on the way.</p>
-              <a  className="mt-3 inline-block text-amber-400 underline">Learn more</a>
-            </div>
+        <section className="p-8 bg-card border border-border rounded-3xl shadow-sm hover:shadow-md transition-shadow">
+          <h2 className="text-2xl font-black text-foreground brand mb-4">Becoming a Provider</h2>
+          <p className="text-muted-foreground leading-relaxed mb-4">
+            Culinary experts can join BhojonBox by registering as a Provider. Once your account is established, you can access the Provider Dashboard to manage your signature meals and brand logo.
+          </p>
+        </section>
 
-            <div className="p-4 bg-slate-900/40 rounded border border-white/5">
-              <h3 className="font-semibold text-white">Payments</h3>
-              <p className="mt-2 text-sm text-white/80">Supported payment methods, refunds, and receipts.</p>
-              <a  className="mt-3 inline-block text-amber-400 underline">Learn more</a>
-            </div>
+        <section className="p-8 bg-card border border-border rounded-3xl shadow-sm hover:shadow-md transition-shadow">
+          <h2 className="text-2xl font-black text-foreground brand mb-4">Account Security</h2>
+          <p className="text-muted-foreground leading-relaxed">
+            Your data is encrypted and securely stored. We use robust authentication systems to ensure that your identity and preferences are protected at all times.
+          </p>
+        </section>
+      </div>
 
-            <div className="p-4 bg-slate-900/40 rounded border border-white/5">
-              <h3 className="font-semibold text-white">Provider Policies</h3>
-              <p className="mt-2 text-sm text-white/80">Guidelines for providers and how we keep quality high.</p>
-              <a  className="mt-3 inline-block text-amber-400 underline">Learn more</a>
-            </div>
-          </div>
-
-          <div className="mt-8 text-sm text-white/70">
-            <p>If you can not find an answer, reach out via our contact page and we will help you directly.</p>
-            <Link href="/contact" className="inline-block mt-3 text-amber-400 underline">Contact Support</Link>
-          </div>
-        </div>
-      </section>
-    </div>
+      <div className="mt-16 p-10 bg-primary/5 border border-primary/20 rounded-[2.5rem] text-center">
+        <h3 className="text-3xl font-black brand mb-4">Still Need Assistance?</h3>
+        <p className="text-muted-foreground mb-8">Our concierge team is available 24/7 to resolve any inquiries.</p>
+        <Link href="/" className="px-8 py-4 bg-primary text-primary-foreground font-black tracking-widest text-xs uppercase shadow-lg shadow-primary/20 rounded-xl hover:scale-105 active:scale-95 transition-all">
+          Return to Home
+        </Link>
+      </div>
+    </main>
   );
 }
