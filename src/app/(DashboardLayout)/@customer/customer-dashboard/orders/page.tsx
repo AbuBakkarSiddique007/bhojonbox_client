@@ -11,6 +11,7 @@ type Order = {
   id: string;
   totalAmount?: number;
   status?: string;
+  paymentStatus?: string;
   createdAt?: string;
   items?: { id: string; meal?: { name?: string }; quantity?: number }[];
 };
@@ -64,7 +65,7 @@ export default function CustomerOrdersPage() {
           <p className="text-muted-foreground mt-2 font-medium italic opacity-80">Historical log of your curated culinary experiences.</p>
         </div>
         <div className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] bg-muted/30 px-4 py-2 rounded-full border border-border">
-           Total Engagements: {orders.length}
+           Total Orders: {orders.length}
         </div>
       </div>
 
@@ -79,7 +80,7 @@ export default function CustomerOrdersPage() {
                    <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-lg shadow-inner">🍽️</div>
                    <div>
                       <Link href={`/customer-dashboard/orders/${o.id}`} className="text-lg font-black text-foreground brand uppercase tracking-tight hover:text-primary transition-colors flex items-center gap-2">
-                        Assignment #{o.id.slice(-6).toUpperCase()}
+                        Order #{o.id.slice(-6).toUpperCase()}
                         <span className="text-[10px] text-muted-foreground font-mono opacity-40">({o.id})</span>
                       </Link>
                       <div className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mt-1 italic">
@@ -104,6 +105,18 @@ export default function CustomerOrdersPage() {
                   {o.status}
                 </div>
 
+                {o.paymentStatus === 'PAID' && (
+                  <div className="px-3 py-1 bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 rounded-lg text-[9px] font-black uppercase tracking-widest flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                    Verified Payment
+                  </div>
+                )}
+                {o.paymentStatus === 'FAILED' && (
+                  <div className="px-3 py-1 bg-destructive/10 text-destructive border border-destructive/20 rounded-lg text-[9px] font-black uppercase tracking-widest flex items-center gap-2">
+                    Payment Failed
+                  </div>
+                )}
+
                 {o.status === 'PLACED' && (
                   <button
                     className={`mt-4 px-6 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all active:scale-95 ${processingId === o.id ? 'bg-muted text-muted-foreground' : 'bg-destructive/10 text-destructive border border-destructive/20 hover:bg-destructive hover:text-white'}`}
@@ -113,7 +126,7 @@ export default function CustomerOrdersPage() {
                     }}
                     disabled={processingId === o.id}
                   >
-                    {processingId === o.id ? <Loading inline size="sm" /> : 'Revoke Assignment'}
+                    {processingId === o.id ? <Loading inline size="sm" /> : 'Cancel Order'}
                   </button>
                 )}
               </div>
@@ -126,10 +139,10 @@ export default function CustomerOrdersPage() {
 
       <ConfirmDialog
         open={confirmOpen}
-        title="Revoke Assignment"
-        description="Are you sure you want to terminate this culinary engagement? This decision cannot be reversed in the temporal flow."
-        confirmLabel="Finalize Revocation"
-        cancelLabel="Maintain Engagement"
+        title="Cancel Order"
+        description="Are you sure you want to terminate this culinary order? This decision cannot be reversed."
+        confirmLabel="Finalize Cancellation"
+        cancelLabel="Keep Order"
         loading={confirmLoading}
         onCancel={() => { setConfirmOpen(false); setSelectedOrderId(null); }}
         onConfirm={async () => {
@@ -140,7 +153,7 @@ export default function CustomerOrdersPage() {
             const res = await fetch(`${API_BASE_URL}/orders/${selectedOrderId}/cancel`, { method: 'PATCH', credentials: 'include' });
             const json = await res.json();
             if (!res.ok) throw new Error(json?.message || 'Failed to cancel order');
-            toast.success('Assignment successfully revoked');
+            toast.success('Order cancelled successfully');
             // refresh orders
             const refresh = await fetch(`${API_BASE_URL}/orders/my-orders`, { credentials: 'include' });
             const refreshJson = await refresh.json();

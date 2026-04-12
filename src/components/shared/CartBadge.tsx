@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 import Link from "next/link";
 import { cartBus } from "@/lib/cartBus";
 
 function readCount() {
+  if (typeof window === "undefined") return 0;
   try {
     const raw = localStorage.getItem("cart");
     if (!raw) return 0;
@@ -15,24 +16,21 @@ function readCount() {
   }
 }
 
+const subscribe = (onStoreChange: () => void) => {
+  window.addEventListener("storage", onStoreChange);
+  cartBus.on("cart-updated", onStoreChange as EventListener);
+  return () => {
+    window.removeEventListener("storage", onStoreChange);
+    cartBus.off("cart-updated", onStoreChange as EventListener);
+  };
+};
+
 export default function CartBadge() {
-  const [count, setCount] = useState(() => readCount());
-
-  useEffect(() => {
-    const onStorage = (e: StorageEvent) => {
-      if (e.key === "cart") setCount(readCount());
-    };
-
-    const onCustom = () => setCount(readCount());
-
-    window.addEventListener("storage", onStorage);
-    cartBus.on("cart-updated", onCustom as EventListener);
-
-    return () => {
-      window.removeEventListener("storage", onStorage);
-      cartBus.off("cart-updated", onCustom as EventListener);
-    };
-  }, []);
+  const count = useSyncExternalStore(
+    subscribe,
+    readCount,
+    () => 0 // Server snapshot
+  );
 
   return (
     <Link href="/cart" className="relative group p-2 hover:bg-primary/10 rounded-xl transition-all duration-300 active:scale-90">
