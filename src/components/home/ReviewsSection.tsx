@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { Star } from "lucide-react";
+import ScrollReveal from "@/components/shared/ScrollReveal";
 
 const reviews = [
   {
@@ -36,13 +37,15 @@ export default function ReviewsSection() {
       <div className="absolute top-0 left-0 w-80 h-80 bg-primary/5 rounded-full blur-[100px] -z-10" />
 
       <div className="max-w-7xl mx-auto px-6">
-        <div className="text-center mb-20 animate-in fade-in duration-1000">
-          <p className="text-[10px] font-black uppercase tracking-[0.35em] text-primary mb-4">Customer Chronicles</p>
-          <h2 className="text-3xl md:text-5xl font-black text-foreground brand uppercase tracking-tight">
-            Voices of the <span className="text-primary italic">Palate</span>
-          </h2>
-          <div className="w-16 h-1 bg-primary mx-auto mt-6 mb-6 rounded-full" />
-        </div>
+        <ScrollReveal>
+          <div className="text-center mb-20 animate-in fade-in duration-1000">
+            <p className="text-[10px] font-black uppercase tracking-[0.35em] text-primary mb-4">Customer Chronicles</p>
+            <h2 className="text-3xl md:text-5xl font-black text-foreground brand uppercase tracking-tight">
+              Voices of the <span className="text-primary italic">Palate</span>
+            </h2>
+            <div className="w-16 h-1 bg-primary mx-auto mt-6 mb-6 rounded-full" />
+          </div>
+        </ScrollReveal>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {reviews.map((rev, i) => (

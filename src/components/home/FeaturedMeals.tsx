@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { API_BASE_URL } from "@/config";
+import ScrollReveal from "@/components/shared/ScrollReveal";
 
 type Meal = {
   id: string;
@@ -22,11 +23,19 @@ export default async function FeaturedMeals({ limit = 6 }: { limit?: number }) {
   const meals = list.slice(0, limit);
 
   return (
-    <section className="max-w-7xl mx-auto px-6 py-12">
-      <div className="mb-12 text-center">
-        <h3 className="text-3xl md:text-4xl font-extrabold mb-4 text-primary brand">Featured Meals</h3>
-        <p className="text-muted-foreground max-w-2xl mx-auto font-medium italic">Our most-loved culinary creations, handpicked for you. Each dish tells a story of local flavor and passion.</p>
-      </div>
+    <section className="max-w-7xl mx-auto px-6 py-24">
+      <ScrollReveal>
+        <div className="mb-20 text-center">
+          <p className="text-[10px] font-black uppercase tracking-[0.35em] text-primary mb-4">Curations</p>
+          <h3 className="text-3xl md:text-5xl font-black text-foreground brand uppercase tracking-tight">
+            Chef&apos;s <span className="text-primary italic">Signature</span> Selection
+          </h3>
+          <div className="w-16 h-1 bg-primary mx-auto mt-6 mb-6 rounded-full" />
+          <p className="text-muted-foreground max-w-2xl mx-auto font-medium italic leading-relaxed">
+            Hand-selected masterpieces from our network of master artisans. Each dish tells a story of local flavor and passion.
+          </p>
+        </div>
+      </ScrollReveal>
 
       {meals.length === 0 ? (
         <div className="bg-card/40 backdrop-blur-sm border shadow-sm border-border/50 rounded-2xl p-16 flex flex-col items-center justify-center text-center">

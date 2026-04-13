@@ -1,3 +1,5 @@
+import ScrollReveal from "@/components/shared/ScrollReveal";
+
 export default function HowItWorks() {
   const steps = [
     {
@@ -26,16 +28,18 @@ export default function HowItWorks() {
   return (
     <section className="bg-muted/10 dark:bg-muted/5 py-28 border-y border-border transition-colors duration-700">
       <div className="max-w-7xl mx-auto px-6">
-        <div className="mb-20 text-center">
-          <p className="text-[10px] font-black uppercase tracking-[0.35em] text-primary mb-4">The Process</p>
-          <h2 className="text-3xl md:text-5xl font-black text-foreground brand uppercase tracking-tight mb-6">
-            The BhojonBox Journey
-          </h2>
-          <div className="w-16 h-1 bg-primary mx-auto mb-6 rounded-full" />
-          <p className="text-muted-foreground max-w-2xl mx-auto italic font-medium leading-relaxed">
-            A seamless, end-to-end culinary experience — from our heritage kitchens to your private table.
-          </p>
-        </div>
+        <ScrollReveal>
+          <div className="mb-20 text-center">
+            <p className="text-[10px] font-black uppercase tracking-[0.35em] text-primary mb-4">The Process</p>
+            <h2 className="text-3xl md:text-5xl font-black text-foreground brand uppercase tracking-tight mb-6">
+              The Path to <span className="text-primary italic">Perfection</span>
+            </h2>
+            <div className="w-16 h-1 bg-primary mx-auto mb-6 rounded-full" />
+            <p className="text-muted-foreground max-w-2xl mx-auto italic font-medium leading-relaxed">
+              A seamless, end-to-end culinary experience — from our heritage kitchens to your private table.
+            </p>
+          </div>
+        </ScrollReveal>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
 

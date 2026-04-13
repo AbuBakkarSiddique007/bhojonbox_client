@@ -4,6 +4,8 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Mail, Send } from "lucide-react";
 
+import ScrollReveal from "@/components/shared/ScrollReveal";
+
 export default function NewsletterSection() {
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -30,16 +32,18 @@ export default function NewsletterSection() {
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/[0.03] rounded-full blur-[120px] -z-10" />
 
       <div className="max-w-4xl mx-auto px-6 text-center">
-        <div className="mb-12 inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-3xl rotate-12 mb-8 shadow-sm">
-          <Mail className="w-8 h-8 text-primary -rotate-12" />
-        </div>
+        <ScrollReveal>
+          <div className="mb-12 inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-3xl rotate-12 mb-8 shadow-sm">
+            <Mail className="w-8 h-8 text-primary -rotate-12" />
+          </div>
 
-        <h2 className="text-3xl md:text-5xl font-black text-foreground brand uppercase tracking-tight mb-6">
-          The Culinary <span className="text-primary italic">Insider</span>
-        </h2>
-        <p className="text-lg text-muted-foreground mb-12 max-w-xl mx-auto leading-relaxed italic">
-          Join our curated list of connoisseurs to receive exclusive access to artisanal menus and premier seasonal events.
-        </p>
+          <h2 className="text-3xl md:text-5xl font-black text-foreground brand uppercase tracking-tight mb-6">
+            The Culinary <span className="text-primary italic">Insider</span>
+          </h2>
+          <p className="text-lg text-muted-foreground mb-12 max-w-xl mx-auto leading-relaxed italic">
+            Join our curated list of connoisseurs to receive exclusive access to artisanal menus and premier seasonal events.
+          </p>
+        </ScrollReveal>
 
         <form onSubmit={handleSubmit} className="relative max-w-lg mx-auto group">
           <div className="relative">

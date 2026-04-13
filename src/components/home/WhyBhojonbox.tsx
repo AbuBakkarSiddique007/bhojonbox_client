@@ -1,3 +1,5 @@
+import ScrollReveal from "@/components/shared/ScrollReveal";
+
 export default function WhyBhojonbox() {
   const pillars = [
     {
@@ -32,16 +34,18 @@ export default function WhyBhojonbox() {
       <div className="absolute bottom-0 left-0 w-64 h-64 bg-primary/5 rounded-full blur-[80px] -z-10" />
 
       <div className="max-w-7xl mx-auto px-6">
-        <div className="text-center mb-20">
-          <p className="text-[10px] font-black uppercase tracking-[0.35em] text-primary mb-4">Our Standards</p>
-          <h2 className="text-3xl md:text-5xl font-black text-foreground brand uppercase tracking-tight">
-            The BhojonBox Distinction
-          </h2>
-          <div className="w-16 h-1 bg-primary mx-auto mt-6 mb-6 rounded-full" />
-          <p className="text-muted-foreground max-w-xl mx-auto italic font-medium leading-relaxed">
-            We do not simply deliver food. We deliver an experience — one built on quality, trust, and a commitment to culinary excellence.
-          </p>
-        </div>
+        <ScrollReveal>
+          <div className="text-center mb-20">
+            <p className="text-[10px] font-black uppercase tracking-[0.35em] text-primary mb-4">Our Standards</p>
+            <h2 className="text-3xl md:text-5xl font-black text-foreground brand uppercase tracking-tight">
+              The BhojonBox <span className="text-primary italic">Distinction</span>
+            </h2>
+            <div className="w-16 h-1 bg-primary mx-auto mt-6 mb-6 rounded-full" />
+            <p className="text-muted-foreground max-w-xl mx-auto italic font-medium leading-relaxed">
+              We do not simply deliver food. We deliver an experience — one built on quality, trust, and a commitment to culinary excellence.
+            </p>
+          </div>
+        </ScrollReveal>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {pillars.map((pillar, i) => (

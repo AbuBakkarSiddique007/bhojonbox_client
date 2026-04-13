@@ -94,6 +94,14 @@ export default function Navbar() {
               Restaurants
             </span>
           </Link>
+
+          {(!user || user.role === "CUSTOMER") && (
+            <Link href="/register?role=PROVIDER" className="relative">
+              <span className={`inline-flex items-center px-5 py-2 rounded-full transition-all ${pathname?.includes('role=PROVIDER') ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/20' : 'text-primary/70 hover:text-primary hover:bg-primary/5 font-black'}`}>
+                Partner with Us
+              </span>
+            </Link>
+          )}
         </div>
 
 
@@ -113,6 +121,9 @@ export default function Navbar() {
                 <DropdownMenuItem onClick={() => router.push("/")} className="cursor-pointer">Home</DropdownMenuItem>
                 <DropdownMenuItem onClick={() => router.push("/meals")} className="cursor-pointer">Browse Meals</DropdownMenuItem>
                 <DropdownMenuItem onClick={() => router.push("/providers")} className="cursor-pointer">Restaurants</DropdownMenuItem>
+                {(!user || user.role === "CUSTOMER") && (
+                  <DropdownMenuItem onClick={() => router.push("/register?role=PROVIDER")} className="cursor-pointer text-primary font-black">Partner with Us</DropdownMenuItem>
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
