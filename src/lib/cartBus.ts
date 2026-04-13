@@ -7,7 +7,7 @@ export const cartBus = {
   off: (type: string, handler: EventListenerOrEventListenerObject) => {
     bus.removeEventListener(type, handler as EventListener);
   },
-  emit: (type: string, detail?: any) => {
+  emit: <T>(type: string, detail?: T) => {
     bus.dispatchEvent(new CustomEvent(type, { detail }));
   },
 };

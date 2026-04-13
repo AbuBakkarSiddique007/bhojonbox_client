@@ -79,4 +79,6 @@ export async function getMealsByProvider(id: string, opts?: { page?: number; lim
     return data?.data?.meals ?? [];
 }
 
-export default { getAllProviders, getProviderById, getMealsByProvider };
+const providerService = { getAllProviders, getProviderById, getMealsByProvider };
+
+export default providerService;

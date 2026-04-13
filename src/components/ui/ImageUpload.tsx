@@ -3,6 +3,7 @@
 import React, { useState, useRef } from "react";
 import { uploadImageToImgBB } from "@/utils/uploadImage";
 import Loading from "@/components/ui/Loading";
+import Image from "next/image";
 import { UploadCloud, Image as ImageIcon, X } from "lucide-react";
 
 interface ImageUploadProps {
@@ -20,16 +21,15 @@ export default function ImageUpload({ value, onChange, className = "", label = "
 
   const handleFile = async (file: File) => {
     if (!file.type.startsWith("image/")) return;
-    
+
     setIsUploading(true);
     const url = await uploadImageToImgBB(file);
     setIsUploading(false);
-    
+
     if (url) {
       onChange(url);
     }
-    
-    // Reset file input so same file can be selected again if needed
+
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
@@ -46,8 +46,8 @@ export default function ImageUpload({ value, onChange, className = "", label = "
   return (
     <div className={`w-full ${className}`}>
       {label && <label className="block text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2 ml-1">{label}</label>}
-      
-      <div 
+
+      <div
         className={`relative w-full ${radiusClass} border-2 border-dashed flex flex-col items-center justify-center overflow-hidden transition-all group shadow-sm
           ${isDragOver ? "border-primary bg-primary/5" : "border-border/60 bg-muted/20 hover:border-primary/50 hover:bg-muted/40"}
           ${value ? "border-none shadow-md" : ""}
@@ -57,11 +57,11 @@ export default function ImageUpload({ value, onChange, className = "", label = "
         onDrop={onDrop}
         onClick={() => !value && !isUploading && fileInputRef.current?.click()}
       >
-        <input 
-          type="file" 
-          accept="image/*" 
-          className="hidden" 
-          ref={fileInputRef} 
+        <input
+          type="file"
+          accept="image/*"
+          className="hidden"
+          ref={fileInputRef}
           onChange={(e) => e.target.files?.[0] && handleFile(e.target.files[0])}
         />
 
@@ -72,24 +72,29 @@ export default function ImageUpload({ value, onChange, className = "", label = "
           </div>
         ) : value ? (
           <div className={`w-full h-full relative group/img bg-muted overflow-hidden ${isAvatar ? 'rounded-full' : 'rounded-[1.25rem]'}`}>
-            <img src={value} alt="Uploaded preview" className="w-full h-full object-cover" />
+            <Image
+              src={value}
+              alt="Uploaded preview"
+              fill
+              className="object-cover"
+            />
             <div className="absolute inset-0 bg-background/80 backdrop-blur-sm opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center gap-4">
-               <button 
-                  type="button"
-                  title="Change Image"
-                  onClick={(e) => { e.stopPropagation(); fileInputRef.current?.click(); }}
-                  className="w-10 h-10 flex items-center justify-center bg-primary text-primary-foreground rounded-full hover:scale-110 active:scale-95 transition-transform shadow-lg"
-               >
-                 <UploadCloud size={18} />
-               </button>
-               <button 
-                  type="button"
-                  title="Remove Image"
-                  onClick={(e) => { e.stopPropagation(); onChange(""); }}
-                  className="w-10 h-10 flex items-center justify-center bg-destructive text-destructive-foreground rounded-full hover:scale-110 active:scale-95 transition-transform shadow-lg"
-               >
-                 <X size={18} />
-               </button>
+              <button
+                type="button"
+                title="Change Image"
+                onClick={(e) => { e.stopPropagation(); fileInputRef.current?.click(); }}
+                className="w-10 h-10 flex items-center justify-center bg-primary text-primary-foreground rounded-full hover:scale-110 active:scale-95 transition-transform shadow-lg"
+              >
+                <UploadCloud size={18} />
+              </button>
+              <button
+                type="button"
+                title="Remove Image"
+                onClick={(e) => { e.stopPropagation(); onChange(""); }}
+                className="w-10 h-10 flex items-center justify-center bg-destructive text-destructive-foreground rounded-full hover:scale-110 active:scale-95 transition-transform shadow-lg"
+              >
+                <X size={18} />
+              </button>
             </div>
           </div>
         ) : (

@@ -8,6 +8,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import Loading from "@/components/ui/Loading";
 import { API_BASE_URL } from "@/config";
 import { toast } from "sonner";
+import { Menu, X } from "lucide-react";
 
 type Meal = { isAvailable?: boolean };
 
@@ -118,16 +119,17 @@ function ProviderStatsSection() {
     </div>
   );
 }
+
 interface User {
   name?: string;
   email?: string;
   role?: 'ADMIN' | 'PROVIDER' | 'CUSTOMER' | string;
 }
 
-const Sidebar = ({ user, pathname, handleLogout }: { user: User; pathname: string; handleLogout: () => void }) => (
-  <aside className="w-64 border-r border-border p-6 hidden md:flex flex-col bg-card sticky top-0 h-screen overflow-auto">
-    <div className="mb-8">
-      <Link href="/" className="group inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-primary/10 text-primary font-bold hover:bg-primary transition-all hover:text-primary-foreground">
+const SidebarContent = ({ user, pathname, handleLogout, onLinkClick }: { user: User; pathname: string; handleLogout: () => void; onLinkClick?: () => void }) => (
+  <>
+    <div className="mb-8 pl-1">
+      <Link href="/" onClick={onLinkClick} className="group inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-primary/10 text-primary font-bold hover:bg-primary transition-all hover:text-primary-foreground">
         <span>🏠</span>
         <span>Go to Home</span>
       </Link>
@@ -135,7 +137,7 @@ const Sidebar = ({ user, pathname, handleLogout }: { user: User; pathname: strin
 
     <div className="mb-8 p-4 rounded-2xl bg-muted/50 border border-border/50">
       <div className="flex items-center gap-3">
-        <Avatar size="lg" className="border-2 border-primary/20">
+        <Avatar className="border-2 border-primary/20 h-10 w-10">
           {user?.name ? (
             <AvatarFallback className="bg-primary text-primary-foreground">{user.name.charAt(0)}</AvatarFallback>
           ) : (
@@ -152,27 +154,27 @@ const Sidebar = ({ user, pathname, handleLogout }: { user: User; pathname: strin
     <nav className="flex-1 flex flex-col gap-1">
       {user?.role === 'ADMIN' ? (
         <>
-          <Link href="/admin-dashboard" className={`group flex items-center gap-3 px-4 py-3 rounded-xl transition-all relative ${pathname === '/admin-dashboard' || pathname === '/admin-dashboard/' ? 'bg-primary/10 text-primary font-bold' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}>
+          <Link onClick={onLinkClick} href="/admin-dashboard" className={`group flex items-center gap-3 px-4 py-3 rounded-xl transition-all relative ${pathname === '/admin-dashboard' || pathname === '/admin-dashboard/' ? 'bg-primary/10 text-primary font-bold' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}>
             { (pathname === '/admin-dashboard' || pathname === '/admin-dashboard/') && <div className="absolute right-0 top-3 bottom-3 w-1 bg-primary rounded-l-full" /> }
             <span className="text-xl">📊</span>
             <span>Overview</span>
           </Link>
-          <Link href="/admin-dashboard/users" className={`group flex items-center gap-3 px-4 py-3 rounded-xl transition-all relative ${pathname?.startsWith('/admin-dashboard/users') ? 'bg-primary/10 text-primary font-bold' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}>
+          <Link onClick={onLinkClick} href="/admin-dashboard/users" className={`group flex items-center gap-3 px-4 py-3 rounded-xl transition-all relative ${pathname?.startsWith('/admin-dashboard/users') ? 'bg-primary/10 text-primary font-bold' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}>
             { pathname?.startsWith('/admin-dashboard/users') && <div className="absolute right-0 top-3 bottom-3 w-1 bg-primary rounded-l-full" /> }
             <span className="text-xl">👥</span>
             <span>Users</span>
           </Link>
-          <Link href="/admin-dashboard/orders" className={`group flex items-center gap-3 px-4 py-3 rounded-xl transition-all relative ${pathname?.startsWith('/admin-dashboard/orders') ? 'bg-primary/10 text-primary font-bold' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}>
+          <Link onClick={onLinkClick} href="/admin-dashboard/orders" className={`group flex items-center gap-3 px-4 py-3 rounded-xl transition-all relative ${pathname?.startsWith('/admin-dashboard/orders') ? 'bg-primary/10 text-primary font-bold' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}>
             { pathname?.startsWith('/admin-dashboard/orders') && <div className="absolute right-0 top-3 bottom-3 w-1 bg-primary rounded-l-full" /> }
             <span className="text-xl">📦</span>
             <span>Orders</span>
           </Link>
-          <Link href="/admin-dashboard/categories" className={`group flex items-center gap-3 px-4 py-3 rounded-xl transition-all relative ${pathname?.startsWith('/admin-dashboard/categories') ? 'bg-primary/10 text-primary font-bold' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}>
+          <Link onClick={onLinkClick} href="/admin-dashboard/categories" className={`group flex items-center gap-3 px-4 py-3 rounded-xl transition-all relative ${pathname?.startsWith('/admin-dashboard/categories') ? 'bg-primary/10 text-primary font-bold' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}>
             { pathname?.startsWith('/admin-dashboard/categories') && <div className="absolute right-0 top-3 bottom-3 w-1 bg-primary rounded-l-full" /> }
             <span className="text-xl">📂</span>
             <span>Categories</span>
           </Link>
-          <Link href="/admin-dashboard/profile" className={`group flex items-center gap-3 px-4 py-3 rounded-xl transition-all relative ${pathname?.startsWith('/admin-dashboard/profile') ? 'bg-primary/10 text-primary font-bold' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}>
+          <Link onClick={onLinkClick} href="/admin-dashboard/profile" className={`group flex items-center gap-3 px-4 py-3 rounded-xl transition-all relative ${pathname?.startsWith('/admin-dashboard/profile') ? 'bg-primary/10 text-primary font-bold' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}>
             { pathname?.startsWith('/admin-dashboard/profile') && <div className="absolute right-0 top-3 bottom-3 w-1 bg-primary rounded-l-full" /> }
             <span className="text-xl">👤</span>
             <span>Profile</span>
@@ -180,22 +182,22 @@ const Sidebar = ({ user, pathname, handleLogout }: { user: User; pathname: strin
         </>
       ) : user?.role === 'PROVIDER' ? (
         <>
-          <Link href="/provider-dashboard" className={`group flex items-center gap-3 px-4 py-3 rounded-xl transition-all relative ${pathname === '/provider-dashboard' || pathname === '/provider-dashboard/' ? 'bg-primary/10 text-primary font-bold' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}>
+          <Link onClick={onLinkClick} href="/provider-dashboard" className={`group flex items-center gap-3 px-4 py-3 rounded-xl transition-all relative ${pathname === '/provider-dashboard' || pathname === '/provider-dashboard/' ? 'bg-primary/10 text-primary font-bold' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}>
             { (pathname === '/provider-dashboard' || pathname === '/provider-dashboard/') && <div className="absolute right-0 top-3 bottom-3 w-1 bg-primary rounded-l-full" /> }
             <span className="text-xl">📊</span>
             <span>Dashboard</span>
           </Link>
-          <Link href="/provider-dashboard/menu" className={`group flex items-center gap-3 px-4 py-3 rounded-xl transition-all relative ${pathname?.startsWith('/provider-dashboard/menu') ? 'bg-primary/10 text-primary font-bold' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}>
+          <Link onClick={onLinkClick} href="/provider-dashboard/menu" className={`group flex items-center gap-3 px-4 py-3 rounded-xl transition-all relative ${pathname?.startsWith('/provider-dashboard/menu') ? 'bg-primary/10 text-primary font-bold' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}>
             { pathname?.startsWith('/provider-dashboard/menu') && <div className="absolute right-0 top-3 bottom-3 w-1 bg-primary rounded-l-full" /> }
             <span className="text-xl">🍽️</span>
             <span>My Menu</span>
           </Link>
-          <Link href="/provider-dashboard/orders" className={`group flex items-center gap-3 px-4 py-3 rounded-xl transition-all relative ${pathname?.startsWith('/provider-dashboard/orders') ? 'bg-primary/10 text-primary font-bold' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}>
+          <Link onClick={onLinkClick} href="/provider-dashboard/orders" className={`group flex items-center gap-3 px-4 py-3 rounded-xl transition-all relative ${pathname?.startsWith('/provider-dashboard/orders') ? 'bg-primary/10 text-primary font-bold' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}>
             { pathname?.startsWith('/provider-dashboard/orders') && <div className="absolute right-0 top-3 bottom-3 w-1 bg-primary rounded-l-full" /> }
             <span className="text-xl">📦</span>
             <span>Orders</span>
           </Link>
-          <Link href="/provider-dashboard/profile" className={`group flex items-center gap-3 px-4 py-3 rounded-xl transition-all relative ${pathname?.startsWith('/provider-dashboard/profile') ? 'bg-primary/10 text-primary font-bold' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}>
+          <Link onClick={onLinkClick} href="/provider-dashboard/profile" className={`group flex items-center gap-3 px-4 py-3 rounded-xl transition-all relative ${pathname?.startsWith('/provider-dashboard/profile') ? 'bg-primary/10 text-primary font-bold' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}>
             { pathname?.startsWith('/provider-dashboard/profile') && <div className="absolute right-0 top-3 bottom-3 w-1 bg-primary rounded-l-full" /> }
             <span className="text-xl">👤</span>
             <span>Profile</span>
@@ -203,12 +205,12 @@ const Sidebar = ({ user, pathname, handleLogout }: { user: User; pathname: strin
         </>
       ) : (
         <>
-          <Link href="/customer-dashboard/orders" className={`group flex items-center gap-3 px-4 py-3 rounded-xl transition-all relative ${pathname?.startsWith('/customer-dashboard/orders') ? 'bg-primary/10 text-primary font-bold' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}>
+          <Link onClick={onLinkClick} href="/customer-dashboard/orders" className={`group flex items-center gap-3 px-4 py-3 rounded-xl transition-all relative ${pathname?.startsWith('/customer-dashboard/orders') ? 'bg-primary/10 text-primary font-bold' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}>
             { pathname?.startsWith('/customer-dashboard/orders') && <div className="absolute right-0 top-3 bottom-3 w-1 bg-primary rounded-l-full" /> }
             <span className="text-xl">🛍️</span>
             <span>My Orders</span>
           </Link>
-          <Link href="/customer-dashboard/profile" className={`group flex items-center gap-3 px-4 py-3 rounded-xl transition-all relative ${pathname?.startsWith('/customer-dashboard/profile') ? 'bg-primary/10 text-primary font-bold' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}>
+          <Link onClick={onLinkClick} href="/customer-dashboard/profile" className={`group flex items-center gap-3 px-4 py-3 rounded-xl transition-all relative ${pathname?.startsWith('/customer-dashboard/profile') ? 'bg-primary/10 text-primary font-bold' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}>
             { pathname?.startsWith('/customer-dashboard/profile') && <div className="absolute right-0 top-3 bottom-3 w-1 bg-primary rounded-l-full" /> }
             <span className="text-xl">👤</span>
             <span>Profile</span>
@@ -221,21 +223,42 @@ const Sidebar = ({ user, pathname, handleLogout }: { user: User; pathname: strin
         <span>Logout</span>
       </button>
     </nav>
-  </aside>
+  </>
+);
+
+const Sidebar = ({ user, pathname, handleLogout, mobileMenuOpen, setMobileMenuOpen }: { user: User; pathname: string; handleLogout: () => void; mobileMenuOpen: boolean; setMobileMenuOpen: (val: boolean) => void }) => (
+  <>
+    <aside className="w-64 border-r border-border p-6 hidden lg:flex flex-col bg-card sticky top-0 h-screen overflow-auto">
+      <SidebarContent user={user} pathname={pathname} handleLogout={handleLogout} />
+    </aside>
+
+    {mobileMenuOpen && (
+      <div className="fixed inset-0 z-50 lg:hidden flex">
+        <div className="fixed inset-0 bg-background/80 backdrop-blur-sm transition-all" onClick={() => setMobileMenuOpen(false)} />
+        <aside className="relative w-72 max-w-[80vw] h-full bg-card p-6 flex flex-col overflow-auto shadow-2xl animate-in slide-in-from-left duration-300">
+          <button onClick={() => setMobileMenuOpen(false)} className="absolute top-6 right-6 p-2 bg-muted rounded-full hover:bg-destructive/10 hover:text-destructive transition-colors border border-border">
+            <X className="w-4 h-4" />
+          </button>
+          <div className="mt-4 flex-1 flex flex-col">
+            <SidebarContent user={user} pathname={pathname} handleLogout={handleLogout} onLinkClick={() => setMobileMenuOpen(false)} />
+          </div>
+        </aside>
+      </div>
+    )}
+  </>
 );
 
 export default function DashboardLayout({ children, admin, provider, customer }: { children: React.ReactNode; admin?: React.ReactNode; provider?: React.ReactNode; customer?: React.ReactNode; }) {
   const { user, isLoading, setUser } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleLogout = async () => {
     try {
       await fetch(`${API_BASE_URL}/auth/logout`, { method: 'POST', credentials: 'include' });
       if (typeof setUser === 'function') setUser(null);
       toast.success('Logged out');
-      // If the user was on a protected dashboard route, send them to login.
-      // Otherwise return them to the public home page for a smoother UX.
       if (pathname?.startsWith('/admin-dashboard') || pathname?.startsWith('/provider-dashboard') || pathname?.startsWith('/customer-dashboard') || pathname?.startsWith('/dashboard')) {
         router.push('/login');
       } else {
@@ -272,14 +295,18 @@ export default function DashboardLayout({ children, admin, provider, customer }:
     <div className="min-h-screen flex bg-background">
       {user?.role === "ADMIN" ? (
         <>
-          <Sidebar user={user} pathname={pathname} handleLogout={handleLogout} />
-          <main className="flex-1 p-6 lg:p-10">
+          <Sidebar user={user} pathname={pathname} handleLogout={handleLogout} mobileMenuOpen={mobileMenuOpen} setMobileMenuOpen={setMobileMenuOpen} />
+          <main className="flex-1 p-4 sm:p-6 lg:p-10 w-full overflow-hidden">
             <div className="max-w-7xl mx-auto">
-              <div className="flex items-center justify-between mb-8">
-                <h1 className="text-3xl font-extrabold text-foreground tracking-tight">Admin Overview</h1>
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">
+                <div className="flex items-center gap-3">
+                  <button onClick={() => setMobileMenuOpen(true)} className="lg:hidden p-2.5 bg-card border border-border rounded-xl hover:bg-muted transition-colors"><Menu className="w-5 h-5" /></button>
+                  <h1 className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight">Admin Overview</h1>
+                </div>
                 <div className="flex items-center gap-3 px-4 py-2 bg-card border border-border rounded-xl shadow-sm">
                   <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-                  <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Admin Mode</span>
+                  <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground hidden sm:inline">Admin Mode</span>
+                  <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground sm:hidden">Admin</span>
                 </div>
               </div>
               <div className="mt-6">{admin ?? children}</div>
@@ -288,14 +315,18 @@ export default function DashboardLayout({ children, admin, provider, customer }:
         </>
       ) : user?.role === "PROVIDER" ? (
         <>
-          <Sidebar user={user} pathname={pathname} handleLogout={handleLogout} />
-          <main className="flex-1 p-6 lg:p-10">
+          <Sidebar user={user} pathname={pathname} handleLogout={handleLogout} mobileMenuOpen={mobileMenuOpen} setMobileMenuOpen={setMobileMenuOpen} />
+          <main className="flex-1 p-4 sm:p-6 lg:p-10 w-full overflow-hidden">
             <div className="max-w-7xl mx-auto">
-              <div className="flex items-center justify-between mb-8">
-                <h1 className="text-3xl font-extrabold text-foreground tracking-tight">Provider Dashboard</h1>
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">
+                <div className="flex items-center gap-3">
+                  <button onClick={() => setMobileMenuOpen(true)} className="lg:hidden p-2.5 bg-card border border-border rounded-xl hover:bg-muted transition-colors"><Menu className="w-5 h-5" /></button>
+                  <h1 className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight">Provider Dashboard</h1>
+                </div>
                 <div className="flex items-center gap-3 px-4 py-2 bg-card border border-border rounded-xl shadow-sm">
                   <div className="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></div>
-                  <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Provider Mode</span>
+                  <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground hidden sm:inline">Provider Mode</span>
+                  <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground sm:hidden">Provider</span>
                 </div>
               </div>
               {pathname === '/provider-dashboard' || pathname === '/provider-dashboard/' ? (
@@ -307,14 +338,18 @@ export default function DashboardLayout({ children, admin, provider, customer }:
         </>
       ) : (
         <>
-          <Sidebar user={user ?? {}} pathname={pathname} handleLogout={handleLogout} />
-          <main className="flex-1 p-6 lg:p-10">
+          <Sidebar user={user ?? {}} pathname={pathname} handleLogout={handleLogout} mobileMenuOpen={mobileMenuOpen} setMobileMenuOpen={setMobileMenuOpen} />
+          <main className="flex-1 p-4 sm:p-6 lg:p-10 w-full overflow-hidden">
             <div className="max-w-7xl mx-auto">
-              <div className="flex items-center justify-between mb-8">
-                <h1 className="text-3xl font-extrabold text-foreground tracking-tight">Customer Dashboard</h1>
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">
+                <div className="flex items-center gap-3">
+                  <button onClick={() => setMobileMenuOpen(true)} className="lg:hidden p-2.5 bg-card border border-border rounded-xl hover:bg-muted transition-colors"><Menu className="w-5 h-5" /></button>
+                  <h1 className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight">Customer Dashboard</h1>
+                </div>
                 <div className="flex items-center gap-3 px-4 py-2 bg-card border border-border rounded-xl shadow-sm">
                   <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></div>
-                  <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Customer Mode</span>
+                  <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground hidden sm:inline">Customer Mode</span>
+                  <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground sm:hidden">Customer</span>
                 </div>
               </div>
               <div className="mt-6">{customer ?? children}</div>

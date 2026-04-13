@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { mealsService } from '@/services';
 import MealsFilters from '../../components/meals/MealsFilters';
 import { API_BASE_URL } from '@/config';
@@ -68,8 +69,12 @@ export default async function MealsPage({ searchParams }: { searchParams?: Recor
                   <Link key={m.id} href={`/meals/${m.id}`} className="block bg-card rounded-[2rem] shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 overflow-hidden border border-border group">
                     <div className="h-56 bg-muted flex items-center justify-center overflow-hidden relative">
                       {m.image ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img src={m.image} alt={m.name} className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-1000" />
+                        <Image 
+                          src={m.image} 
+                          alt={m.name || "Meal Image"} 
+                          fill
+                          className="object-cover group-hover:scale-110 transition-transform duration-1000" 
+                        />
                       ) : (
                         <div className="text-muted-foreground/30 font-black tracking-widest uppercase text-[10px]">Awaiting Masterpiece</div>
                       )}

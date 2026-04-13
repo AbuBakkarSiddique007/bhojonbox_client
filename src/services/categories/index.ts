@@ -33,4 +33,6 @@ export const deleteCategory = async (id: string) => {
   return res.json();
 };
 
-export default { getCategories, createCategory, updateCategory, deleteCategory };
+const categoriesService = { getCategories, createCategory, updateCategory, deleteCategory };
+
+export default categoriesService;

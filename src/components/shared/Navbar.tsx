@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import { ThemeToggle } from "@/components/shared/ThemeToggle";
+import { Menu } from "lucide-react";
 
 export default function Navbar() {
   const { user, isLoading, setUser } = useAuth();
@@ -62,7 +63,14 @@ export default function Navbar() {
 
         <div className="flex items-center gap-3">
           <Link href="/" className="flex items-center -ml-2 group">
-            <img src="/image2.png" alt="Bhojonbox Logo" className="h-10 md:h-12 w-auto object-contain brightness-110 contrast-110 drop-shadow-[0_0_8px_rgba(255,215,0,0.3)] group-hover:drop-shadow-[0_0_12px_rgba(255,215,0,0.5)] group-hover:scale-105 transition-all duration-500" />
+            <Image 
+              src="/image2.png" 
+              alt="Bhojonbox Logo" 
+              width={160} 
+              height={48} 
+              priority
+              className="h-10 md:h-12 w-auto object-contain brightness-110 contrast-110 drop-shadow-[0_0_8px_rgba(255,215,0,0.3)] group-hover:drop-shadow-[0_0_12px_rgba(255,215,0,0.5)] group-hover:scale-105 transition-all duration-500" 
+            />
             <span className="sr-only">Bhojonbox</span>
           </Link>
         </div>
@@ -89,7 +97,26 @@ export default function Navbar() {
         </div>
 
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 md:gap-3">
+
+          <div className="md:hidden flex items-center">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="h-9 w-9 p-0 rounded-xl hover:bg-muted transition-colors">
+                  <Menu className="h-5 w-5" />
+                  <span className="sr-only">Toggle menu</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56 font-bold">
+                <DropdownMenuLabel>Explore BhojonBox</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => router.push("/")} className="cursor-pointer">Home</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => router.push("/meals")} className="cursor-pointer">Browse Meals</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => router.push("/providers")} className="cursor-pointer">Restaurants</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+
           <ThemeToggle />
 
           {(!user || user.role === "CUSTOMER") && <CartBadge />}
