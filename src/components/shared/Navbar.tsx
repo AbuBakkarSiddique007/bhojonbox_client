@@ -57,12 +57,19 @@ export default function Navbar() {
     return "/customer-dashboard/profile";
   };
 
+  const handleHomeClick = (e: React.MouseEvent) => {
+    if (pathname === "/") {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
   return (
     <nav className="sticky top-0 z-50 navbar-watercolor">
       <div className="flex items-center justify-between px-4 sm:px-6 py-3 max-w-7xl mx-auto">
 
         <div className="flex items-center gap-3">
-          <Link href="/" className="flex items-center -ml-2 group">
+          <Link href="/" onClick={handleHomeClick} className="flex items-center -ml-2 group">
             <Image 
               src="/image2.png" 
               alt="Bhojonbox Logo" 
@@ -77,7 +84,7 @@ export default function Navbar() {
 
 
         <div className="hidden md:flex items-center gap-2 text-[11px] font-black uppercase tracking-widest">
-          <Link href="/" className="relative">
+          <Link href="/" onClick={handleHomeClick} className="relative">
             <span className={`inline-flex items-center px-5 py-2 rounded-full transition-all ${pathname === '/' ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/20' : 'text-foreground/60 hover:text-foreground hover:bg-muted'}`}>
               Home
             </span>
@@ -105,28 +112,8 @@ export default function Navbar() {
         </div>
 
 
-        <div className="flex items-center gap-2 md:gap-3">
+        <div className="flex items-center gap-1.5 md:gap-3">
 
-          <div className="md:hidden flex items-center">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="h-9 w-9 p-0 rounded-xl hover:bg-muted transition-colors">
-                  <Menu className="h-5 w-5" />
-                  <span className="sr-only">Toggle menu</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56 font-bold">
-                <DropdownMenuLabel>Explore BhojonBox</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => router.push("/")} className="cursor-pointer">Home</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => router.push("/meals")} className="cursor-pointer">Browse Meals</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => router.push("/providers")} className="cursor-pointer">Restaurants</DropdownMenuItem>
-                {(!user || user.role === "CUSTOMER") && (
-                  <DropdownMenuItem onClick={() => router.push("/register?role=PROVIDER")} className="cursor-pointer text-primary font-black">Partner with Us</DropdownMenuItem>
-                )}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
 
           <ThemeToggle />
 
@@ -180,15 +167,55 @@ export default function Navbar() {
               </DropdownMenu>
             </>
           ) : (
-            <>
+            <div className="hidden sm:flex items-center gap-2">
               <Link href="/login">
                 <Button variant="ghost" size="sm" className="text-foreground font-bold hover:bg-muted rounded-xl">Sign In</Button>
               </Link>
               <Link href="/register">
                 <Button size="sm" className="bg-primary text-primary-foreground hover:scale-[1.02] active:scale-95 transition-all shadow-lg shadow-primary/20 rounded-xl font-bold px-6">Get Started</Button>
               </Link>
-            </>
+            </div>
           )}
+
+          <div className="md:hidden flex items-center">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="h-9 w-9 p-0 rounded-xl hover:bg-muted transition-colors">
+                  <Menu className="h-5 w-5" />
+                  <span className="sr-only">Toggle menu</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56 font-bold">
+                <DropdownMenuLabel>Explore BhojonBox</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem 
+                  onClick={(e) => {
+                    if (pathname === "/") {
+                      e.preventDefault();
+                      window.scrollTo({ top: 0, behavior: "smooth" });
+                    } else {
+                      router.push("/");
+                    }
+                  }} 
+                  className="cursor-pointer"
+                >
+                  Home
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => router.push("/meals")} className="cursor-pointer">Browse Meals</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => router.push("/providers")} className="cursor-pointer">Restaurants</DropdownMenuItem>
+                {(!user || user.role === "CUSTOMER") && (
+                  <DropdownMenuItem onClick={() => router.push("/register?role=PROVIDER")} className="cursor-pointer text-primary font-black">Partner with Us</DropdownMenuItem>
+                )}
+                {!user && (
+                  <>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={() => router.push("/login")} className="cursor-pointer">Sign In</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => router.push("/register")} className="cursor-pointer text-primary font-black">Get Started</DropdownMenuItem>
+                  </>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
       </div>
     </nav>

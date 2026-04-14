@@ -27,7 +27,7 @@ export default function NewsletterSection() {
   };
 
   return (
-    <section className="py-32 bg-background relative overflow-hidden transition-colors duration-700">
+    <section className="py-20 md:py-32 bg-background relative overflow-hidden transition-colors duration-700">
       <div className="absolute inset-0 bg-primary/5 -z-10" />
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/[0.03] rounded-full blur-[120px] -z-10" />
 
@@ -45,8 +45,8 @@ export default function NewsletterSection() {
           </p>
         </ScrollReveal>
 
-        <form onSubmit={handleSubmit} className="relative max-w-lg mx-auto group">
-          <div className="relative">
+        <form onSubmit={handleSubmit} className="relative max-w-lg mx-auto group px-4 sm:px-0">
+          <div className="flex flex-col sm:block relative">
             <input
               type="email"
               required
@@ -54,14 +54,14 @@ export default function NewsletterSection() {
               placeholder="Your professional email address"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full pl-12 pr-40 py-6 bg-card border border-border/50 rounded-3xl outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all font-medium text-foreground placeholder:text-muted-foreground/30 shadow-lg"
+              className="w-full pl-12 pr-4 sm:pr-40 py-5 sm:py-6 bg-card border border-border/50 rounded-[1.5rem] sm:rounded-3xl outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all font-medium text-foreground placeholder:text-muted-foreground/30 shadow-lg"
             />
             <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40" />
-            <div className="absolute right-2 top-1/2 -translate-y-1/2">
+            <div className="mt-4 sm:mt-0 sm:absolute sm:right-2 sm:top-1/2 sm:-translate-y-1/2">
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="flex items-center gap-2 bg-primary text-primary-foreground px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-widest hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-primary/20 disabled:opacity-50"
+                className="w-full sm:w-auto flex items-center justify-center gap-2 bg-primary text-primary-foreground px-8 py-4 rounded-[1.25rem] sm:rounded-2xl font-black text-xs uppercase tracking-widest hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-primary/20 disabled:opacity-50"
               >
                 {isSubmitting ? (
                   <div className="w-4 h-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />

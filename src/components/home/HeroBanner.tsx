@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export default function HeroBanner() {
   return (
-    <section className="relative overflow-hidden bg-background border-b border-border pt-8 pb-16 md:pt-10 md:pb-20 lg:pt-12 lg:pb-24 transition-colors duration-700">
+    <section className="relative overflow-hidden bg-background border-b border-border pt-6 pb-12 md:pt-10 md:pb-20 lg:pt-12 lg:pb-24 transition-colors duration-700">
 
       <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-primary/5 via-transparent to-transparent -z-10" />
       <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-primary/10 rounded-full blur-[140px] -z-10 animate-pulse" />
@@ -20,26 +20,26 @@ export default function HeroBanner() {
             The BhojonBox
           </div>
 
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-black leading-[1.05] mb-6 text-foreground tracking-tighter brand">
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-black leading-[1.05] mb-6 text-foreground tracking-tighter brand">
             Artisanal Cuisine,{" "}
             <span className="text-primary italic">Delivered</span>{" "}
             to Your Door.
           </h1>
 
-          <p className="text-lg text-muted-foreground mb-10 max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium">
+          <p className="text-base md:text-lg text-muted-foreground mb-10 max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium">
             The BhojonBox curates exceptional menus from vetted local culinary artisans — offering a distinguished dining experience without leaving the comfort of your residence.
           </p>
 
           <div className="flex flex-wrap gap-4 justify-center lg:justify-start">
             <Link
               href="/meals"
-              className="px-10 py-4 bg-primary text-primary-foreground rounded-2xl font-black text-sm uppercase tracking-widest shadow-lg shadow-primary/25 hover:scale-[1.03] active:scale-95 transition-all"
+              className="px-8 py-3 sm:px-10 sm:py-4 bg-primary text-primary-foreground rounded-2xl font-black text-sm uppercase tracking-widest shadow-lg shadow-primary/25 hover:scale-[1.03] active:scale-95 transition-all"
             >
               Explore the Menu
             </Link>
             <Link
               href="/register?role=provider"
-              className="px-10 py-4 bg-transparent text-foreground border border-border rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-muted hover:border-primary/30 transition-all"
+              className="px-8 py-3 sm:px-10 sm:py-4 bg-transparent text-foreground border border-border rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-muted hover:border-primary/30 transition-all"
             >
               Partner with Us
             </Link>
@@ -73,7 +73,7 @@ export default function HeroBanner() {
             <img
               src="https://i.ibb.co/dwTgY3Qs/banner.jpg"
               alt="The BhojonBox — Artisanal cuisine curated from the finest local providers"
-              className="w-full h-[480px] object-cover group-hover:scale-[1.02] transition-transform duration-700"
+              className="w-full h-[280px] sm:h-[350px] md:h-[480px] object-cover group-hover:scale-[1.02] transition-transform duration-700"
             />
           </div>
 

@@ -172,7 +172,7 @@ export default function AdminUsersPage() {
       <h1 className="text-3xl font-bold mb-2">User Management</h1>
       <p className="text-sm text-muted-foreground mb-6">Suspend, activate, and manage all platform users.</p>
 
-      <div className="flex items-center gap-4 mb-6">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 mb-6">
         <div className="relative flex-1">
           <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/40">🔍</span>
           <input
@@ -183,7 +183,7 @@ export default function AdminUsersPage() {
           />
         </div>
 
-        <div className="w-44">
+        <div className="w-full sm:w-44">
           <select value={role} onChange={(e) => setRole(e.target.value)} className="w-full p-3 rounded-xl bg-card border border-border text-foreground focus:ring-2 focus:ring-primary/30 outline-none transition-all text-sm font-medium">
             <option value="">All Roles</option>
             <option value="CUSTOMER">Customer</option>
@@ -194,62 +194,80 @@ export default function AdminUsersPage() {
       </div>
 
       <div className="bg-card rounded-[2rem] border border-border overflow-hidden shadow-sm">
-        <div className="grid grid-cols-6 gap-4 py-3 px-6 text-[10px] text-muted-foreground uppercase font-black tracking-widest border-b border-border bg-muted/30">
-          <div className="col-span-2">User</div>
-          <div>Role</div>
-          <div>Joined</div>
-          <div>Status</div>
-          <div>Action</div>
-        </div>
-
-        <div className="divide-y divide-border">
-          {loading ? (
-            <div className="p-6 text-center"><Loading /></div>
-          ) : (
-            users.map((u) => (
-          <div key={u.id} className="grid grid-cols-6 items-center gap-4 py-4 px-6 hover:bg-muted/20 transition-colors">
-                <div className="col-span-2 flex items-center gap-4">
-              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-sm font-black text-primary overflow-hidden">
-                    {u.avatar ? (
-                      <Image src={u.avatar} alt={u.name ?? "avatar"} width={40} height={40} className="object-cover rounded-full" />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center">{u.name ? u.name.charAt(0) : "?"}</div>
-                    )}
-                  </div>
-              <div>
-                <div className="font-semibold text-foreground text-sm">{u.name}</div>
-                <div className="text-xs text-muted-foreground">{u.email}</div>
-                <button onClick={() => openDetails(u.id)} className="mt-2 text-[10px] px-3 py-1 rounded-lg bg-muted text-muted-foreground hover:bg-primary/10 hover:text-primary transition-all font-black uppercase tracking-widest">Details</button>
-              </div>
-                </div>
-
-                <div>
-                  <RoleBadge role={u.role} />
-                </div>
-
-            <div className="text-sm text-muted-foreground">{u.createdAt ? new Date(u.createdAt).toLocaleDateString() : "—"}</div>
-
-                <div>
-                  <StatusBadge active={!!u.isActive} />
-                </div>
-
-                <div className="flex items-center justify-end justify-self-end">
-                  <label className="relative inline-flex items-center cursor-pointer">
-                    <input
-                      type="checkbox"
-                      className="sr-only peer"
-                      checked={!!u.isActive}
-                      onChange={() => handleToggle(u.id)}
-                      disabled={actionLoading}
-                      aria-label={u.isActive ? 'Deactivate user' : 'Activate user'}
-                    />
-                    <div className={`w-11 h-6 bg-gray-200 rounded-full peer-checked:bg-emerald-500 transition-colors ${actionLoading ? 'opacity-50' : ''}`}></div>
-                    <span className={`absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full shadow transform transition-transform peer-checked:translate-x-5`}></span>
-                  </label>
-                </div>
-              </div>
-            ))
-          )}
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[900px]">
+            <thead>
+              <tr className="border-b border-border bg-muted/30">
+                <th className="text-left px-6 py-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground">User</th>
+                <th className="text-left px-6 py-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground">Role</th>
+                <th className="text-left px-6 py-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground">Joined</th>
+                <th className="text-left px-6 py-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground">Status</th>
+                <th className="text-right px-6 py-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border">
+              {loading ? (
+                <tr>
+                  <td colSpan={5} className="p-12 text-center">
+                    <Loading />
+                  </td>
+                </tr>
+              ) : (
+                users.map((u) => (
+                  <tr key={u.id} className="hover:bg-muted/20 transition-colors">
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-4">
+                        <div className="w-11 h-11 rounded-2xl bg-primary/10 flex items-center justify-center text-sm font-black text-primary overflow-hidden border border-primary/5 shadow-inner">
+                          {u.avatar ? (
+                            <Image src={u.avatar} alt={u.name ?? "avatar"} width={44} height={44} className="object-cover w-full h-full" />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center text-lg">{u.name ? u.name.charAt(0).toUpperCase() : "?"}</div>
+                          )}
+                        </div>
+                        <div>
+                          <div className="font-bold text-foreground text-sm tracking-tight">{u.name}</div>
+                          <div className="text-[11px] text-muted-foreground/60">{u.email}</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <RoleBadge role={u.role} />
+                    </td>
+                    <td className="px-6 py-4 text-sm text-muted-foreground font-medium">
+                      {u.createdAt ? new Date(u.createdAt).toLocaleDateString() : "—"}
+                    </td>
+                    <td className="px-6 py-4">
+                      <StatusBadge active={!!u.isActive} />
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center justify-end gap-6">
+                        <button
+                          onClick={() => openDetails(u.id)}
+                          className="text-[10px] px-4 py-1.5 rounded-xl bg-muted text-muted-foreground hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-all font-black uppercase tracking-widest border border-border/50"
+                        >
+                          Details
+                        </button>
+                        <div className="flex flex-col items-center gap-1.5">
+                          <label className="relative inline-flex items-center cursor-pointer group">
+                            <input
+                              type="checkbox"
+                              className="sr-only peer"
+                              checked={!!u.isActive}
+                              onChange={() => handleToggle(u.id)}
+                              disabled={actionLoading}
+                              aria-label={u.isActive ? 'Deactivate user' : 'Activate user'}
+                            />
+                            <div className={`w-11 h-6 bg-muted-foreground/10 rounded-full peer-checked:bg-emerald-500 transition-all duration-300 ring-4 ring-transparent group-hover:ring-primary/5 ${actionLoading ? 'opacity-50' : ''}`}></div>
+                            <span className={`absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full shadow-lg transform transition-transform duration-300 peer-checked:translate-x-5`}></span>
+                          </label>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
 
@@ -264,8 +282,8 @@ export default function AdminUsersPage() {
 
 
       {selected && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="bg-card border border-border rounded-[2rem] max-w-xl w-full p-8 shadow-2xl animate-in zoom-in-95 duration-300">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+          <div className="bg-card border border-border rounded-[2rem] max-w-xl w-full p-6 sm:p-8 shadow-2xl animate-in zoom-in-95 duration-300 max-h-[90vh] overflow-y-auto">
             <div className="flex items-start justify-between mb-4">
               <div className="flex items-center gap-4">
               <div className="w-16 h-16 rounded-2xl bg-muted overflow-hidden flex-shrink-0 flex items-center justify-center border border-border">

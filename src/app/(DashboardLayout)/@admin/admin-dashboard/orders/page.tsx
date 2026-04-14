@@ -67,20 +67,22 @@ export default function AdminOrdersPage() {
 
   return (
     <div className="p-4 md:p-8 lg:p-12 animate-in fade-in duration-500">
-      <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-10 gap-6">
+      <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between mb-8 md:mb-12 gap-6">
         <div>
-          <h1 className="text-4xl font-black text-foreground tracking-tighter brand uppercase">Order Ledger</h1>
-          <p className="text-muted-foreground mt-2 font-medium italic opacity-80">Complete transaction log across the entire platform.</p>
+          <h1 className="text-3xl md:text-4xl font-black text-foreground tracking-tighter brand uppercase">Order Ledger</h1>
+          <p className="text-sm md:text-base text-muted-foreground mt-2 font-medium italic opacity-80">Complete transaction log across the entire platform.</p>
         </div>
-        <select
-          value={status}
-          onChange={(e) => { const s = e.target.value; setStatus(s); fetchOrders({ status: s }); }}
-          className="px-5 py-3 rounded-xl border border-border bg-card text-foreground text-xs font-black uppercase tracking-widest focus:ring-2 focus:ring-primary/30 outline-none transition-all"
-        >
-          {STATUS_FILTERS.map(s => (
-            <option key={s} value={s}>{s || "All Statuses"}</option>
-          ))}
-        </select>
+        <div className="w-full md:w-auto">
+          <select
+            value={status}
+            onChange={(e) => { const s = e.target.value; setStatus(s); fetchOrders({ status: s }); }}
+            className="w-full px-5 py-3 rounded-xl border border-border bg-card text-foreground text-xs font-black uppercase tracking-widest focus:ring-2 focus:ring-primary/30 outline-none transition-all"
+          >
+            {STATUS_FILTERS.map(s => (
+              <option key={s} value={s}>{s || "All Statuses"}</option>
+            ))}
+          </select>
+        </div>
       </div>
 
       <div className="bg-card rounded-[2rem] border border-border overflow-hidden shadow-sm">

@@ -129,7 +129,17 @@ interface User {
 const SidebarContent = ({ user, pathname, handleLogout, onLinkClick }: { user: User; pathname: string; handleLogout: () => void; onLinkClick?: () => void }) => (
   <>
     <div className="mb-8 pl-1">
-      <Link href="/" onClick={onLinkClick} className="group inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-primary/10 text-primary font-bold hover:bg-primary transition-all hover:text-primary-foreground">
+      <Link 
+        href="/" 
+        onClick={(e) => {
+          if (pathname === "/") {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          }
+          if (onLinkClick) onLinkClick();
+        }} 
+        className="group inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-primary/10 text-primary font-bold hover:bg-primary transition-all hover:text-primary-foreground"
+      >
         <span>🏠</span>
         <span>Go to Home</span>
       </Link>

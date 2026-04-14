@@ -61,7 +61,7 @@ export default function StatsSection() {
   }, []);
 
   return (
-    <section ref={containerRef} className="py-28 bg-background transition-colors duration-700 overflow-hidden">
+    <section ref={containerRef} className="py-16 md:py-28 bg-background transition-colors duration-700 overflow-hidden">
       <div className="max-w-7xl mx-auto px-6">
         
         <div className="stats-header text-center mb-20 opacity-0">
@@ -75,14 +75,14 @@ export default function StatsSection() {
           </p>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-10 md:gap-12">
           {stats.map((stat, i) => (
             <div key={i} className="text-center group">
-              <div className="text-4xl md:text-6xl font-black text-primary brand mb-3 drop-shadow-sm group-hover:scale-110 transition-transform duration-500">
+              <div className="text-3xl md:text-6xl font-black text-primary brand mb-3 drop-shadow-sm group-hover:scale-110 transition-transform duration-500">
                 <span ref={(el) => { numberRefs.current[i] = el; }}>0</span>
                 {stat.suffix}
               </div>
-              <div className="text-[10px] md:text-xs font-black uppercase tracking-[0.25em] text-muted-foreground">
+              <div className="text-[9px] md:text-xs font-black uppercase tracking-[0.25em] text-muted-foreground opacity-70">
                 {stat.label}
               </div>
             </div>

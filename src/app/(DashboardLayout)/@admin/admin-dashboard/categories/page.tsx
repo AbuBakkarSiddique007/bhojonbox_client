@@ -82,14 +82,14 @@ export default function AdminCategoriesPage() {
 
   return (
     <div className="p-4 md:p-8 lg:p-12 animate-in fade-in duration-500">
-      <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-10 gap-6">
+      <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between mb-8 md:mb-12 gap-6">
         <div>
-          <h1 className="text-4xl font-black text-foreground tracking-tighter brand uppercase">Cuisine Registry</h1>
-          <p className="text-muted-foreground mt-2 font-medium italic opacity-80">Manage the culinary categories displayed across the platform.</p>
+          <h1 className="text-3xl md:text-4xl font-black text-foreground tracking-tighter brand uppercase">Cuisine Registry</h1>
+          <p className="text-sm md:text-base text-muted-foreground mt-2 font-medium italic opacity-80">Manage the culinary categories displayed across the platform.</p>
         </div>
         <button
           onClick={() => setAddOpen(true)}
-          className="px-8 py-4 bg-primary text-primary-foreground rounded-2xl font-black text-xs uppercase tracking-widest shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all"
+          className="w-full md:w-auto px-8 py-4 bg-primary text-primary-foreground rounded-2xl font-black text-xs uppercase tracking-widest shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all text-center"
         >
           + Add Category
         </button>
@@ -101,30 +101,32 @@ export default function AdminCategoriesPage() {
           <p className="text-muted-foreground italic font-medium">No categories registered yet.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           {categories.map((c) => (
-            <div key={c.id} className="group flex items-center gap-4 bg-card rounded-2xl p-5 border border-border shadow-sm hover:shadow-md hover:border-primary/20 transition-all">
-              <div className="w-14 h-14 rounded-2xl bg-muted flex items-center justify-center overflow-hidden flex-shrink-0 shadow-inner group-hover:scale-105 transition-transform">
-                {c.image ? (
-                  <img src={c.image} alt={c.name} className="w-full h-full object-cover" />
-                ) : (
-                  <div className="text-2xl">🍽️</div>
-                )}
+            <div key={c.id} className="group flex flex-col xs:flex-row items-stretch xs:items-center gap-4 bg-card rounded-2xl p-4 md:p-5 border border-border shadow-sm hover:shadow-md hover:border-primary/20 transition-all">
+              <div className="flex items-center gap-4 flex-1">
+                <div className="w-14 h-14 rounded-2xl bg-muted flex items-center justify-center overflow-hidden flex-shrink-0 shadow-inner group-hover:scale-105 transition-transform">
+                  {c.image ? (
+                    <img src={c.image} alt={c.name} className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="text-2xl">🍽️</div>
+                  )}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="font-black text-foreground brand truncate text-base">{c.name}</div>
+                  <div className="text-[10px] text-muted-foreground uppercase tracking-widest mt-1 font-bold">Active Category</div>
+                </div>
               </div>
-              <div className="flex-1 min-w-0">
-                <div className="font-black text-foreground brand truncate">{c.name}</div>
-                <div className="text-[10px] text-muted-foreground uppercase tracking-widest mt-1 font-bold">Active Category</div>
-              </div>
-              <div className="flex items-center gap-2 flex-shrink-0">
+              <div className="flex items-center gap-2 pt-3 xs:pt-0 border-t xs:border-t-0 border-border/50 xs:flex-shrink-0">
                 <button
                   onClick={() => { setEditing(c.id); setName(c.name); setImage(c.image || ""); }}
-                  className="px-4 py-2 rounded-xl bg-muted text-muted-foreground text-[10px] font-black uppercase tracking-widest hover:bg-primary/10 hover:text-primary transition-all"
+                  className="flex-1 xs:flex-none px-4 py-2.5 rounded-xl bg-muted text-muted-foreground text-[10px] font-black uppercase tracking-widest hover:bg-primary/10 hover:text-primary transition-all text-center"
                 >
                   Edit
                 </button>
                 <button
                   onClick={() => { setSelectedDeleteId(c.id); setConfirmOpen(true); }}
-                  className="px-4 py-2 rounded-xl bg-destructive/10 text-destructive text-[10px] font-black uppercase tracking-widest hover:bg-destructive hover:text-white transition-all"
+                  className="flex-1 xs:flex-none px-4 py-2.5 rounded-xl bg-destructive/10 text-destructive text-[10px] font-black uppercase tracking-widest hover:bg-destructive hover:text-white transition-all text-center"
                 >
                   Del
                 </button>
@@ -135,11 +137,11 @@ export default function AdminCategoriesPage() {
       )}
 
       {(addOpen || editing) && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="bg-card border border-border rounded-[2rem] w-full max-w-2xl p-8 shadow-2xl animate-in fade-in zoom-in-95 duration-300 max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+          <div className="bg-card border border-border rounded-[2rem] w-full max-w-2xl p-6 sm:p-8 shadow-2xl animate-in fade-in zoom-in-95 duration-300 max-h-[90vh] overflow-y-auto">
             <div className="flex items-start justify-between gap-4 mb-8">
               <div>
-                <h3 className="text-2xl font-black text-foreground brand uppercase tracking-tight">
+                <h3 className="text-xl md:text-2xl font-black text-foreground brand uppercase tracking-tight">
                   {editing ? 'Edit Category' : 'Register Category'}
                 </h3>
                 <p className="text-sm text-muted-foreground italic mt-1">
