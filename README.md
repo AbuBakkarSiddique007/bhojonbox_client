@@ -16,10 +16,12 @@ Source code
 ### 🌍 Public
 - Browse all available meals and food providers
 - Filter meals by category, price range, and search
+- **AI-Powered Search Suggestions**: Real-time, intelligent recommendations as you type
 - View individual meal details and provider profiles
 
 ### 👤 Customer
 - Register & login with role selection
+- **BhojonConcierge AI**: Dedicated personal assistant for meal recommendations
 - Add meals to cart (multi-restaurant support)
 - Place orders with delivery address — Cash on Delivery
 - Track real-time order status
@@ -52,6 +54,7 @@ Source code
 | **Database** | PostgreSQL |
 | **ORM** | Prisma |
 | **Auth** | JWT stored in HttpOnly cookie |
+| **AI / LLM** | Groq (Llama 3.3/3.1) |
 | **Deployment** | Vercel (client) · Render (server) |
 
 ---
