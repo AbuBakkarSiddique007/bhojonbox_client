@@ -70,7 +70,7 @@ export default function StripePayment({ clientSecret, onCancel, onComplete }: { 
   const options = useMemo(() => ({
     clientSecret,
     appearance: {
-      theme: "night" as any,
+      theme: "night" as const,
       variables: {
         colorPrimary: "#FFA500", // Using a gold/orange as primary
         colorBackground: "#0A0A0A",

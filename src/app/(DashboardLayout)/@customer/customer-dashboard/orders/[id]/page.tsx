@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, use } from "react";
 import { useRouter } from "next/navigation";
 import { API_BASE_URL } from "@/config";
 import { toast } from "sonner";
@@ -45,10 +45,10 @@ const STATUS_COLORS: Record<string, string> = {
   CANCELLED: "bg-destructive/10 text-destructive border-destructive/20",
 };
 
-export default function CustomerOrderDetailPage({ params }: { params: { id: string } }) {
+export default function CustomerOrderDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
   const { user, isLoading } = useAuth();
-  const routeParams = (React as any).use(params) as { id: string };
+  const routeParams = use(params);
   const id = routeParams.id;
 
   const [order, setOrder] = useState<Order | null>(null);
