@@ -1,7 +1,9 @@
 import { API_BASE_URL } from "@/config";
+import { getAuthHeaders } from "../auth";
 
 export const getOrders = async () => {
   const res = await fetch(`${API_BASE_URL}/orders`, {
+    headers: getAuthHeaders(),
     credentials: "include",
   });
   const result = await res.json();
@@ -11,6 +13,7 @@ export const getOrders = async () => {
 
 export const getMyOrders = async () => {
   const res = await fetch(`${API_BASE_URL}/orders/my-orders`, {
+    headers: getAuthHeaders(),
     credentials: "include",
   });
   const result = await res.json();
@@ -21,6 +24,7 @@ export const getMyOrders = async () => {
 export const cancelOrder = async (orderId: string) => {
   const res = await fetch(`${API_BASE_URL}/orders/${orderId}/cancel`, {
     method: "PATCH",
+    headers: getAuthHeaders(),
     credentials: "include",
   });
   const result = await res.json();

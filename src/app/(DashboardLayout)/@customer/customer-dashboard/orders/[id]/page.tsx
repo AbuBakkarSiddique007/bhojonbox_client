@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { API_BASE_URL } from "@/config";
 import { toast } from "sonner";
 import Loading from "@/components/ui/Loading";
-import { reviewsService } from "@/services";
+import { reviewsService, authService } from "@/services";
 import { useAuth } from "@/hooks/AuthContext";
 
 type ReviewMeal = {
@@ -62,7 +62,7 @@ export default function CustomerOrderDetailPage({ params }: { params: { id: stri
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch(`${API_BASE_URL}/orders/${id}`, { credentials: "include" });
+        const res = await fetch(`${API_BASE_URL}/orders/${id}`, { headers: authService.getAuthHeaders(), credentials: "include" });
         const json = await res.json().catch(() => null);
         const o = json?.data?.order ?? json?.order ?? json;
         setOrder(o);

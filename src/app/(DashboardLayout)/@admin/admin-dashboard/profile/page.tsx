@@ -7,6 +7,7 @@ import { useState } from "react";
 import ImageUpload from "@/components/ui/ImageUpload";
 import { API_BASE_URL } from "@/config";
 import { toast } from "sonner";
+import { authService } from "@/services";
 
 
 export default function AdminProfilePage() {
@@ -34,7 +35,7 @@ export default function AdminProfilePage() {
       const res = await fetch(`${API_BASE_URL}/auth/profile`, {
         method: "PUT",
         credentials: "include",
-        headers: { "Content-Type": "application/json" },
+        headers: authService.getAuthHeaders({ "Content-Type": "application/json" }),
         body: JSON.stringify({ name, phone, avatar }),
       });
       const json = await res.json().catch(() => null);

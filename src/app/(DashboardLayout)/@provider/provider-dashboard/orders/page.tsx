@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { API_BASE_URL } from "@/config";
 import { toast } from "sonner";
 import Loading from "@/components/ui/Loading";
+import { authService } from "@/services";
 
 type Order = {
   id: string;
@@ -31,7 +32,7 @@ export default function ProviderOrdersPage() {
   const fetchOrders = async () => {
     try {
       setErr(null);
-      const res = await fetch(`${API_BASE_URL}/orders/provider/orders`, { credentials: 'include' });
+      const res = await fetch(`${API_BASE_URL}/orders/provider/orders`, { headers: authService.getAuthHeaders(), credentials: 'include' });
       const json = await res.json();
       if (!res.ok) throw new Error(json?.message || 'Failed to fetch orders');
       setOrders(json?.data?.orders ?? []);
@@ -51,7 +52,7 @@ export default function ProviderOrdersPage() {
       const res = await fetch(`${API_BASE_URL}/orders/${id}/status`, {
         method: 'PATCH',
         credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
+        headers: authService.getAuthHeaders({ 'Content-Type': 'application/json' }),
         body: JSON.stringify({ status: next }),
       });
       const json = await res.json();

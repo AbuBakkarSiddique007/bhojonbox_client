@@ -45,7 +45,7 @@ export default function ProviderProfilePage() {
   const fetchProfile = async () => {
     try {
       setInitialLoading(true);
-      const res = await fetch(`${API_BASE_URL}/providers/me/profile`, { credentials: "include" });
+      const res = await fetch(`${API_BASE_URL}/providers/me/profile`, { headers: authService.getAuthHeaders(), credentials: "include" });
       const json = await res.json();
       if (!res.ok) throw new Error(json?.message || "Failed to fetch profile");
 
@@ -99,7 +99,7 @@ export default function ProviderProfilePage() {
       const res = await fetch(`${API_BASE_URL}/providers/me/profile`, {
         method: "PUT",
         credentials: "include",
-        headers: { "Content-Type": "application/json" },
+        headers: authService.getAuthHeaders({ "Content-Type": "application/json" }),
         body: JSON.stringify(payload),
       });
 

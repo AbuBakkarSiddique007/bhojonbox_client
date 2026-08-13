@@ -1,4 +1,5 @@
 import { API_BASE_URL } from "@/config";
+import { getAuthHeaders } from "../auth";
 
 type FetchOptions = { [key: string]: string | number | boolean | undefined };
 
@@ -13,6 +14,7 @@ const buildQuery = (params: FetchOptions = {}) => {
 
 export const getDashboardStats = async () => {
   const res = await fetch(`${API_BASE_URL}/admin/dashboard`, {
+    headers: getAuthHeaders(),
     credentials: "include",
   });
   return res.json();
@@ -20,6 +22,7 @@ export const getDashboardStats = async () => {
 
 export const getUserById = async (id: string) => {
   const res = await fetch(`${API_BASE_URL}/admin/users/${id}`, {
+    headers: getAuthHeaders(),
     credentials: "include",
   });
   return res.json();
@@ -27,6 +30,7 @@ export const getUserById = async (id: string) => {
 
 export const getUsers = async (opts: FetchOptions = {}) => {
   const res = await fetch(`${API_BASE_URL}/admin/users${buildQuery(opts)}`, {
+    headers: getAuthHeaders(),
     credentials: "include",
   });
   return res.json();
@@ -35,6 +39,7 @@ export const getUsers = async (opts: FetchOptions = {}) => {
 export const toggleUserStatus = async (id: string) => {
   const res = await fetch(`${API_BASE_URL}/admin/users/${id}/toggle-status`, {
     method: "PATCH",
+    headers: getAuthHeaders(),
     credentials: "include",
   });
   return res.json();
@@ -44,7 +49,7 @@ export const changeUserRole = async (id: string, role: string) => {
   const res = await fetch(`${API_BASE_URL}/admin/users/${id}/role`, {
     method: "PATCH",
     credentials: "include",
-    headers: { "Content-Type": "application/json" },
+    headers: getAuthHeaders({ "Content-Type": "application/json" }),
     body: JSON.stringify({ role }),
   });
   return res.json();
@@ -52,6 +57,7 @@ export const changeUserRole = async (id: string, role: string) => {
 
 export const getOrders = async (opts: FetchOptions = {}) => {
   const res = await fetch(`${API_BASE_URL}/admin/orders${buildQuery(opts)}`, {
+    headers: getAuthHeaders(),
     credentials: "include",
   });
   return res.json();

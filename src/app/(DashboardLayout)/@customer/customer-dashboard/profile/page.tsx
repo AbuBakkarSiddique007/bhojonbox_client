@@ -7,6 +7,7 @@ import Loading from "@/components/ui/Loading";
 import { API_BASE_URL } from "@/config";
 import { toast } from "sonner";
 import ImageUpload from "@/components/ui/ImageUpload";
+import { authService } from "@/services";
 
 export default function CustomerProfilePage() {
   const { user, setUser } = useAuth();
@@ -25,7 +26,7 @@ export default function CustomerProfilePage() {
       const res = await fetch(`${API_BASE_URL}/auth/profile`, {
         method: "PUT",
         credentials: "include",
-        headers: { "Content-Type": "application/json" },
+        headers: authService.getAuthHeaders({ "Content-Type": "application/json" }),
         body: JSON.stringify({ name, phone, address, avatar }),
       });
       const json = await res.json().catch(() => null);

@@ -9,6 +9,7 @@ import Loading from "@/components/ui/Loading";
 import { API_BASE_URL } from "@/config";
 import { toast } from "sonner";
 import { Menu, X } from "lucide-react";
+import { authService } from "@/services";
 
 type Meal = { isAvailable?: boolean };
 
@@ -27,11 +28,12 @@ function ProviderStatsSection() {
     const fetchData = async () => {
       try {
         setStatsLoading(true);
-        const mRes = await fetch(`${API_BASE_URL}/meals/provider/my-meals`, { credentials: 'include' });
+        const headers = authService.getAuthHeaders();
+        const mRes = await fetch(`${API_BASE_URL}/meals/provider/my-meals`, { headers, credentials: 'include' });
         const mJson = await mRes.json().catch(() => null);
         const meals: Meal[] = mRes.ok ? (mJson?.data?.meals ?? []) : [];
 
-        const oRes = await fetch(`${API_BASE_URL}/orders/provider/orders`, { credentials: 'include' });
+        const oRes = await fetch(`${API_BASE_URL}/orders/provider/orders`, { headers, credentials: 'include' });
         const oJson = await oRes.json().catch(() => null);
         const orders = oRes.ok ? (oJson?.data?.orders ?? []) : [];
 
@@ -154,6 +156,7 @@ const SidebarContent = ({ user, pathname, handleLogout, onLinkClick }: { user: U
             <AvatarFallback className="bg-primary text-primary-foreground">U</AvatarFallback>
           )}
         </Avatar>
+        
         <div className="overflow-hidden">
           <div className="font-bold text-card-foreground truncate">{user?.name ?? 'User'}</div>
           <div className="text-[10px] text-muted-foreground truncate uppercase font-bold tracking-widest">{user?.role ?? 'USER'}</div>
@@ -266,7 +269,7 @@ export default function DashboardLayout({ children, admin, provider, customer }:
 
   const handleLogout = async () => {
     try {
-      await fetch(`${API_BASE_URL}/auth/logout`, { method: 'POST', credentials: 'include' });
+      await authService.logoutUser();
       if (typeof setUser === 'function') setUser(null);
       toast.success('Logged out');
       if (pathname?.startsWith('/admin-dashboard') || pathname?.startsWith('/provider-dashboard') || pathname?.startsWith('/customer-dashboard') || pathname?.startsWith('/dashboard')) {

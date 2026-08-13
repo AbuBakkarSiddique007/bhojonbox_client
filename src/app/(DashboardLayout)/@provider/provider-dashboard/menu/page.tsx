@@ -6,6 +6,7 @@ import Loading from "@/components/ui/Loading";
 import { toast } from "sonner";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import ImageUpload from "@/components/ui/ImageUpload";
+import { authService } from "@/services";
 
 type Meal = { id: string; name: string; description?: string; price: number; isAvailable?: boolean; categoryId?: string; image?: string };
 type Category = { id: string; name: string };
@@ -35,7 +36,7 @@ export default function ProviderMenuPage() {
   const fetchMeals = async () => {
     try {
       setErr(null);
-      const res = await fetch(`${API_BASE_URL}/meals/provider/my-meals`, { credentials: 'include' });
+      const res = await fetch(`${API_BASE_URL}/meals/provider/my-meals`, { headers: authService.getAuthHeaders(), credentials: 'include' });
 
       const json = await res.json();
 
@@ -103,7 +104,7 @@ export default function ProviderMenuPage() {
       if (imageUrl && imageUrl.trim()) payload.image = imageUrl.trim();
       const url = isEditing ? `${API_BASE_URL}/meals/${editingId}` : `${API_BASE_URL}/meals`;
       const method = isEditing ? 'PUT' : 'POST';
-      const res = await fetch(url, { method, credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+      const res = await fetch(url, { method, credentials: 'include', headers: authService.getAuthHeaders({ 'Content-Type': 'application/json' }), body: JSON.stringify(payload) });
       const json = await res.json();
       if (!res.ok) throw new Error(json?.message || 'Failed to save meal');
       toast.success(isEditing ? 'Meal updated' : 'Meal created');
@@ -124,7 +125,7 @@ export default function ProviderMenuPage() {
     if (!selectedDeleteId) return;
     try {
       setLoading(true);
-      const res = await fetch(`${API_BASE_URL}/meals/${selectedDeleteId}`, { method: 'DELETE', credentials: 'include' });
+      const res = await fetch(`${API_BASE_URL}/meals/${selectedDeleteId}`, { method: 'DELETE', headers: authService.getAuthHeaders(), credentials: 'include' });
       const json = await res.json();
       if (!res.ok) throw new Error(json?.message || 'Failed to delete');
       toast.success('Meal removed');
@@ -139,7 +140,7 @@ export default function ProviderMenuPage() {
           const res2 = await fetch(`${API_BASE_URL}/meals/${selectedDeleteId}`, {
             method: 'PUT',
             credentials: 'include',
-            headers: { 'Content-Type': 'application/json' },
+            headers: authService.getAuthHeaders({ 'Content-Type': 'application/json' }),
             body: JSON.stringify({ isAvailable: false }),
           });
           const j2 = await res2.json().catch(() => null);
@@ -165,7 +166,7 @@ export default function ProviderMenuPage() {
       const res = await fetch(`${API_BASE_URL}/meals/${m.id}`, {
         method: 'PUT',
         credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
+        headers: authService.getAuthHeaders({ 'Content-Type': 'application/json' }),
         body: JSON.stringify({ isAvailable: !m.isAvailable }),
       });
       const json = await res.json();

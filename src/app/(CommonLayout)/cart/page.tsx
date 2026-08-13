@@ -8,6 +8,7 @@ import Link from "next/link";
 import { cartBus } from "@/lib/cartBus";
 import { useAuth } from "@/hooks/AuthContext";
 import { usePathname, useRouter } from "next/navigation";
+import { authService } from "@/services";
 import StripePayment from "@/components/payment/StripePayment";
 
 type CartItem = { id: string; providerId?: string | null; name?: string; price?: number; image?: string | null; qty: number };
@@ -97,7 +98,7 @@ export default function CartPage() {
       const res = await fetch(`${API_BASE_URL}/orders`, {
         method: "POST",
         credentials: "include",
-        headers: { "Content-Type": "application/json" },
+        headers: authService.getAuthHeaders({ "Content-Type": "application/json" }),
         body: JSON.stringify(payload),
       });
 
@@ -111,7 +112,7 @@ export default function CartPage() {
         const intentRes = await fetch(`${API_BASE_URL}/payment/create-intent`, {
           method: "POST",
           credentials: "include",
-          headers: { "Content-Type": "application/json" },
+          headers: authService.getAuthHeaders({ "Content-Type": "application/json" }),
           body: JSON.stringify({ orderId: order.id }),
         });
         const intentJson = await intentRes.json();

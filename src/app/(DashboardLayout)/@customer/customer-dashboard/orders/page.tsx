@@ -6,6 +6,7 @@ import { API_BASE_URL } from "@/config";
 import { toast } from "sonner";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import Loading from "@/components/ui/Loading";
+import { authService } from "@/services";
 
 type Order = {
   id: string;
@@ -28,7 +29,7 @@ export default function CustomerOrdersPage() {
     let mounted = true;
     const fetchOrders = async () => {
       try {
-        const res = await fetch(`${API_BASE_URL}/orders/my-orders`, { credentials: 'include' });
+        const res = await fetch(`${API_BASE_URL}/orders/my-orders`, { headers: authService.getAuthHeaders(), credentials: 'include' });
         const json = await res.json();
         if (!res.ok) throw new Error(json?.message || 'Failed to fetch orders');
         if (!mounted) return;
@@ -150,12 +151,12 @@ export default function CustomerOrdersPage() {
           try {
             setConfirmLoading(true);
             setProcessingId(selectedOrderId);
-            const res = await fetch(`${API_BASE_URL}/orders/${selectedOrderId}/cancel`, { method: 'PATCH', credentials: 'include' });
+            const res = await fetch(`${API_BASE_URL}/orders/${selectedOrderId}/cancel`, { method: 'PATCH', headers: authService.getAuthHeaders(), credentials: 'include' });
             const json = await res.json();
             if (!res.ok) throw new Error(json?.message || 'Failed to cancel order');
             toast.success('Order cancelled successfully');
             // refresh orders
-            const refresh = await fetch(`${API_BASE_URL}/orders/my-orders`, { credentials: 'include' });
+            const refresh = await fetch(`${API_BASE_URL}/orders/my-orders`, { headers: authService.getAuthHeaders(), credentials: 'include' });
             const refreshJson = await refresh.json();
             setOrders(refreshJson?.data?.orders ?? []);
           } catch (err: unknown) {

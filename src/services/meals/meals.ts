@@ -1,4 +1,5 @@
 import { API_BASE_URL } from "@/config";
+import { getAuthHeaders } from "../auth";
 
 export const getAllMeals = async (
   page = 1,
@@ -40,6 +41,7 @@ export const getAllMeals = async (
 
 export const getMyMeals = async () => {
   const res = await fetch(`${API_BASE_URL}/meals/provider/my-meals`, {
+    headers: getAuthHeaders(),
     credentials: "include",
   });
   const result = await res.json();

@@ -10,7 +10,7 @@ export default function LoginPage() {
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Navbar />
-      <main className="flex-1 flex items-center justify-center p-4">
+      <main className="flex-1 flex items-start justify-center p-4 pt-10 pb-12">
         <Suspense fallback={<div className="mb-6"><Loading /></div>}>
           <LoginForm />
         </Suspense>
